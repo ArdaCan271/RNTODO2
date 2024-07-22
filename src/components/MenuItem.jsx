@@ -1,7 +1,9 @@
 import { StyleSheet, Text, View, TouchableOpacity, FlatList, Pressable, Dimensions } from 'react-native';
-import React from 'react';
+import React, { useState } from 'react';
 import Icon from 'react-native-vector-icons/Ionicons';
 import colors from '../constants/colors';
+
+import { useNavigationState } from '@react-navigation/native';
 
 const getBackgroundColor = (level) => {
   const baseColorR = 239;
@@ -16,11 +18,9 @@ const getBackgroundColor = (level) => {
 
 const MenuItem = ({ item, level = 0, onToggle, expandedItems, navigation }) => {
 
-  const windowWidth = Dimensions.get('window').width;
-
   const hasChildren = !!item.children && item.children.length > 0;
 
-  const routeNames = navigation.getState().routeNames;
+  const routeNames = useNavigationState((state) => state.routeNames);
 
   return (
     <View style={styles.menuItem}>
@@ -32,15 +32,16 @@ const MenuItem = ({ item, level = 0, onToggle, expandedItems, navigation }) => {
           style={[styles.menuButton, {backgroundColor: getBackgroundColor(level), elevation: expandedItems[item.mobile] ? 4 : 0}]} 
           onPress={() => {
             if(routeNames.includes(item.mobile)) {
-              navigation.navigate(item.mobile);
+              navigation.navigate(item.mobile, { childrenOfMenuItem: item.children });
             } else if (hasChildren) {
               onToggle(item.mobile, hasChildren);
+              console.log('No route found for ' + item.mobile);
             } else {
               console.log('No route found for ' + item.mobile);
             }
           }}
           unstable_pressDelay={80}
-          android_ripple={{color: 'gray', radius: windowWidth / 1.95}}
+          android_ripple={{color: colors.primaryDark}}
         >
           <View
             style={{ flexDirection: 'row', alignItems: 'center'}}
@@ -89,7 +90,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingVertical: 10,
     paddingHorizontal: 15,
-    borderLeftWidth: 10,
+    borderLeftWidth: 12,
     borderLeftColor: colors.primaryDark,
     borderBottomWidth: 1,
     borderBottomColor: 'rgb(180, 180, 180)',

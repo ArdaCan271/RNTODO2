@@ -39,7 +39,6 @@ const MenuScreen = ({ navigation }) => {
         [mobile]: !prevExpandedItems[mobile],
       }));
     }
-    console.log(expandedItems);
   };
 
   const [modalVisible, setModalVisible] = useState(false);

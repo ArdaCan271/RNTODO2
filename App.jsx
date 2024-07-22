@@ -12,6 +12,7 @@ import LoginScreen from './src/screens/LoginScreen';
 import MenuScreen from './src/screens/MenuScreen';
 import LandingScreen from './src/screens/LandingScreen';
 import CurrentScreen from './src/screens/CurrentScreen';
+import CustomerDetail from './src/screens/CustomerDetail';
 
 const Stack = createNativeStackNavigator();
 
@@ -45,6 +46,14 @@ const App = () => {
             <Stack.Screen
               name="Current"
               component={CurrentScreen}
+              options={{
+                headerShown: false,
+                animation: 'slide_from_right',
+              }}
+            />
+            <Stack.Screen
+              name="CustomerDetail"
+              component={CustomerDetail}
               options={{
                 headerShown: false,
                 animation: 'slide_from_right',
