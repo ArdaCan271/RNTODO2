@@ -16,7 +16,7 @@ const getBackgroundColor = (level) => {
   return `rgb(${colorValueR}, ${colorValueG}, ${colorValueB})`;
 };
 
-const MenuItem = ({ item, level = 0, onToggle, expandedItems, navigation }) => {
+const MenuItem = ({ item, level = 0, onToggle, expandedItems, navigation, style }) => {
 
   const hasChildren = !!item.children && item.children.length > 0;
 
@@ -29,7 +29,7 @@ const MenuItem = ({ item, level = 0, onToggle, expandedItems, navigation }) => {
       >
         <View style={{ width: `${level * 5}%` }} />
         <Pressable 
-          style={[styles.menuButton, {backgroundColor: getBackgroundColor(level), elevation: expandedItems[item.mobile] ? 4 : 0}]} 
+          style={[styles.menuButton, {backgroundColor: colors.white, elevation: expandedItems[item.mobile] ? 4 : 0}, style]} 
           onPress={() => {
             if(routeNames.includes(item.mobile)) {
               navigation.navigate(item.mobile, { childrenOfMenuItem: item.children });
@@ -46,7 +46,7 @@ const MenuItem = ({ item, level = 0, onToggle, expandedItems, navigation }) => {
           <View
             style={{ flexDirection: 'row', alignItems: 'center'}}
           >
-            <Icon name={item.icon} size={20} color={colors.primaryDark} />
+            <Icon name={item.icon} size={22} color={colors.primaryDark} />
             <Text style={styles.menuText}>{item.id}</Text>
           </View>
           {hasChildren && (
@@ -88,8 +88,8 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingVertical: 10,
-    paddingHorizontal: 15,
+    paddingVertical: 14,
+    paddingHorizontal: 16,
     borderLeftWidth: 12,
     borderLeftColor: colors.primaryDark,
     borderBottomWidth: 1,
@@ -98,7 +98,7 @@ const styles = StyleSheet.create({
   },
   menuText: {
     marginLeft: 10,
-    fontSize: 16,
+    fontSize: 18,
     color: colors.black,
   },
   caretIcon: {

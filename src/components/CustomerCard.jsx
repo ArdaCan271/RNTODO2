@@ -63,7 +63,7 @@ const CustomerCard = ({ cariKod, isim, alacak, il, onPress }) => {
         }
         <View style={styles.bottomRight}>
           <Text style={styles.alacakWhole}>
-          ₺ {lira}
+          ₺{lira}
             <Text style={styles.alacakDecimal}>,{kurus}</Text>
           </Text>
         </View>
@@ -103,7 +103,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   initials: {
-    fontSize: 20,
+    fontSize: 18,
     color: colors.white,
   },
   textWrapper: {
