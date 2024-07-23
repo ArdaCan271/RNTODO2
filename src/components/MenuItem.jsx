@@ -1,7 +1,8 @@
 import { StyleSheet, Text, View, TouchableOpacity, FlatList, Pressable, Dimensions } from 'react-native';
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import Icon from 'react-native-vector-icons/Ionicons';
 import colors from '../constants/colors';
+import { useTheme } from '../constants/colors';
 
 import { useNavigationState } from '@react-navigation/native';
 
@@ -16,7 +17,10 @@ const getBackgroundColor = (level) => {
   return `rgb(${colorValueR}, ${colorValueG}, ${colorValueB})`;
 };
 
-const MenuItem = ({ item, level = 0, onToggle, expandedItems, navigation, style, props = '' }) => {
+const MenuItem = ({ item, level = 0, onPress, expandedItems, navigation, style, props = '' }) => {
+
+  const theme = useTheme();
+  const styles = useMemo(() => getStyles(theme), [theme]);
 
   const hasChildren = !!item.children && item.children.length > 0;
 
@@ -27,29 +31,29 @@ const MenuItem = ({ item, level = 0, onToggle, expandedItems, navigation, style,
       <View style={{ flexDirection: 'row', alignItems: 'center' }}>
         <View style={{ width: `${level * 5}%` }} />
         <Pressable 
-          style={[styles.menuButton, {backgroundColor: colors.white, elevation: expandedItems[item.mobile] ? 4 : 0}, style]} 
+          style={[styles.menuButton, {backgroundColor: theme.background, elevation: expandedItems[item.mobile] ? 4 : 0}, style]} 
           onPress={() => {
             if(routeNames.includes(item.mobile)) {
               navigation.navigate(item.mobile, { childrenOfMenuItem: item.children, props: props });
             } else if (hasChildren) {
-              onToggle(item.mobile, hasChildren);
-              console.log('No route found for ' + item.mobile);
+              navigation.navigate('MenuChildren', { parent: item });
             } else {
+              navigation.navigate('PageNotFound', { routeName: item.id });
               console.log('No route found for ' + item.mobile);
             }
           }}
           unstable_pressDelay={80}
-          android_ripple={{color: colors.primaryDark}}
+          android_ripple={{color: theme.primaryDark}}
         >
           <View style={{ flexDirection: 'row', alignItems: 'center'}}>
-            <Icon name={item.icon} size={22} color={colors.primaryDark} />
+            <Icon name={item.icon} size={22} color={theme.primaryDark} />
             <Text style={styles.menuText}>{item.id}</Text>
           </View>
           {hasChildren && (
             <Icon
               name={expandedItems[item.mobile] ? 'chevron-down-outline' : 'chevron-forward-outline'}
               size={20}
-              color={colors.primaryDark}
+              color={theme.primaryDark}
               style={styles.caretIcon}
               />
             )}
@@ -65,7 +69,6 @@ const MenuItem = ({ item, level = 0, onToggle, expandedItems, navigation, style,
               item={childItem}
               level={level + 1}
               expandedItems={expandedItems}
-              onToggle={onToggle}
               />
             )
           }
@@ -76,7 +79,7 @@ const MenuItem = ({ item, level = 0, onToggle, expandedItems, navigation, style,
   );
 };
 
-const styles = StyleSheet.create({
+const getStyles = (theme) => StyleSheet.create({
   menuItem: {
     marginVertical: 0,
   },
@@ -87,7 +90,7 @@ const styles = StyleSheet.create({
     paddingVertical: 14,
     paddingHorizontal: 16,
     borderLeftWidth: 12,
-    borderLeftColor: colors.primaryDark,
+    borderLeftColor: theme.primary,
     borderBottomWidth: 1,
     borderBottomColor: 'rgb(180, 180, 180)',
     flex: 1
@@ -95,7 +98,7 @@ const styles = StyleSheet.create({
   menuText: {
     marginLeft: 10,
     fontSize: 18,
-    color: colors.black,
+    color: theme.black,
   },
   caretIcon: {
 

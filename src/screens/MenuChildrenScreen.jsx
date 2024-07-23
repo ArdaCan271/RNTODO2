@@ -1,18 +1,18 @@
 import { StyleSheet, View, FlatList, BackHandler } from 'react-native';
 import React, { useEffect, useState } from 'react';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 
 import MenuItem from '../components/MenuItem';
 import { useTheme } from '../constants/colors';
 import CustomHeader from '../components/CustomHeader';
 
-const MenuScreen = ({ navigation }) => {
+const MenuChildrenScreen = ({ navigation, route }) => {
   const theme = useTheme();
   const styles = getStyles(theme);
 
   useEffect(() => {
     const backAction = () => {
-      BackHandler.exitApp();
+      navigation.goBack();
       return true;
     };
 
@@ -22,27 +22,37 @@ const MenuScreen = ({ navigation }) => {
     );
 
     return () => backHandler.remove();
-  }, []);
+  }, [navigation]);
 
-  const menuBJSON = useSelector((state) => state.userMenuBJSON.menuBJSON);
+  const parentItem = route.params.parent;
 
   const [expandedItems, setExpandedItems] = useState({});
+
+  const handlePress = (mobile, hasChildren) => {
+    if (hasChildren) {
+      setExpandedItems((prevExpandedItems) => ({
+        ...prevExpandedItems,
+        [mobile]: !prevExpandedItems[mobile],
+      }));
+    }
+  };
 
   return (
     <View style={styles.container}>
       <FlatList
-        data={menuBJSON}
+        data={parentItem.children}
         keyExtractor={(item) => item.mobile}
         renderItem={({ item }) => (
           <MenuItem
             item={item}
             expandedItems={expandedItems}
+            onPress={handlePress}
             navigation={navigation}
           />
         )}
       />
       <CustomHeader
-        title={'Menü'}
+        title={parentItem.id}
         navigation={navigation}
         noBack
       />
@@ -53,9 +63,9 @@ const MenuScreen = ({ navigation }) => {
 const getStyles = (theme) => StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: theme.background,
+    backgroundColor: theme.white,
     paddingTop: 56,
   },
 });
 
-export default MenuScreen;
+export default MenuChildrenScreen;

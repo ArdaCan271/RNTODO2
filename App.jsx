@@ -13,6 +13,9 @@ import MenuScreen from './src/screens/MenuScreen';
 import LandingScreen from './src/screens/LandingScreen';
 import CurrentScreen from './src/screens/CurrentScreen';
 import CustomerDetailScreen from './src/screens/CustomerDetailScreen';
+import PageNotFoundScreen from './src/screens/PageNotFoundScreen';
+import MenuChildrenScreen from './src/screens/MenuChildrenScreen';
+import SettingsScreen from './src/screens/SettingsScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -54,6 +57,30 @@ const App = () => {
             <Stack.Screen
               name="CustomerDetail"
               component={CustomerDetailScreen}
+              options={{
+                headerShown: false,
+                animation: 'slide_from_right',
+              }}
+            />
+            <Stack.Screen
+              name="MenuChildren"
+              component={MenuChildrenScreen}
+              options={{
+                headerShown: false,
+                animation: 'slide_from_right',
+              }}
+            />
+            <Stack.Screen
+              name="Settings"
+              component={SettingsScreen}
+              options={{
+                headerShown: false,
+                animation: 'slide_from_left',
+              }}
+            />
+            <Stack.Screen
+              name="PageNotFound"
+              component={PageNotFoundScreen}
               options={{
                 headerShown: false,
                 animation: 'slide_from_right',

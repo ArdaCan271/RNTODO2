@@ -1,11 +1,9 @@
+import React, { useState, useMemo } from 'react';
 import { StyleSheet, Text, View, FlatList } from 'react-native';
-import React, { useState } from 'react';
-
+import { useTheme } from '../constants/colors';
 import CustomHeader from '../components/CustomHeader';
 import MenuItem from '../components/MenuItem';
 import CustomerDetailSummary from '../components/CustomerDetailSummary';
-
-import colors from '../constants/colors';
 
 const formatCurrency = (value) => {
   const isNegative = value < 0;
@@ -18,6 +16,8 @@ const formatCurrency = (value) => {
 };
 
 const CustomerDetailScreen = ({ navigation, route }) => {
+  const theme = useTheme();
+  const styles = useMemo(() => getStyles(theme), [theme]);
 
   const menuItems = route.params.childrenOfMenuItem;
 
@@ -34,7 +34,7 @@ const CustomerDetailScreen = ({ navigation, route }) => {
 
   const sampleSummaryData = [
     {
-      topCircleColor: colors.primary,
+      topCircleColor: theme.primary,
       topTitle: "Bakiye",
       topValue: route.params.customer.Bakiye,
       listElements: [
@@ -55,9 +55,7 @@ const CustomerDetailScreen = ({ navigation, route }) => {
   ];
 
   return (
-    <View
-      style={styles.container}
-    >
+    <View style={styles.container}>
       <CustomHeader navigation={navigation} title="Müşteri Detayı" />
       <Text style={styles.customerName}>{route.params.customer.Isim}</Text>
       <View style={styles.summariesWrapper}>
@@ -68,7 +66,7 @@ const CustomerDetailScreen = ({ navigation, route }) => {
             topTitle={summaryData.topTitle}
             topValue={summaryData.topValue}
             listElements={summaryData.listElements}
-            style={{ borderTopWidth: index === 0 ? 2 : 0, borderTopColor: colors.primaryDark }}
+            style={{ borderTopWidth: index === 0 ? 2 : 0, borderTopColor: theme.primaryDark }}
           />
         ))}
       </View>
@@ -89,24 +87,23 @@ const CustomerDetailScreen = ({ navigation, route }) => {
   );
 }
 
-const styles = StyleSheet.create({
+const getStyles = (theme) => StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: colors.white,
+    backgroundColor: theme.white,
     paddingTop: 56,
   },
   customerName: {
     marginTop: 4,
     fontSize: 18,
     fontWeight: 'bold',
-    color: colors.black,
+    color: theme.black,
     textAlign: 'center',
   },
   summariesWrapper: {
     flexDirection: 'column',
     justifyContent: 'flex-start',
     paddingTop: 4,
-    
   },
 });
 

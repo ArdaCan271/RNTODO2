@@ -1,7 +1,9 @@
 // CustomerCard.js
-import React from 'react';
+import React, {useMemo} from 'react';
 import { View, Text, StyleSheet, Dimensions, Pressable } from 'react-native';
 import colors from '../constants/colors';
+
+import { useTheme } from '../constants/colors';
 
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
@@ -24,6 +26,9 @@ const getInitials = (isim) => {
 
 const CustomerCard = ({ cariKod, isim, alacak, il, onPress, dynamicColors }) => {
 
+  const theme = useTheme();
+  const styles = useMemo(() => getStyles(theme), [theme]);
+
   const { lira, kurus } = formatCurrency(alacak);
 
   const initials = getInitials(isim);
@@ -34,7 +39,7 @@ const CustomerCard = ({ cariKod, isim, alacak, il, onPress, dynamicColors }) => 
       <View style={[styles.borderLeftExtension2, {backgroundColor: dynamicColors.borderExtension2}]} />
       <Pressable 
         onPress={onPress}
-        android_ripple={{ color: colors.primaryDark }}
+        android_ripple={{ color: theme.primaryDark }}
         style={styles.cardPressable}
         unstable_pressDelay={80}
       >
@@ -52,7 +57,7 @@ const CustomerCard = ({ cariKod, isim, alacak, il, onPress, dynamicColors }) => 
         {il !== '' &&
           <View style={styles.bottomLeft}>
           <View style={styles.locationIconWrapper}>
-            <Ionicons name="location-outline" size={18} color={colors.primaryDark}/>
+            <Ionicons name="location-outline" size={18} color={theme.primaryDark}/>
           </View>
           <Text style={styles.il}>{il}</Text>
         </View>
@@ -63,15 +68,15 @@ const CustomerCard = ({ cariKod, isim, alacak, il, onPress, dynamicColors }) => 
             <Text style={styles.alacakDecimal}>,{kurus}</Text>
           </Text>
         </View>
-        <Ionicons name="chevron-forward" size={24} color={colors.primaryDark} style={styles.chevron} />
+        <Ionicons name="chevron-forward" size={24} color={theme.primaryDark} style={styles.chevron} />
       </Pressable>
     </View>
   );
 };
 
-const styles = StyleSheet.create({
+const getStyles = (theme) => StyleSheet.create({
   cardWrapper: {
-    backgroundColor: colors.white,
+    backgroundColor: theme.white,
     width: Dimensions.get('window').width,
     height: 100,
     borderLeftColor: '#24337a',
@@ -92,7 +97,7 @@ const styles = StyleSheet.create({
     left: 8,
     width: 3,
     height: '100%',
-    backgroundColor: colors.primary,
+    backgroundColor: theme.primary,
   },
   cardPressable: {
     width: '100%',
@@ -108,20 +113,20 @@ const styles = StyleSheet.create({
     width: 40,
     height: 40,
     borderRadius: 20,
-    backgroundColor: colors.primaryDark,
+    backgroundColor: theme.primaryDark,
     justifyContent: 'center',
     alignItems: 'center',
   },
   initials: {
     fontSize: 18,
-    color: colors.white,
+    color: theme.white,
   },
   textWrapper: {
     marginLeft: 6,
   },
   isim: {
     fontSize: 17,
-    color: colors.black,
+    color: theme.black,
     fontWeight: 'bold',
     marginTop: 0,
     marginLeft: 2,
@@ -129,7 +134,7 @@ const styles = StyleSheet.create({
   alacakWhole: {
     fontSize: 18,
     fontWeight: 'bold',
-    color: colors.primary,
+    color: theme.primary,
   },
   alacakDecimal: {
     fontSize: 14,

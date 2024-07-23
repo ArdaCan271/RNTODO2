@@ -1,7 +1,6 @@
 import { StyleSheet, Text, View } from 'react-native';
-import React from 'react';
-
-import colors from '../constants/colors';
+import React, { useMemo } from 'react';
+import { useTheme } from '../constants/colors';
 
 const formatCurrency = (value) => {
   const isNegative = value < 0;
@@ -14,6 +13,9 @@ const formatCurrency = (value) => {
 };
 
 const CustomerDetailSummary = ({topCircleColor, topTitle, topValue, listElements, style}) => {
+  const theme = useTheme();
+  const styles = useMemo(() => getStyles(theme), [theme]);
+
   return (
     <View style={[styles.summary, style]}>
       <View style={styles.borderLeftExtension1}/>
@@ -40,13 +42,13 @@ const CustomerDetailSummary = ({topCircleColor, topTitle, topValue, listElements
   );
 }
 
-const styles = StyleSheet.create({
+const getStyles = (theme) => StyleSheet.create({
   summary: {
     width: '100%',
-    backgroundColor: colors.white,
+    backgroundColor: theme.white,
     justifyContent: 'flex-start',
     alignItems: 'center',
-    borderBottomColor: colors.primaryDark,
+    borderBottomColor: theme.primaryDark,
     borderLeftColor: '#24337a',
     borderBottomWidth: 2,
     borderLeftWidth: 10,
@@ -66,7 +68,7 @@ const styles = StyleSheet.create({
     left: 8.5,
     width: 3,
     height: '100%',
-    backgroundColor: colors.primary,
+    backgroundColor: theme.primary,
   },
   topWrapper: {
     flexDirection: 'row',
@@ -82,7 +84,7 @@ const styles = StyleSheet.create({
     height: 30,
     borderRadius: 15,
     borderWidth: 5,
-    borderColor: colors.primary,
+    borderColor: theme.primary,
     justifyContent: 'center',
     alignItems: 'center',
     elevation: 2,
@@ -116,7 +118,7 @@ const styles = StyleSheet.create({
     width: 10,
     height: 10,
     borderRadius: 5,
-    backgroundColor: colors.primary,
+    backgroundColor: theme.primary,
     marginTop: 1,
   },
   listItemTitle: {

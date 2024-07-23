@@ -1,7 +1,10 @@
 import { configureStore, getDefaultMiddleware } from '@reduxjs/toolkit';
+
 import loginDataReducer from '../features/loginData/loginDataSlice';
 import userMenuBJSONReducer from '../features/userMenuBJSON/userMenuBJSONSlice';
 import userDataReducer from '../features/userData/userDataSlice';
+import themeDataReducer from '../features/themeData/themeSlice';
+
 import {
   persistReducer,
   persistStore,
@@ -24,6 +27,7 @@ export const store = configureStore({
     loginData: persistReducer(persistConfig('loginData'), loginDataReducer),
     userMenuBJSON: persistReducer(persistConfig('menuBJSON'), userMenuBJSONReducer),
     userData: persistReducer(persistConfig('userData'), userDataReducer),
+    themeData: persistReducer(persistConfig('themeData'), themeDataReducer),
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({

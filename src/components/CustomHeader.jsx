@@ -1,29 +1,29 @@
+import React, { useState, useMemo } from 'react';
 import { StyleSheet, Text, View, Pressable } from 'react-native';
-import React, { useState } from 'react';
-import colors from '../constants/colors';
+import { useTheme } from '../constants/colors';
 
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import DrawerMenu from './DrawerMenu';
 
 const CustomHeader = ({ navigation, title, noBack }) => {
-
   const [modalVisible, setModalVisible] = useState(false);
+  const theme = useTheme();
+  const styles = useMemo(() => getStyles(theme), [theme]);
 
   const openDrawer = () => {
     setModalVisible(true);
-  }
+  };
 
   return (
     <View style={styles.container}>
       {noBack ? 
-        <View style={{width: 42, height: 42}}></View> 
+        <View style={{ width: 42, height: 42 }}></View> 
         :
         <Pressable
           style={styles.button}
           onPress={() => navigation.goBack()}
         >
-          
-          <Ionicons name="arrow-back" size={30} color={colors.primaryDark} />
+          <Ionicons name="arrow-back" size={30} color={theme.primaryDark} />
         </Pressable>
       }
       <Text style={styles.title}>{title}</Text>
@@ -31,22 +31,22 @@ const CustomHeader = ({ navigation, title, noBack }) => {
         style={styles.button}
         onPress={openDrawer}
       >
-        <Ionicons name="menu" size={30} color={colors.primaryDark} />
+        <Ionicons name="menu" size={30} color={theme.primaryDark} />
       </Pressable>
       <DrawerMenu modalVisible={modalVisible} setModalVisible={setModalVisible} navigation={navigation} />
     </View>
   );
-}
+};
 
-const styles = StyleSheet.create({
+const getStyles = (theme) => StyleSheet.create({
   container: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
     paddingHorizontal: 12,
-    backgroundColor: colors.white,
+    backgroundColor: theme.white,
     borderBottomWidth: 2,
-    borderColor: colors.primaryDark,
+    borderColor: theme.primaryDark,
     position: 'absolute',
     top: 0,
     width: '100%',
@@ -56,15 +56,15 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 20,
     fontWeight: 'bold',
-    color: colors.primaryDark,
+    color: theme.primaryDark,
   },
   button: {
-    backgroundColor: colors.white,
+    backgroundColor: theme.white,
     padding: 6,
     borderRadius: 5,
   },
   buttonText: {
-    color: colors.white,
+    color: theme.white,
   },
 });
 

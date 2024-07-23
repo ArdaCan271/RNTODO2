@@ -1,21 +1,20 @@
 import React, { useState, useRef } from 'react';
-import { View, Text, TextInput, Button, StyleSheet, BackHandler, Pressable, Keyboard, TouchableOpacity } from 'react-native';
+import { View, Text, TextInput, Button, StyleSheet, Pressable, Keyboard, TouchableOpacity } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 import { setEmail, setPassword } from '../features/loginData/loginDataSlice';
 import { setMenuBJSON } from '../features/userMenuBJSON/userMenuBJSONSlice';
 import { setUserData } from '../features/userData/userDataSlice';
 import axios from 'axios';
-import colors from '../constants/colors';
+import { useTheme } from '../constants/colors';
 import Icon from 'react-native-vector-icons/Ionicons';
 
 const LoginScreen = ({ navigation }) => {
+  const theme = useTheme();
+  const styles = getStyles(theme);
+
   const [inputEmail, setInputEmail] = useState('');
   const [inputPassword, setInputPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
-
-  const savedEmail = useSelector((state) => state.loginData.email);
-  const savedPassword = useSelector((state) => state.loginData.password);
-
   const [inputWarning, setInputWarning] = useState('');
 
   const passwordRef = useRef(null);
@@ -33,7 +32,6 @@ const LoginScreen = ({ navigation }) => {
         email: inputEmail,
         password: inputPassword,
       });
-      console.log(response.data.token);
       dispatch(setEmail(inputEmail));
       dispatch(setPassword(inputPassword));
       dispatch(setMenuBJSON(response.data.menu_bjson));
@@ -57,7 +55,7 @@ const LoginScreen = ({ navigation }) => {
         placeholder="E-posta"
         value={inputEmail}
         onChangeText={setInputEmail}
-        placeholderTextColor={"gray"}
+        placeholderTextColor={theme.placeholder}
         keyboardType="email-address"
         autoCapitalize="none"
         onSubmitEditing={() => { passwordRef.current?.focus(); }}
@@ -68,7 +66,7 @@ const LoginScreen = ({ navigation }) => {
           style={styles.passwordInput}
           ref={passwordRef}
           placeholder="Şifre"
-          placeholderTextColor={"gray"}
+          placeholderTextColor={theme.placeholder}
           value={inputPassword}
           onChangeText={setInputPassword}
           secureTextEntry={!showPassword}
@@ -77,50 +75,50 @@ const LoginScreen = ({ navigation }) => {
           onSubmitEditing={handleLogin}
         />
         <TouchableOpacity onPress={() => setShowPassword(!showPassword)} style={styles.showPassword}>
-          <Icon name={showPassword ? "eye-off" : "eye"} size={24} color='gray' />
+          <Icon name={showPassword ? "eye-off" : "eye"} size={24} color={theme.placeholder} />
         </TouchableOpacity>
       </View>
       <Button
         title="GİRİŞ YAP"
         onPress={handleLogin}
-        color={colors.primary}
+        color={theme.primary}
       />
     </Pressable>
   );
 };
 
-const styles = StyleSheet.create({
+const getStyles = (theme) => StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: 'center',
     paddingHorizontal: 16,
-    backgroundColor: colors.white,
+    backgroundColor: theme.white,
   },
   title: {
     fontSize: 24,
     marginBottom: 16,
     textAlign: 'center',
-    color: colors.black,
+    color: theme.black,
   },
   warningText: {
-    color: 'red',
+    color: theme.error,
     marginBottom: 12,
     textAlign: 'center',
     fontSize: 16,
   },
   input: {
     height: 40,
-    borderColor: 'gray',
+    borderColor: theme.border,
     borderWidth: 1,
     borderRadius: 3,
     marginBottom: 12,
     paddingHorizontal: 8,
-    color: "black",
+    color: theme.text,
   },
   passwordContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    borderColor: 'gray',
+    borderColor: theme.border,
     borderWidth: 1,
     borderRadius: 3,
     marginBottom: 12,
@@ -129,7 +127,7 @@ const styles = StyleSheet.create({
   passwordInput: {
     flex: 1,
     height: 40,
-    color: "black",
+    color: theme.text,
   },
   showPassword: {
     padding: 7,

@@ -1,14 +1,14 @@
+import React, { useEffect, useMemo } from 'react';
 import { StyleSheet, View, BackHandler } from 'react-native';
-import React, { useEffect } from 'react';
-
+import { useTheme } from '../constants/colors';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-
 import { useSelector, useDispatch } from 'react-redux';
 import { setMenuBJSON } from '../features/userMenuBJSON/userMenuBJSONSlice';
 import axios from 'axios';
-import colors from '../constants/colors';
 
-const LandingScreen = ({navigation}) => {
+const LandingScreen = ({ navigation }) => {
+  const theme = useTheme();
+  const styles = useMemo(() => getStyles(theme), [theme]);
 
   useEffect(() => {
     const backAction = () => {
@@ -49,20 +49,19 @@ const LandingScreen = ({navigation}) => {
     } else {
       navigation.navigate('Login');
     }
-  }, [navigation]);
-
+  }, [navigation, savedEmail, savedPassword]);
 
   return (
     <View style={styles.container}>
-      <Ionicons name="logo-react" size={150} color={colors.primary} />
+      <Ionicons name="logo-react" size={150} color={theme.primary} />
     </View>
   );
 }
 
-const styles = StyleSheet.create({
+const getStyles = (theme) => StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: colors.white,
+    backgroundColor: theme.background,
     alignItems: 'center',
     justifyContent: 'center',
   },

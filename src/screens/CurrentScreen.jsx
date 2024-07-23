@@ -1,9 +1,9 @@
 // CurrentScreen.js
+import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { StyleSheet, Text, View, BackHandler, FlatList, Dimensions, TextInput } from 'react-native';
-import React, { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
 import { useSelector } from 'react-redux';
-import colors from '../constants/colors';
+import { useTheme } from '../constants/colors';
 import CustomHeader from '../components/CustomHeader';
 import CustomerCard from '../components/CustomerCard';
 import CustomerCardSkeleton from '../components/CustomerCardSkeleton'; // Import the skeleton component
@@ -11,6 +11,8 @@ import CustomerCardSkeleton from '../components/CustomerCardSkeleton'; // Import
 const CurrentScreen = ({ navigation, route }) => {
   const { childrenOfMenuItem } = route.params;
   const userToken = useSelector((state) => state.userData.data.token);
+  const theme = useTheme();
+  const styles = useMemo(() => getStyles(theme), [theme]);
 
   const [customerList, setCustomerList] = useState([]);
   const [filteredCustomerList, setFilteredCustomerList] = useState([]);
@@ -69,18 +71,18 @@ const CurrentScreen = ({ navigation, route }) => {
         alacak={item.Alacak} 
         il={item.Il} 
         dynamicColors={{
-          backgroundColor: index % 2 === 0 ? colors.primaryLight : colors.white,
+          backgroundColor: index % 2 === 0 ? theme.primary : theme.white,
           borderMain: index % 2 === 0 ? '#24337a' : '#4d75ff',
           borderExtension1: index % 2 === 0 ? '#3b52c4' : '#809dff',
-          borderExtension2: index % 2 === 0 ? colors.primary : '#b3c4ff',
-          initialsWrapper: index % 2 === 0 ? colors.primaryDark : '#4d75ff',
+          borderExtension2: index % 2 === 0 ? theme.primary : '#b3c4ff',
+          initialsWrapper: index % 2 === 0 ? theme.primaryDark : '#4d75ff',
         }}
       />
-      <View style={{height: 1, width: '100%', backgroundColor: colors.primaryDark}} />
+      <View style={{ height: 1, width: '100%', backgroundColor: theme.primaryDark }} />
     </View>
   );
 
-  const renderSkeletonItem = ({index}) => <CustomerCardSkeleton backgroundColor={index % 2 === 0 ? colors.primaryLight : colors.white}/>;
+  const renderSkeletonItem = ({ index }) => <CustomerCardSkeleton backgroundColor={index % 2 === 0 ? theme.primaryLight : theme.white} />;
 
   const handleSearch = (query) => {
     setSearchQuery(query);
@@ -92,7 +94,7 @@ const CurrentScreen = ({ navigation, route }) => {
         setFilteredCustomerList(customerList);
       } else {
         const filteredList = customerList.filter((customer) =>
-          customer.CariKod.toLowerCase().includes(query.toLowerCase())
+          customer.Isim.toLowerCase().includes(query.toLowerCase())
         );
         setFilteredCustomerList(filteredList);
       }
@@ -116,7 +118,8 @@ const CurrentScreen = ({ navigation, route }) => {
           onChangeText={handleSearch}
           onSubmitEditing={handleInputSubmit}
           ref={searchInputRef}
-          />
+          autoCapitalize='none'
+        />
       </View>
       <FlatList
         data={loading ? Array(10).fill({}) : filteredCustomerList} // Show skeleton loaders if loading
@@ -129,13 +132,13 @@ const CurrentScreen = ({ navigation, route }) => {
   );
 };
 
-const styles = StyleSheet.create({
+const getStyles = (theme) => StyleSheet.create({
   container: {
     width: '100%',
     height: '100%',
     justifyContent: 'flex-start',
     alignItems: 'center',
-    backgroundColor: colors.white,
+    backgroundColor: theme.white,
     paddingTop: 56,
   },
   listContainer: {
@@ -147,7 +150,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     paddingVertical: 10,
-    borderBottomColor: colors.primaryDark,
+    borderBottomColor: theme.primaryDark,
     borderBottomWidth: 1,
   },
   searchInput: {
@@ -157,7 +160,7 @@ const styles = StyleSheet.create({
     borderRadius: 3,
     paddingHorizontal: 10,
     width: '90%',
-    color: colors.black,
+    color: theme.black,
     fontSize: 16,
   },
 });

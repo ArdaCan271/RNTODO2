@@ -1,17 +1,19 @@
-// CustomerCardSkeleton.jsx
-import React from 'react';
+import React, { useMemo } from 'react';
 import ContentLoader, { Rect } from 'react-content-loader/native';
 import { Dimensions, StyleSheet, View } from 'react-native';
-import colors from '../constants/colors';
+import { useTheme } from '../constants/colors';
 
 const CustomerCardSkeleton = ({backgroundColor}) => {
+  const theme = useTheme();
+  const styles = useMemo(() => getStyles(theme), [theme]);
+
   return (
     <View style={[styles.cardWrapper, {backgroundColor: backgroundColor}]}>
       <ContentLoader
         width={Dimensions.get('window').width}
         height={100}
-        backgroundColor={colors.primaryLight}
-        foregroundColor={colors.primary}
+        backgroundColor={theme.primaryLight}
+        foregroundColor={theme.primary}
       >
         <Rect x="10" y="10" rx="20" ry="20" width="40" height="40" />
         <Rect x="60" y="15" rx="4" ry="4" width="120" height="10" />
@@ -24,15 +26,15 @@ const CustomerCardSkeleton = ({backgroundColor}) => {
   );
 };
 
-const styles = StyleSheet.create({
+const getStyles = (theme) => StyleSheet.create({
   cardWrapper: {
-    backgroundColor: colors.white,
+    backgroundColor: theme.white,
     width: Dimensions.get('window').width,
     height: 100,
     borderTopWidth: 1,
-    borderTopColor: colors.primaryDark,
+    borderTopColor: theme.primaryDark,
     borderLeftWidth: 15,
-    borderLeftColor: colors.primaryDark,
+    borderLeftColor: theme.primaryDark,
     overflow: 'hidden',
   },
 });
