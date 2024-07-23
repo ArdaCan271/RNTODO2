@@ -53,6 +53,7 @@ const MenuScreen = ({ navigation }) => {
       <CustomHeader
         title={'Menü'}
         navigation={navigation}
+        noBack
       />
     </View>
   );

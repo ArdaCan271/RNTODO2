@@ -12,7 +12,7 @@ import LoginScreen from './src/screens/LoginScreen';
 import MenuScreen from './src/screens/MenuScreen';
 import LandingScreen from './src/screens/LandingScreen';
 import CurrentScreen from './src/screens/CurrentScreen';
-import CustomerDetail from './src/screens/CustomerDetail';
+import CustomerDetailScreen from './src/screens/CustomerDetailScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -53,7 +53,7 @@ const App = () => {
             />
             <Stack.Screen
               name="CustomerDetail"
-              component={CustomerDetail}
+              component={CustomerDetailScreen}
               options={{
                 headerShown: false,
                 animation: 'slide_from_right',

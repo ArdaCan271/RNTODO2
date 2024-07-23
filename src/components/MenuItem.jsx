@@ -24,9 +24,7 @@ const MenuItem = ({ item, level = 0, onToggle, expandedItems, navigation, style,
 
   return (
     <View style={styles.menuItem}>
-      <View
-        style={{ flexDirection: 'row', alignItems: 'center' }}
-      >
+      <View style={{ flexDirection: 'row', alignItems: 'center' }}>
         <View style={{ width: `${level * 5}%` }} />
         <Pressable 
           style={[styles.menuButton, {backgroundColor: colors.white, elevation: expandedItems[item.mobile] ? 4 : 0}, style]} 
@@ -43,9 +41,7 @@ const MenuItem = ({ item, level = 0, onToggle, expandedItems, navigation, style,
           unstable_pressDelay={80}
           android_ripple={{color: colors.primaryDark}}
         >
-          <View
-            style={{ flexDirection: 'row', alignItems: 'center'}}
-          >
+          <View style={{ flexDirection: 'row', alignItems: 'center'}}>
             <Icon name={item.icon} size={22} color={colors.primaryDark} />
             <Text style={styles.menuText}>{item.id}</Text>
           </View>

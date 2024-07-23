@@ -60,11 +60,27 @@ const CurrentScreen = ({ navigation, route }) => {
     navigation.navigate('CustomerDetail', { customer, childrenOfMenuItem });
   }
 
-  const renderItem = ({ item }) => (
-    <CustomerCard onPress={handleOnCustomerPress(item)} cariKod={item.CariKod} isim={item.Isim} alacak={item.Alacak} il={item.Il} />
+  const renderItem = ({ item, index }) => (
+    <View>
+      <CustomerCard 
+        onPress={handleOnCustomerPress(item)} 
+        cariKod={item.CariKod} 
+        isim={item.Isim} 
+        alacak={item.Alacak} 
+        il={item.Il} 
+        dynamicColors={{
+          backgroundColor: index % 2 === 0 ? colors.primaryLight : colors.white,
+          borderMain: index % 2 === 0 ? '#24337a' : '#4d75ff',
+          borderExtension1: index % 2 === 0 ? '#3b52c4' : '#809dff',
+          borderExtension2: index % 2 === 0 ? colors.primary : '#b3c4ff',
+          initialsWrapper: index % 2 === 0 ? colors.primaryDark : '#4d75ff',
+        }}
+      />
+      <View style={{height: 1, width: '100%', backgroundColor: colors.primaryDark}} />
+    </View>
   );
 
-  const renderSkeletonItem = () => <CustomerCardSkeleton />;
+  const renderSkeletonItem = ({index}) => <CustomerCardSkeleton backgroundColor={index % 2 === 0 ? colors.primaryLight : colors.white}/>;
 
   const handleSearch = (query) => {
     setSearchQuery(query);
@@ -91,21 +107,23 @@ const CurrentScreen = ({ navigation, route }) => {
   return (
     <View style={styles.container}>
       <CustomHeader navigation={navigation} title="Cari" />
-      <TextInput
-        style={styles.searchInput}
-        placeholder="Cari Kod Ara"
-        placeholderTextColor={colors.black}
-        value={searchQuery}
-        onChangeText={handleSearch}
-        onSubmitEditing={handleInputSubmit}
-        keyboardType='number-pad'
-        ref={searchInputRef}
-      />
+      <View style={styles.searchInputWrapper}>
+        <TextInput
+          style={styles.searchInput}
+          placeholder="Cari Ara"
+          placeholderTextColor={'rgb(130, 130, 130)'}
+          value={searchQuery}
+          onChangeText={handleSearch}
+          onSubmitEditing={handleInputSubmit}
+          ref={searchInputRef}
+          />
+      </View>
       <FlatList
         data={loading ? Array(10).fill({}) : filteredCustomerList} // Show skeleton loaders if loading
         renderItem={loading ? renderSkeletonItem : renderItem}
         keyExtractor={(item, index) => (loading ? index.toString() : item.CariKod)}
         contentContainerStyle={styles.listContainer}
+        keyboardShouldPersistTaps='handled'
       />
     </View>
   );
@@ -124,13 +142,20 @@ const styles = StyleSheet.create({
     width: Dimensions.get('window').width,
     alignItems: 'center',
   },
+  searchInputWrapper: {
+    width: '100%',
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingVertical: 10,
+    borderBottomColor: colors.primaryDark,
+    borderBottomWidth: 1,
+  },
   searchInput: {
     height: 40,
     borderColor: 'gray',
     borderWidth: 1,
-    borderRadius: 5,
+    borderRadius: 3,
     paddingHorizontal: 10,
-    marginVertical: 10,
     width: '90%',
     color: colors.black,
     fontSize: 16,

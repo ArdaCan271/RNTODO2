@@ -22,16 +22,16 @@ const getInitials = (isim) => {
   return firstInitial + lastInitial;
 };
 
-const CustomerCard = ({ cariKod, isim, alacak, il, onPress }) => {
+const CustomerCard = ({ cariKod, isim, alacak, il, onPress, dynamicColors }) => {
 
   const { lira, kurus } = formatCurrency(alacak);
 
   const initials = getInitials(isim);
 
   return (
-    <View
-      style={styles.cardWrapper}
-    >
+    <View style={[styles.cardWrapper, {borderLeftColor: dynamicColors.borderMain, backgroundColor: dynamicColors.backgroundColor}]}>
+      <View style={[styles.borderLeftExtension1, {backgroundColor: dynamicColors.borderExtension1}]} />
+      <View style={[styles.borderLeftExtension2, {backgroundColor: dynamicColors.borderExtension2}]} />
       <Pressable 
         onPress={onPress}
         android_ripple={{ color: colors.primaryDark }}
@@ -39,24 +39,20 @@ const CustomerCard = ({ cariKod, isim, alacak, il, onPress }) => {
         unstable_pressDelay={80}
       >
         <View style={styles.topLeft}>
-          <View
-            style={styles.initialsWrapper}
-          >
+          <View style={[styles.initialsWrapper, {backgroundColor: dynamicColors.initialsWrapper}]}>
             <Text style={styles.initials}>
               { initials }
             </Text>
           </View>
-          <View
-            style={styles.textWrapper}
-          >
+          <View style={styles.textWrapper}>
             <Text style={styles.cariKod}>{cariKod}</Text>
             <Text style={styles.isim}>{isim}</Text>
           </View>
         </View>
-        { il !== '' &&
+        {il !== '' &&
           <View style={styles.bottomLeft}>
           <View style={styles.locationIconWrapper}>
-            <Ionicons name="location-outline" size={16} color={colors.white}/>
+            <Ionicons name="location-outline" size={18} color={colors.primaryDark}/>
           </View>
           <Text style={styles.il}>{il}</Text>
         </View>
@@ -76,19 +72,33 @@ const CustomerCard = ({ cariKod, isim, alacak, il, onPress }) => {
 const styles = StyleSheet.create({
   cardWrapper: {
     backgroundColor: colors.white,
-    width: Dimensions.get('window').width - 20,
+    width: Dimensions.get('window').width,
     height: 100,
-    marginTop: 12,
-    borderWidth: 1,
-    borderColor: colors.primaryDark,
-    borderRadius: 6,
-    elevation: 4,
+    borderLeftColor: '#24337a',
+    borderLeftWidth: 15,
     overflow: 'hidden',
+  },
+  borderLeftExtension1: {
+    position: 'absolute',
+    top: 0,
+    left: 0.5,
+    width: 7,
+    height: '100%',
+    backgroundColor: '#3b52c4',
+  },
+  borderLeftExtension2: {
+    position: 'absolute',
+    top: 0,
+    left: 8,
+    width: 3,
+    height: '100%',
+    backgroundColor: colors.primary,
   },
   cardPressable: {
     width: '100%',
     height: '100%',
     padding: 8,
+    paddingLeft: 20,
   },
   topLeft: {
     alignItems: 'flex-start',
@@ -130,13 +140,12 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     position: 'absolute',
     bottom: 8,
-    left: 25,
+    left: 37,
   },
   locationIconWrapper: {
     width: 24,
     height: 24,
     borderRadius: 12,
-    backgroundColor: colors.primaryDark,
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -144,7 +153,7 @@ const styles = StyleSheet.create({
     fontSize: 15,
     fontWeight: 'bold',
     color: 'rgb(100, 100, 100)',
-    marginLeft: 6,
+    marginLeft: 0,
   },
   bottomRight: {
     position: 'absolute',

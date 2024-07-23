@@ -5,7 +5,7 @@ import colors from '../constants/colors';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import DrawerMenu from './DrawerMenu';
 
-const CustomHeader = ({ navigation, title }) => {
+const CustomHeader = ({ navigation, title, noBack }) => {
 
   const [modalVisible, setModalVisible] = useState(false);
 
@@ -15,12 +15,17 @@ const CustomHeader = ({ navigation, title }) => {
 
   return (
     <View style={styles.container}>
-      <Pressable
-        style={styles.button}
-        onPress={() => navigation.goBack()}
-      >
-        <Ionicons name="arrow-back" size={30} color={colors.primaryDark} />
-      </Pressable>
+      {noBack ? 
+        <View style={{width: 42, height: 42}}></View> 
+        :
+        <Pressable
+          style={styles.button}
+          onPress={() => navigation.goBack()}
+        >
+          
+          <Ionicons name="arrow-back" size={30} color={colors.primaryDark} />
+        </Pressable>
+      }
       <Text style={styles.title}>{title}</Text>
       <Pressable 
         style={styles.button}

@@ -4,11 +4,11 @@ import ContentLoader, { Rect } from 'react-content-loader/native';
 import { Dimensions, StyleSheet, View } from 'react-native';
 import colors from '../constants/colors';
 
-const CustomerCardSkeleton = () => {
+const CustomerCardSkeleton = ({backgroundColor}) => {
   return (
-    <View style={styles.cardWrapper}>
+    <View style={[styles.cardWrapper, {backgroundColor: backgroundColor}]}>
       <ContentLoader
-        width={Dimensions.get('window').width - 20}
+        width={Dimensions.get('window').width}
         height={100}
         backgroundColor={colors.primaryLight}
         foregroundColor={colors.primary}
@@ -27,13 +27,12 @@ const CustomerCardSkeleton = () => {
 const styles = StyleSheet.create({
   cardWrapper: {
     backgroundColor: colors.white,
-    width: Dimensions.get('window').width - 20,
+    width: Dimensions.get('window').width,
     height: 100,
-    marginTop: 12,
-    borderWidth: 1,
-    borderColor: colors.primaryDark,
-    borderRadius: 6,
-    elevation: 4,
+    borderTopWidth: 1,
+    borderTopColor: colors.primaryDark,
+    borderLeftWidth: 15,
+    borderLeftColor: colors.primaryDark,
     overflow: 'hidden',
   },
 });

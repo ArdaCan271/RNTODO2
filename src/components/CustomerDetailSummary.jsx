@@ -13,9 +13,11 @@ const formatCurrency = (value) => {
   return `${isNegative ? '-' : ''}₺${lira},${kurus}`;
 };
 
-const CustomerDetailSummary = ({topCircleColor, topTitle, topValue, listElements}) => {
+const CustomerDetailSummary = ({topCircleColor, topTitle, topValue, listElements, style}) => {
   return (
-    <View style={styles.summary}>
+    <View style={[styles.summary, style]}>
+      <View style={styles.borderLeftExtension1}/>
+      <View style={styles.borderLeftExtension2}/>
       <View style={styles.topWrapper}>
         {topCircleColor ? <View style={[styles.topCircle, {borderColor: topCircleColor}]} /> : null}
         <View style={styles.topContent}>
@@ -23,6 +25,7 @@ const CustomerDetailSummary = ({topCircleColor, topTitle, topValue, listElements
           <Text style={styles.topValue}>{formatCurrency(topValue)}</Text>
         </View>
       </View>
+      <View style={styles.listWrapper}>
       {
         listElements.map((element, index) => (
           <View style={styles.listItem} key={index}>
@@ -32,29 +35,47 @@ const CustomerDetailSummary = ({topCircleColor, topTitle, topValue, listElements
           </View>
         ))
       }
+      </View>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
   summary: {
-    width: '48%',
-    height: 144,
+    width: '100%',
     backgroundColor: colors.white,
-    borderRadius: 6,
     justifyContent: 'flex-start',
     alignItems: 'center',
-    borderColor: colors.primaryDark,
-    borderWidth: 2,
-    padding: 10,
+    borderBottomColor: colors.primaryDark,
+    borderLeftColor: '#24337a',
+    borderBottomWidth: 2,
+    borderLeftWidth: 10,
+    paddingLeft: 20,
+  },
+  borderLeftExtension1: {
+    position: 'absolute',
+    top: 0,
+    left: 0.5,
+    width: 7,
+    height: '100%',
+    backgroundColor: '#3b52c4',
+  },
+  borderLeftExtension2: {
+    position: 'absolute',
+    top: 0,
+    left: 8.5,
+    width: 3,
+    height: '100%',
+    backgroundColor: colors.primary,
   },
   topWrapper: {
     flexDirection: 'row',
-    justifyContent: 'space-evenly',
+    justifyContent: 'flex-start',
     alignItems: 'center',
     width: '100%',
     paddingHorizontal: 0,
     marginBottom: 10,
+    marginTop: 8,
   },
   topCircle: {
     width: 30,
@@ -65,7 +86,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     elevation: 2,
-    marginRight: 10,
+    marginRight: 20,
   },
   topContent: {
     alignItems: 'center',
@@ -78,6 +99,11 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: 'bold',
     color: 'black',
+  },
+  listWrapper: {
+    width: '100%',
+    paddingHorizontal: 0,
+    marginBottom: 10,
   },
   listItem: {
     flexDirection: 'row',
