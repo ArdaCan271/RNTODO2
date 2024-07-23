@@ -16,7 +16,7 @@ const getBackgroundColor = (level) => {
   return `rgb(${colorValueR}, ${colorValueG}, ${colorValueB})`;
 };
 
-const MenuItem = ({ item, level = 0, onToggle, expandedItems, navigation, style }) => {
+const MenuItem = ({ item, level = 0, onToggle, expandedItems, navigation, style, props = '' }) => {
 
   const hasChildren = !!item.children && item.children.length > 0;
 
@@ -32,7 +32,7 @@ const MenuItem = ({ item, level = 0, onToggle, expandedItems, navigation, style 
           style={[styles.menuButton, {backgroundColor: colors.white, elevation: expandedItems[item.mobile] ? 4 : 0}, style]} 
           onPress={() => {
             if(routeNames.includes(item.mobile)) {
-              navigation.navigate(item.mobile, { childrenOfMenuItem: item.children });
+              navigation.navigate(item.mobile, { childrenOfMenuItem: item.children, props: props });
             } else if (hasChildren) {
               onToggle(item.mobile, hasChildren);
               console.log('No route found for ' + item.mobile);

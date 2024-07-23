@@ -16,7 +16,9 @@ const CurrentScreen = ({ navigation, route }) => {
   const [filteredCustomerList, setFilteredCustomerList] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [loading, setLoading] = useState(true); // Add loading state
+
   const searchTimeout = useRef(null);
+  const searchInputRef = useRef(null);
 
   useEffect(() => {
     getCustomerList();
@@ -33,6 +35,10 @@ const CurrentScreen = ({ navigation, route }) => {
 
     return () => backHandler.remove();
   }, []);
+
+  useEffect(() => {
+    searchInputRef.current?.focus();
+  }, [navigation]);
 
   const getCustomerList = async () => {
     const apiUrl = 'https://duyu.alter.net.tr/api/getCustomerList';
@@ -92,6 +98,8 @@ const CurrentScreen = ({ navigation, route }) => {
         value={searchQuery}
         onChangeText={handleSearch}
         onSubmitEditing={handleInputSubmit}
+        keyboardType='number-pad'
+        ref={searchInputRef}
       />
       <FlatList
         data={loading ? Array(10).fill({}) : filteredCustomerList} // Show skeleton loaders if loading
@@ -125,6 +133,7 @@ const styles = StyleSheet.create({
     marginVertical: 10,
     width: '90%',
     color: colors.black,
+    fontSize: 16,
   },
 });
 

@@ -15,6 +15,12 @@ const CustomHeader = ({ navigation, title }) => {
 
   return (
     <View style={styles.container}>
+      <Pressable
+        style={styles.button}
+        onPress={() => navigation.goBack()}
+      >
+        <Ionicons name="arrow-back" size={30} color={colors.primaryDark} />
+      </Pressable>
       <Text style={styles.title}>{title}</Text>
       <Pressable 
         style={styles.button}

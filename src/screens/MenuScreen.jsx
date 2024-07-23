@@ -9,11 +9,6 @@ import DrawerMenu from '../components/DrawerMenu';
 
 const MenuScreen = ({ navigation }) => {
 
-  const savedEmail = useSelector((state) => state.loginData.email);
-  const savedPassword = useSelector((state) => state.loginData.password);
-
-  const dispatch = useDispatch();
-
   useEffect(() => {
     const backAction = () => {
       BackHandler.exitApp();
@@ -41,8 +36,6 @@ const MenuScreen = ({ navigation }) => {
     }
   };
 
-  const [modalVisible, setModalVisible] = useState(false);
-
   return (
     <View style={styles.container}>
       <FlatList
@@ -59,7 +52,7 @@ const MenuScreen = ({ navigation }) => {
       />
       <CustomHeader
         title={'Menü'}
-        setModalVisible={setModalVisible}
+        navigation={navigation}
       />
     </View>
   );
