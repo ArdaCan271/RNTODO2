@@ -31,7 +31,8 @@ const baseTheme = {
     display2: 36,
   },
   padding: {
-    default:15
+    header: 54,
+    bottomBar: 54,
   },
   dimensions:{
     width:width,
@@ -43,7 +44,7 @@ const baseTheme = {
   primaryDark: "#2a3b8e",
   accent: '#09101D',
   black: '#151619',
-  white: "#eff2ff",
+  white: "#ffffff",
   gray: '#B9B9B9',
   purple: '#8B13B1',
   red: "#EE1B1B",
@@ -52,27 +53,41 @@ const baseTheme = {
 
 export const lightTheme = {
   ...baseTheme,
-  primary: "#b8bece",
+  primary: "#009fe3",
+  primary_100: "#177cc4",
+  primary_200: "#1987d5",
+  primaryAlt: "#1571b2",
+  primaryAlt_100: "#00adf7",
+  primaryAlt_200: "#0cb6ff",
   background: '#ffffff',
   backgroundAlt: '#ebf5ff',
-  textTitle: '#141615',
+  text: '#141615',
   textAlt: '#7c7c7c',
   textPrimary: '#1571b2',
+  separator: '#c0c0c0',
   type:'light'
 };
 
 export const darkTheme = {
   ...baseTheme,
-  primary: "#009fe3",
+  primary: "#1571b2",
+  primary_100: "#00adf7",
+  primary_200: "#0cb6ff",
+  primaryAlt: "#009fe3",
+  primaryAlt_100: "#177cc4",
+  primaryAlt_200: "#1987d5",
   background: '#171925',
-  backgroundAlt: '#171925',
-  textTitle: '#ccd2e0',
+  backgroundAlt: '#282f3f',
+  text: '#ccd2e0',
   textAlt: '#b8bece',
-  textPrimary: '#0b98df',
+  textPrimary: '#009fe3',
+  separator: '#303650',
   type:'dark'
 };
 
 export const useTheme = () => {
-  const theme = useSelector((state) => state.themeData.value === 'light' ? lightTheme : darkTheme);
+  const theme = useSelector((state) => 
+    state.themeData.value === 'light' ? lightTheme : darkTheme
+  );
   return theme;
 };

@@ -17,7 +17,7 @@ const getBackgroundColor = (level) => {
   return `rgb(${colorValueR}, ${colorValueG}, ${colorValueB})`;
 };
 
-const MenuItem = ({ item, level = 0, onPress, expandedItems, navigation, style, props = '' }) => {
+const MenuItem = ({ item, level = 0, onPress, navigation, style, props = '' }) => {
 
   const theme = useTheme();
   const styles = useMemo(() => getStyles(theme), [theme]);
@@ -30,8 +30,8 @@ const MenuItem = ({ item, level = 0, onPress, expandedItems, navigation, style, 
     <View style={styles.menuItem}>
       <View style={{ flexDirection: 'row', alignItems: 'center' }}>
         <View style={{ width: `${level * 5}%` }} />
-        <Pressable 
-          style={[styles.menuButton, {backgroundColor: theme.background, elevation: expandedItems[item.mobile] ? 4 : 0}, style]} 
+        <TouchableOpacity 
+          style={[styles.menuButton, {backgroundColor: theme.background}, style]} 
           onPress={() => {
             if(routeNames.includes(item.mobile)) {
               navigation.navigate(item.mobile, { childrenOfMenuItem: item.children, props: props });
@@ -42,39 +42,21 @@ const MenuItem = ({ item, level = 0, onPress, expandedItems, navigation, style, 
               console.log('No route found for ' + item.mobile);
             }
           }}
-          unstable_pressDelay={80}
-          android_ripple={{color: theme.primaryDark}}
         >
           <View style={{ flexDirection: 'row', alignItems: 'center'}}>
-            <Icon name={item.icon} size={22} color={theme.primaryDark} />
+            <Icon name={item.icon} size={22} color={theme.primary} />
             <Text style={styles.menuText}>{item.id}</Text>
           </View>
           {hasChildren && (
             <Icon
-              name={expandedItems[item.mobile] ? 'chevron-down-outline' : 'chevron-forward-outline'}
+              name='chevron-forward-outline'
               size={20}
-              color={theme.primaryDark}
+              color={theme.primary}
               style={styles.caretIcon}
               />
             )}
-        </Pressable>
+        </TouchableOpacity>
       </View>
-      {expandedItems[item.mobile] && hasChildren && (
-        <FlatList
-          data={item.children}
-          keyExtractor={(childItem) => childItem.mobile}
-          renderItem={({ item: childItem }) => {
-            return (
-              <MenuItem
-              item={childItem}
-              level={level + 1}
-              expandedItems={expandedItems}
-              />
-            )
-          }
-          }
-        />
-      )}
     </View>
   );
 };
@@ -82,6 +64,8 @@ const MenuItem = ({ item, level = 0, onPress, expandedItems, navigation, style, 
 const getStyles = (theme) => StyleSheet.create({
   menuItem: {
     marginVertical: 0,
+    borderLeftWidth: 10,
+    borderLeftColor: theme.primary,
   },
   menuButton: {
     flexDirection: 'row',
@@ -89,19 +73,12 @@ const getStyles = (theme) => StyleSheet.create({
     alignItems: 'center',
     paddingVertical: 14,
     paddingHorizontal: 16,
-    borderLeftWidth: 12,
-    borderLeftColor: theme.primary,
-    borderBottomWidth: 1,
-    borderBottomColor: 'rgb(180, 180, 180)',
     flex: 1
   },
   menuText: {
     marginLeft: 10,
     fontSize: 18,
-    color: theme.black,
-  },
-  caretIcon: {
-
+    color: theme.text,
   },
 });
 

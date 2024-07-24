@@ -18,8 +18,6 @@ const CustomerDetailSummary = ({topCircleColor, topTitle, topValue, listElements
 
   return (
     <View style={[styles.summary, style]}>
-      <View style={styles.borderLeftExtension1}/>
-      <View style={styles.borderLeftExtension2}/>
       <View style={styles.topWrapper}>
         {topCircleColor ? <View style={[styles.topCircle, {borderColor: topCircleColor}]} /> : null}
         <View style={styles.topContent}>
@@ -45,30 +43,14 @@ const CustomerDetailSummary = ({topCircleColor, topTitle, topValue, listElements
 const getStyles = (theme) => StyleSheet.create({
   summary: {
     width: '100%',
-    backgroundColor: theme.white,
+    backgroundColor: theme.background,
     justifyContent: 'flex-start',
     alignItems: 'center',
-    borderBottomColor: theme.primaryDark,
-    borderLeftColor: '#24337a',
+    borderBottomColor: theme.primary,
+    borderLeftColor: theme.primary,
     borderBottomWidth: 2,
-    borderLeftWidth: 10,
-    paddingLeft: 20,
-  },
-  borderLeftExtension1: {
-    position: 'absolute',
-    top: 0,
-    left: 0.5,
-    width: 7,
-    height: '100%',
-    backgroundColor: '#3b52c4',
-  },
-  borderLeftExtension2: {
-    position: 'absolute',
-    top: 0,
-    left: 8.5,
-    width: 3,
-    height: '100%',
-    backgroundColor: theme.primary,
+    borderLeftWidth: 15,
+    paddingLeft: 10,
   },
   topWrapper: {
     flexDirection: 'row',
@@ -88,19 +70,19 @@ const getStyles = (theme) => StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     elevation: 2,
-    marginRight: 20,
   },
   topContent: {
     alignItems: 'center',
+    marginLeft: 10,
   },
   topTitle: {
     fontSize: 14,
-    color: 'rgb(100, 100, 100)',
+    color: theme.textAlt,
   },
   topValue: {
     fontSize: 16,
     fontWeight: 'bold',
-    color: 'black',
+    color: theme.text,
   },
   listWrapper: {
     width: '100%',
@@ -123,13 +105,13 @@ const getStyles = (theme) => StyleSheet.create({
   },
   listItemTitle: {
     fontSize: 14,
-    color: 'rgb(100, 100, 100)',
+    color: theme.textAlt,
     marginLeft: 6,
     fontWeight: 'bold',
   },
   listItemValue: {
     fontSize: 15,
-    color: 'black',
+    color: theme.text,
     marginLeft: 3,
   },
 });

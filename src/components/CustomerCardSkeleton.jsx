@@ -12,8 +12,8 @@ const CustomerCardSkeleton = ({backgroundColor}) => {
       <ContentLoader
         width={Dimensions.get('window').width}
         height={100}
-        backgroundColor={theme.primaryLight}
-        foregroundColor={theme.primary}
+        backgroundColor={theme.primary}
+        foregroundColor={theme.primaryAlt}
       >
         <Rect x="10" y="10" rx="20" ry="20" width="40" height="40" />
         <Rect x="60" y="15" rx="4" ry="4" width="120" height="10" />
@@ -32,9 +32,9 @@ const getStyles = (theme) => StyleSheet.create({
     width: Dimensions.get('window').width,
     height: 100,
     borderTopWidth: 1,
-    borderTopColor: theme.primaryDark,
+    borderTopColor: theme.primary,
     borderLeftWidth: 15,
-    borderLeftColor: theme.primaryDark,
+    borderLeftColor: theme.primary,
     overflow: 'hidden',
   },
 });

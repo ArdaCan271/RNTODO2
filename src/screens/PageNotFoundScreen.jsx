@@ -40,11 +40,12 @@ const getStyles = (theme) => StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: theme.white,
+    backgroundColor: theme.background,
+    paddingTop: 50,
   },
   text: {
     fontSize: 18,
-    color: theme.black,
+    color: theme.text,
   },
 });
 

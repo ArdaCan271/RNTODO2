@@ -71,18 +71,18 @@ const CurrentScreen = ({ navigation, route }) => {
         alacak={item.Alacak} 
         il={item.Il} 
         dynamicColors={{
-          backgroundColor: index % 2 === 0 ? theme.primary : theme.white,
-          borderMain: index % 2 === 0 ? '#24337a' : '#4d75ff',
-          borderExtension1: index % 2 === 0 ? '#3b52c4' : '#809dff',
-          borderExtension2: index % 2 === 0 ? theme.primary : '#b3c4ff',
-          initialsWrapper: index % 2 === 0 ? theme.primaryDark : '#4d75ff',
+          backgroundColor: index % 2 === 0 ? theme.background : theme.backgroundAlt,
+          borderMain: index % 2 === 0 ? theme.primary : theme.primaryAlt,
+          borderExtension1: index % 2 === 0 ? theme.primary_100 : theme.primaryAlt_100,
+          borderExtension2: index % 2 === 0 ? theme.primary_200 : theme.primaryAlt_200,
+          initialsWrapper: index % 2 === 0 ? theme.primary : theme.primaryAlt,
         }}
       />
-      <View style={{ height: 1, width: '100%', backgroundColor: theme.primaryDark }} />
+      <View style={{ height: 1, width: '100%', backgroundColor: theme.textAlt }} />
     </View>
   );
 
-  const renderSkeletonItem = ({ index }) => <CustomerCardSkeleton backgroundColor={index % 2 === 0 ? theme.primaryLight : theme.white} />;
+  const renderSkeletonItem = ({ index }) => <CustomerCardSkeleton backgroundColor={index % 2 === 0 ? theme.backgroundAlt : theme.background} />;
 
   const handleSearch = (query) => {
     setSearchQuery(query);
@@ -113,7 +113,7 @@ const CurrentScreen = ({ navigation, route }) => {
         <TextInput
           style={styles.searchInput}
           placeholder="Cari Ara"
-          placeholderTextColor={'rgb(130, 130, 130)'}
+          placeholderTextColor={theme.textAlt}
           value={searchQuery}
           onChangeText={handleSearch}
           onSubmitEditing={handleInputSubmit}
@@ -138,8 +138,8 @@ const getStyles = (theme) => StyleSheet.create({
     height: '100%',
     justifyContent: 'flex-start',
     alignItems: 'center',
-    backgroundColor: theme.white,
-    paddingTop: 56,
+    backgroundColor: theme.background,
+    paddingTop: theme.padding.header
   },
   listContainer: {
     width: Dimensions.get('window').width,
@@ -150,17 +150,18 @@ const getStyles = (theme) => StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     paddingVertical: 10,
-    borderBottomColor: theme.primaryDark,
+    borderBottomColor: theme.textAlt,
     borderBottomWidth: 1,
   },
   searchInput: {
     height: 40,
-    borderColor: 'gray',
+    borderColor: theme.textAlt,
     borderWidth: 1,
     borderRadius: 3,
     paddingHorizontal: 10,
+    backgroundColor: theme.backgroundAlt,
     width: '90%',
-    color: theme.black,
+    color: theme.text,
     fontSize: 16,
   },
 });

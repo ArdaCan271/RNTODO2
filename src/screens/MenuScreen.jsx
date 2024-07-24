@@ -4,7 +4,9 @@ import { useSelector } from 'react-redux';
 
 import MenuItem from '../components/MenuItem';
 import { useTheme } from '../constants/colors';
+
 import CustomHeader from '../components/CustomHeader';
+import CustomBottomTab from '../components/CustomBottomTab';
 
 const MenuScreen = ({ navigation }) => {
   const theme = useTheme();
@@ -26,25 +28,39 @@ const MenuScreen = ({ navigation }) => {
 
   const menuBJSON = useSelector((state) => state.userMenuBJSON.menuBJSON);
 
-  const [expandedItems, setExpandedItems] = useState({});
+  const [lastViewVisible, setLastViewVisible] = useState(false);
 
   return (
     <View style={styles.container}>
       <FlatList
         data={menuBJSON}
         keyExtractor={(item) => item.mobile}
-        renderItem={({ item }) => (
-          <MenuItem
-            item={item}
-            expandedItems={expandedItems}
-            navigation={navigation}
-          />
+        renderItem={({ item, index }) => (
+          <View
+            style={{width: '100%'}}
+          >
+            {index !== 0 &&
+              <View style={{width: '100%', height: 1, backgroundColor: theme.separator}} />}
+            <MenuItem
+              item={item}
+              navigation={navigation}
+            />
+          </View>
         )}
+        ListFooterComponent={lastViewVisible && <View style={{height: 18, alignSelf: 'flex-start', width: 10, backgroundColor: theme.primary}} />}
+        onScrollBeginDrag={() => {
+          if (!lastViewVisible){
+            setLastViewVisible(true);
+          }
+        }}
       />
       <CustomHeader
         title={'Menü'}
         navigation={navigation}
         noBack
+      />
+      <CustomBottomTab 
+        navigation={navigation} 
       />
     </View>
   );
@@ -54,7 +70,8 @@ const getStyles = (theme) => StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: theme.background,
-    paddingTop: 56,
+    paddingTop: theme.padding.header,
+    paddingBottom: theme.padding.bottomBar,
   },
 });
 

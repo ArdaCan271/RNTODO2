@@ -23,7 +23,7 @@ const CustomHeader = ({ navigation, title, noBack }) => {
           style={styles.button}
           onPress={() => navigation.goBack()}
         >
-          <Ionicons name="arrow-back" size={30} color={theme.primaryDark} />
+          <Ionicons name="arrow-back" size={30} color={theme.primary} />
         </Pressable>
       }
       <Text style={styles.title}>{title}</Text>
@@ -31,7 +31,7 @@ const CustomHeader = ({ navigation, title, noBack }) => {
         style={styles.button}
         onPress={openDrawer}
       >
-        <Ionicons name="menu" size={30} color={theme.primaryDark} />
+        <Ionicons name="menu" size={30} color={theme.primary} />
       </Pressable>
       <DrawerMenu modalVisible={modalVisible} setModalVisible={setModalVisible} navigation={navigation} />
     </View>
@@ -44,27 +44,20 @@ const getStyles = (theme) => StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     paddingHorizontal: 12,
-    backgroundColor: theme.white,
-    borderBottomWidth: 2,
-    borderColor: theme.primaryDark,
+    backgroundColor: theme.backgroundAlt,
     position: 'absolute',
     top: 0,
     width: '100%',
-    height: 56,
+    height: 54,
     elevation: 4,
   },
   title: {
     fontSize: 20,
     fontWeight: 'bold',
-    color: theme.primaryDark,
+    color: theme.primary,
   },
   button: {
-    backgroundColor: theme.white,
     padding: 6,
-    borderRadius: 5,
-  },
-  buttonText: {
-    color: theme.white,
   },
 });
 

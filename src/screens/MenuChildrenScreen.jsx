@@ -5,6 +5,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import MenuItem from '../components/MenuItem';
 import { useTheme } from '../constants/colors';
 import CustomHeader from '../components/CustomHeader';
+import CustomBottomTab from '../components/CustomBottomTab';
 
 const MenuChildrenScreen = ({ navigation, route }) => {
   const theme = useTheme();
@@ -26,35 +27,38 @@ const MenuChildrenScreen = ({ navigation, route }) => {
 
   const parentItem = route.params.parent;
 
-  const [expandedItems, setExpandedItems] = useState({});
-
-  const handlePress = (mobile, hasChildren) => {
-    if (hasChildren) {
-      setExpandedItems((prevExpandedItems) => ({
-        ...prevExpandedItems,
-        [mobile]: !prevExpandedItems[mobile],
-      }));
-    }
-  };
+  const [lastViewVisible, setLastViewVisible] = useState(false);
 
   return (
     <View style={styles.container}>
       <FlatList
         data={parentItem.children}
         keyExtractor={(item) => item.mobile}
-        renderItem={({ item }) => (
-          <MenuItem
-            item={item}
-            expandedItems={expandedItems}
-            onPress={handlePress}
-            navigation={navigation}
-          />
+        renderItem={({ item, index }) => (
+          <View
+            style={{width: '100%'}}
+          >
+            {index !== 0 &&
+              <View style={{width: '100%', height: 1, backgroundColor: theme.separator}} />}
+            <MenuItem
+              item={item}
+              navigation={navigation}
+            />
+          </View>
         )}
+        onScrollBeginDrag={() => {
+          if (!lastViewVisible){
+            setLastViewVisible(true);
+          }
+        }}
+        ListFooterComponent={lastViewVisible && <View style={{height: 18, alignSelf: 'flex-start', width: 10, backgroundColor: theme.primary}} />}
       />
       <CustomHeader
         title={parentItem.id}
         navigation={navigation}
-        noBack
+      />
+      <CustomBottomTab 
+        navigation={navigation} 
       />
     </View>
   );
@@ -63,8 +67,9 @@ const MenuChildrenScreen = ({ navigation, route }) => {
 const getStyles = (theme) => StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: theme.white,
-    paddingTop: 56,
+    backgroundColor: theme.background,
+    paddingTop: theme.padding.header,
+    paddingBottom: theme.padding.bottomBar,
   },
 });
 

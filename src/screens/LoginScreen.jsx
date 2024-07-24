@@ -55,7 +55,7 @@ const LoginScreen = ({ navigation }) => {
         placeholder="E-posta"
         value={inputEmail}
         onChangeText={setInputEmail}
-        placeholderTextColor={theme.placeholder}
+        placeholderTextColor={theme.textAlt}
         keyboardType="email-address"
         autoCapitalize="none"
         onSubmitEditing={() => { passwordRef.current?.focus(); }}
@@ -66,7 +66,7 @@ const LoginScreen = ({ navigation }) => {
           style={styles.passwordInput}
           ref={passwordRef}
           placeholder="Şifre"
-          placeholderTextColor={theme.placeholder}
+          placeholderTextColor={theme.textAlt}
           value={inputPassword}
           onChangeText={setInputPassword}
           secureTextEntry={!showPassword}
@@ -75,7 +75,7 @@ const LoginScreen = ({ navigation }) => {
           onSubmitEditing={handleLogin}
         />
         <TouchableOpacity onPress={() => setShowPassword(!showPassword)} style={styles.showPassword}>
-          <Icon name={showPassword ? "eye-off" : "eye"} size={24} color={theme.placeholder} />
+          <Icon name={showPassword ? "eye-off" : "eye"} size={24} color={theme.textAlt} />
         </TouchableOpacity>
       </View>
       <Button
@@ -92,23 +92,23 @@ const getStyles = (theme) => StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     paddingHorizontal: 16,
-    backgroundColor: theme.white,
+    backgroundColor: theme.background,
   },
   title: {
     fontSize: 24,
     marginBottom: 16,
     textAlign: 'center',
-    color: theme.black,
+    color: theme.text,
   },
   warningText: {
-    color: theme.error,
+    color: theme.red,
     marginBottom: 12,
     textAlign: 'center',
     fontSize: 16,
   },
   input: {
     height: 40,
-    borderColor: theme.border,
+    borderColor: theme.text,
     borderWidth: 1,
     borderRadius: 3,
     marginBottom: 12,
@@ -118,7 +118,7 @@ const getStyles = (theme) => StyleSheet.create({
   passwordContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    borderColor: theme.border,
+    borderColor: theme.text,
     borderWidth: 1,
     borderRadius: 3,
     marginBottom: 12,

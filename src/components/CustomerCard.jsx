@@ -1,6 +1,6 @@
 // CustomerCard.js
 import React, {useMemo} from 'react';
-import { View, Text, StyleSheet, Dimensions, Pressable } from 'react-native';
+import { View, Text, StyleSheet, Dimensions, Pressable, TouchableOpacity } from 'react-native';
 import colors from '../constants/colors';
 
 import { useTheme } from '../constants/colors';
@@ -35,13 +35,9 @@ const CustomerCard = ({ cariKod, isim, alacak, il, onPress, dynamicColors }) => 
 
   return (
     <View style={[styles.cardWrapper, {borderLeftColor: dynamicColors.borderMain, backgroundColor: dynamicColors.backgroundColor}]}>
-      <View style={[styles.borderLeftExtension1, {backgroundColor: dynamicColors.borderExtension1}]} />
-      <View style={[styles.borderLeftExtension2, {backgroundColor: dynamicColors.borderExtension2}]} />
-      <Pressable 
+      <TouchableOpacity 
         onPress={onPress}
-        android_ripple={{ color: theme.primaryDark }}
         style={styles.cardPressable}
-        unstable_pressDelay={80}
       >
         <View style={styles.topLeft}>
           <View style={[styles.initialsWrapper, {backgroundColor: dynamicColors.initialsWrapper}]}>
@@ -57,7 +53,7 @@ const CustomerCard = ({ cariKod, isim, alacak, il, onPress, dynamicColors }) => 
         {il !== '' &&
           <View style={styles.bottomLeft}>
           <View style={styles.locationIconWrapper}>
-            <Ionicons name="location-outline" size={18} color={theme.primaryDark}/>
+            <Ionicons name="location-outline" size={18} color={theme.primary}/>
           </View>
           <Text style={styles.il}>{il}</Text>
         </View>
@@ -68,42 +64,25 @@ const CustomerCard = ({ cariKod, isim, alacak, il, onPress, dynamicColors }) => 
             <Text style={styles.alacakDecimal}>,{kurus}</Text>
           </Text>
         </View>
-        <Ionicons name="chevron-forward" size={24} color={theme.primaryDark} style={styles.chevron} />
-      </Pressable>
+        <Ionicons name="chevron-forward" size={24} color={theme.primary} style={styles.chevron} />
+      </TouchableOpacity>
     </View>
   );
 };
 
 const getStyles = (theme) => StyleSheet.create({
   cardWrapper: {
-    backgroundColor: theme.white,
+    backgroundColor: theme.background,
     width: Dimensions.get('window').width,
     height: 100,
-    borderLeftColor: '#24337a',
     borderLeftWidth: 15,
     overflow: 'hidden',
-  },
-  borderLeftExtension1: {
-    position: 'absolute',
-    top: 0,
-    left: 0.5,
-    width: 7,
-    height: '100%',
-    backgroundColor: '#3b52c4',
-  },
-  borderLeftExtension2: {
-    position: 'absolute',
-    top: 0,
-    left: 8,
-    width: 3,
-    height: '100%',
-    backgroundColor: theme.primary,
   },
   cardPressable: {
     width: '100%',
     height: '100%',
     padding: 8,
-    paddingLeft: 20,
+    paddingLeft: 10,
   },
   topLeft: {
     alignItems: 'flex-start',
@@ -113,7 +92,6 @@ const getStyles = (theme) => StyleSheet.create({
     width: 40,
     height: 40,
     borderRadius: 20,
-    backgroundColor: theme.primaryDark,
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -126,7 +104,7 @@ const getStyles = (theme) => StyleSheet.create({
   },
   isim: {
     fontSize: 17,
-    color: theme.black,
+    color: theme.text,
     fontWeight: 'bold',
     marginTop: 0,
     marginLeft: 2,
@@ -145,7 +123,7 @@ const getStyles = (theme) => StyleSheet.create({
     alignItems: 'center',
     position: 'absolute',
     bottom: 8,
-    left: 37,
+    left: 25,
   },
   locationIconWrapper: {
     width: 24,
@@ -156,8 +134,7 @@ const getStyles = (theme) => StyleSheet.create({
   },
   il: {
     fontSize: 15,
-    fontWeight: 'bold',
-    color: 'rgb(100, 100, 100)',
+    color: theme.textAlt,
     marginLeft: 0,
   },
   bottomRight: {
@@ -168,7 +145,7 @@ const getStyles = (theme) => StyleSheet.create({
   cariKod: {
     fontSize: 14,
     fontWeight: 'bold',
-    color: 'rgb(100, 100, 100)',
+    color: theme.textAlt,
   },
   chevron: {
     position: 'absolute',

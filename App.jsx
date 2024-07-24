@@ -51,7 +51,7 @@ const App = () => {
               component={CurrentScreen}
               options={{
                 headerShown: false,
-                animation: 'slide_from_right',
+                animation: 'ios',
               }}
             />
             <Stack.Screen
@@ -59,7 +59,7 @@ const App = () => {
               component={CustomerDetailScreen}
               options={{
                 headerShown: false,
-                animation: 'slide_from_right',
+                animation: 'ios',
               }}
             />
             <Stack.Screen
@@ -67,7 +67,7 @@ const App = () => {
               component={MenuChildrenScreen}
               options={{
                 headerShown: false,
-                animation: 'slide_from_right',
+                animation: 'ios',
               }}
             />
             <Stack.Screen
@@ -75,7 +75,7 @@ const App = () => {
               component={SettingsScreen}
               options={{
                 headerShown: false,
-                animation: 'slide_from_left',
+                animation: 'ios',
               }}
             />
             <Stack.Screen
@@ -83,7 +83,7 @@ const App = () => {
               component={PageNotFoundScreen}
               options={{
                 headerShown: false,
-                animation: 'slide_from_right',
+                animation: 'ios',
               }}
             />
           </Stack.Navigator>

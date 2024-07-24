@@ -4,6 +4,7 @@ import loginDataReducer from '../features/loginData/loginDataSlice';
 import userMenuBJSONReducer from '../features/userMenuBJSON/userMenuBJSONSlice';
 import userDataReducer from '../features/userData/userDataSlice';
 import themeDataReducer from '../features/themeData/themeSlice';
+import baseRequestURLReducer from '../features/baseRequestURL/baseRequestURLSlice';
 
 import {
   persistReducer,
@@ -28,6 +29,7 @@ export const store = configureStore({
     userMenuBJSON: persistReducer(persistConfig('menuBJSON'), userMenuBJSONReducer),
     userData: persistReducer(persistConfig('userData'), userDataReducer),
     themeData: persistReducer(persistConfig('themeData'), themeDataReducer),
+    baseRequestURL: persistReducer(persistConfig('baseRequestURL'), baseRequestURLReducer),
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({

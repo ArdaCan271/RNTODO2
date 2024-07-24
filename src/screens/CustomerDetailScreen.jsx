@@ -66,7 +66,7 @@ const CustomerDetailScreen = ({ navigation, route }) => {
             topTitle={summaryData.topTitle}
             topValue={summaryData.topValue}
             listElements={summaryData.listElements}
-            style={{ borderTopWidth: index === 0 ? 2 : 0, borderTopColor: theme.primaryDark }}
+            style={{ borderTopWidth: index === 0 ? 2 : 0, borderTopColor: theme.primary }}
           />
         ))}
       </View>
@@ -90,14 +90,14 @@ const CustomerDetailScreen = ({ navigation, route }) => {
 const getStyles = (theme) => StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: theme.white,
-    paddingTop: 56,
+    backgroundColor: theme.background,
+    paddingTop: 50,
   },
   customerName: {
     marginTop: 4,
     fontSize: 18,
     fontWeight: 'bold',
-    color: theme.black,
+    color: theme.text,
     textAlign: 'center',
   },
   summariesWrapper: {

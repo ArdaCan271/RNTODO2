@@ -45,19 +45,19 @@ const DrawerMenu = ({ modalVisible, setModalVisible, navigation }) => {
           <Text style={styles.userName}>{userName}</Text>
         </View>
         <TouchableOpacity style={styles.menuItem} onPress={handleSettingsPress}>
-          <Ionicons name="settings-outline" size={20} color={theme.primaryDark} />
+          <Ionicons name="settings-outline" size={20} color={theme.primary} />
           <Text style={styles.menuText}>Ayarlar</Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.menuItem} onPress={() => { /* Handle Notifications press */ }}>
-          <Ionicons name="notifications-outline" size={20} color={theme.primaryDark} />
+          <Ionicons name="notifications-outline" size={20} color={theme.primary} />
           <Text style={styles.menuText}>Bildirimler</Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.menuItem} onPress={() => { /* Handle Technical Support press */ }}>
-          <Ionicons name="headset-outline" size={20} color={theme.primaryDark} />
+          <Ionicons name="headset-outline" size={20} color={theme.primary} />
           <Text style={styles.menuText}>Teknik Destek</Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.menuItemLogout} onPress={handleLogout}>
-          <Ionicons name="log-out-outline" size={20} color={theme.primaryDark} />
+          <Ionicons name="log-out-outline" size={20} color={theme.primary} />
           <Text style={styles.menuText}>Çıkış yap</Text>
         </TouchableOpacity>
       </View>
@@ -71,7 +71,7 @@ const getStyles = (theme) => StyleSheet.create({
     right: 0,
     width: '65%',
     height: '100%',
-    backgroundColor: theme.white,
+    backgroundColor: theme.background,
     justifyContent: 'flex-start',
     alignItems: 'center',
     paddingTop: 30,
@@ -82,23 +82,23 @@ const getStyles = (theme) => StyleSheet.create({
     width: '100%',
     justifyContent: 'center',
     alignItems: 'flex-start',
-
     paddingLeft: 10,
     borderBottomWidth: 1,
-    borderBottomColor: '#ddd',
+    borderBottomColor: theme.textAlt,
     marginBottom: 10,
+    paddingBottom: 6,
   },
   userName: {
     fontSize: 20,
     fontWeight: 'bold',
-    color: theme.primaryDark,
+    color: theme.primary,
   },
   menuItem: {
     flexDirection: 'row',
     alignItems: 'center',
     padding: 10,
     width: '100%',
-    backgroundColor: theme.primaryLight,
+    backgroundColor: theme.backgroundAlt,
     borderRadius: 5,
     marginTop: 10,
   },
@@ -110,13 +110,13 @@ const getStyles = (theme) => StyleSheet.create({
     position: 'absolute',
     bottom: 0,
     marginBottom: 20,
-    backgroundColor: theme.primaryLight,
+    backgroundColor: theme.backgroundAlt,
     borderRadius: 5,
   },
   menuText: {
     fontSize: 16,
     marginLeft: 10,
-    color: theme.black,
+    color: theme.text,
   },
 });
 
