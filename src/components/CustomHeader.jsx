@@ -1,39 +1,34 @@
 import React, { useState, useMemo } from 'react';
-import { StyleSheet, Text, View, Pressable } from 'react-native';
+import { StyleSheet, Text, View, Pressable, TouchableOpacity } from 'react-native';
 import { useTheme } from '../constants/colors';
 
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import DrawerMenu from './DrawerMenu';
 
-const CustomHeader = ({ navigation, title, noBack }) => {
-  const [modalVisible, setModalVisible] = useState(false);
+const CustomHeader = ({ navigation, title, hasDrawer }) => {
   const theme = useTheme();
   const styles = useMemo(() => getStyles(theme), [theme]);
 
-  const openDrawer = () => {
-    setModalVisible(true);
-  };
+
+  const handleButtonPress = () => {
+    if (hasDrawer) {
+      navigation.openDrawer();
+    } else {
+      navigation.goBack();
+    }
+  }
 
   return (
     <View style={styles.container}>
-      {noBack ? 
-        <View style={{ width: 42, height: 42 }}></View> 
-        :
-        <Pressable
-          style={styles.button}
-          onPress={() => navigation.goBack()}
-        >
-          <Ionicons name="arrow-back" size={30} color={theme.primary} />
-        </Pressable>
-      }
-      <Text style={styles.title}>{title}</Text>
-      <Pressable 
+      <TouchableOpacity
         style={styles.button}
-        onPress={openDrawer}
+        onPress={handleButtonPress}
       >
-        <Ionicons name="menu" size={30} color={theme.primary} />
-      </Pressable>
-      <DrawerMenu modalVisible={modalVisible} setModalVisible={setModalVisible} navigation={navigation} />
+        <Ionicons name={hasDrawer ? 'menu' : 'arrow-back'} size={30} color={theme.primary} />
+      </TouchableOpacity>
+
+      <Text style={styles.title}>{title}</Text>
+      <View style={styles.emptyRightButton}/>
     </View>
   );
 };
@@ -59,6 +54,10 @@ const getStyles = (theme) => StyleSheet.create({
   button: {
     padding: 6,
   },
+  emptyRightButton: {
+    width: 42,
+    height: 42,
+  }
 });
 
 export default CustomHeader;

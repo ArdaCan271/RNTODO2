@@ -15,6 +15,7 @@
 
 import { useSelector } from 'react-redux';
 import { Dimensions } from 'react-native';
+import { green } from 'react-native-reanimated/lib/typescript/Colors';
 
 const { width,height } = Dimensions.get('window');
 
@@ -48,7 +49,8 @@ const baseTheme = {
   gray: '#B9B9B9',
   purple: '#8B13B1',
   red: "#EE1B1B",
-  darkwhite:'#B9B9B9'
+  darkwhite:'#B9B9B9',
+  green: "#1da32f",
 };
 
 export const lightTheme = {

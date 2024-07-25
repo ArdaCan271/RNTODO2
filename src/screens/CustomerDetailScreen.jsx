@@ -5,6 +5,8 @@ import CustomHeader from '../components/CustomHeader';
 import MenuItem from '../components/MenuItem';
 import CustomerDetailSummary from '../components/CustomerDetailSummary';
 
+import { useNavigationState } from '@react-navigation/native';
+
 const formatCurrency = (value) => {
   const isNegative = value < 0;
   const absoluteValue = Math.abs(value);
@@ -19,18 +21,9 @@ const CustomerDetailScreen = ({ navigation, route }) => {
   const theme = useTheme();
   const styles = useMemo(() => getStyles(theme), [theme]);
 
+  const routeNames = useNavigationState((state) => state.routeNames);
+
   const menuItems = route.params.childrenOfMenuItem;
-
-  const [expandedItems, setExpandedItems] = useState({});
-
-  const handleToggle = (mobile, hasChildren) => {
-    if (hasChildren) {
-      setExpandedItems((prevExpandedItems) => ({
-        ...prevExpandedItems,
-        [mobile]: !prevExpandedItems[mobile],
-      }));
-    }
-  };
 
   const sampleSummaryData = [
     {
@@ -76,12 +69,11 @@ const CustomerDetailScreen = ({ navigation, route }) => {
         renderItem={({ item, index }) => (
           <MenuItem
             item={item}
-            expandedItems={expandedItems}
-            onToggle={handleToggle}
             navigation={navigation}
-            style={{ borderTopWidth: index === 0 ? 0 : 0, borderTopColor: 'rgb(180, 180, 180)' }}
+            routeNames={routeNames}
           />
         )}
+        ItemSeparatorComponent={<View style={{width: '100%', height: 1, backgroundColor: theme.separator}} />}
       />
     </View>
   );

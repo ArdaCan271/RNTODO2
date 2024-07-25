@@ -60,6 +60,18 @@ const DrawerMenu = ({ modalVisible, setModalVisible, navigation }) => {
           <Ionicons name="log-out-outline" size={20} color={theme.primary} />
           <Text style={styles.menuText}>Çıkış yap</Text>
         </TouchableOpacity>
+        <View style={styles.appInfoWrapper}>
+          <View style={{ 
+            width: '90%',
+            backgroundColor: theme.separator,
+            height: 1,
+            position: 'absolute',
+            top: 0,
+          }}
+          />
+          <Text style={{ color: theme.textAlt }}>RNTODO2</Text>
+          <Text style={{ color: theme.textAlt }}>App Version: 1.0.0</Text>
+        </View>
       </View>
     </Modal>
   );
@@ -84,7 +96,7 @@ const getStyles = (theme) => StyleSheet.create({
     alignItems: 'flex-start',
     paddingLeft: 10,
     borderBottomWidth: 1,
-    borderBottomColor: theme.textAlt,
+    borderBottomColor: theme.separator,
     marginBottom: 10,
     paddingBottom: 6,
   },
@@ -108,10 +120,18 @@ const getStyles = (theme) => StyleSheet.create({
     padding: 10,
     width: '100%',
     position: 'absolute',
-    bottom: 0,
-    marginBottom: 20,
+    bottom: 120,
     backgroundColor: theme.backgroundAlt,
     borderRadius: 5,
+  },
+  appInfoWrapper: {
+    position: 'absolute',
+    bottom: 0,
+    height: 110,
+    width: '100%',
+    alignItems: 'center',
+    justifyContent: 'center',
+    rowGap: 10,
   },
   menuText: {
     fontSize: 16,

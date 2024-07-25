@@ -1,10 +1,8 @@
-import { StyleSheet, Text, View, TouchableOpacity, FlatList, Pressable, Dimensions } from 'react-native';
+import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
 import React, { useState, useMemo } from 'react';
 import Icon from 'react-native-vector-icons/Ionicons';
 import colors from '../constants/colors';
 import { useTheme } from '../constants/colors';
-
-import { useNavigationState } from '@react-navigation/native';
 
 const getBackgroundColor = (level) => {
   const baseColorR = 239;
@@ -17,14 +15,12 @@ const getBackgroundColor = (level) => {
   return `rgb(${colorValueR}, ${colorValueG}, ${colorValueB})`;
 };
 
-const MenuItem = ({ item, level = 0, onPress, navigation, style, props = '' }) => {
+const MenuItem = ({ item, level = 0, onPress, navigation, style, props = '', routeNames }) => {
 
   const theme = useTheme();
   const styles = useMemo(() => getStyles(theme), [theme]);
 
   const hasChildren = !!item.children && item.children.length > 0;
-
-  const routeNames = useNavigationState((state) => state.routeNames);
 
   return (
     <View style={styles.menuItem}>
@@ -35,8 +31,10 @@ const MenuItem = ({ item, level = 0, onPress, navigation, style, props = '' }) =
           onPress={() => {
             if(routeNames.includes(item.mobile)) {
               navigation.navigate(item.mobile, { childrenOfMenuItem: item.children, props: props });
+              console.log(routeNames);
             } else if (hasChildren) {
               navigation.navigate('MenuChildren', { parent: item });
+              console.log(routeNames);
             } else {
               navigation.navigate('PageNotFound', { routeName: item.id });
               console.log('No route found for ' + item.mobile);

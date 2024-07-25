@@ -139,7 +139,7 @@ const getStyles = (theme) => StyleSheet.create({
     justifyContent: 'flex-start',
     alignItems: 'center',
     backgroundColor: theme.background,
-    paddingTop: theme.padding.header
+    paddingTop: theme.padding.header,
   },
   listContainer: {
     width: Dimensions.get('window').width,

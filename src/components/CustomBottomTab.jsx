@@ -35,7 +35,13 @@ const CustomBottomTab = ({ navigation }) => {
         }
         <Text style={styles.tabButtonText}>Tema</Text>
       </TouchableOpacity>
-
+      <TouchableOpacity 
+        style={styles.tabButton}
+        onPress={() => navigation.navigate('Settings')}
+      >
+        <Icon name="cloud-upload-outline" size={24} color={theme.primary} />
+        <Text style={styles.tabButtonText}>Yükle</Text>
+      </TouchableOpacity>
       <View 
         style={styles.emptyButton}
       >
@@ -46,6 +52,12 @@ const CustomBottomTab = ({ navigation }) => {
       >
         <Icon name="menu" size={50} color={theme.background} />
       </Pressable>
+      <TouchableOpacity 
+        style={styles.tabButton}
+      >
+        <Icon name="wifi-outline" size={24} color={theme.green} />
+        <Text style={styles.tabButtonText}>Bağlan</Text>
+      </TouchableOpacity>
       <TouchableOpacity 
         style={styles.tabButton}
         onPress={() => navigation.navigate('Settings')}
@@ -87,6 +99,15 @@ const getStyles = (theme) => StyleSheet.create({
     bottom: 10,
     left: Dimensions.get('window').width / 2 - 31,
     elevation: 6,
+  },
+  connectionButton: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 6,
+  },
+  connectionButtonText: {
+    color: theme.green,
+    fontSize: 10,
   },
   emptyButton: {
     width: 56,

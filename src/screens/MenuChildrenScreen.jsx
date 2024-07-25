@@ -7,9 +7,13 @@ import { useTheme } from '../constants/colors';
 import CustomHeader from '../components/CustomHeader';
 import CustomBottomTab from '../components/CustomBottomTab';
 
+import { useNavigationState } from '@react-navigation/native';
+
 const MenuChildrenScreen = ({ navigation, route }) => {
   const theme = useTheme();
   const styles = getStyles(theme);
+
+  const routeNames = useNavigationState((state) => state.routeNames);
 
   useEffect(() => {
     const backAction = () => {
@@ -38,11 +42,10 @@ const MenuChildrenScreen = ({ navigation, route }) => {
           <View
             style={{width: '100%'}}
           >
-            {index !== 0 &&
-              <View style={{width: '100%', height: 1, backgroundColor: theme.separator}} />}
             <MenuItem
               item={item}
               navigation={navigation}
+              routeNames={routeNames}
             />
           </View>
         )}
@@ -52,6 +55,7 @@ const MenuChildrenScreen = ({ navigation, route }) => {
           }
         }}
         ListFooterComponent={lastViewVisible && <View style={{height: 18, alignSelf: 'flex-start', width: 10, backgroundColor: theme.primary}} />}
+        ItemSeparatorComponent={<View style={{width: '100%', height: 1, backgroundColor: theme.separator}} />}
       />
       <CustomHeader
         title={parentItem.id}

@@ -69,7 +69,6 @@ const getStyles = (theme) => StyleSheet.create({
     borderColor: theme.primary,
     justifyContent: 'center',
     alignItems: 'center',
-    elevation: 2,
   },
   topContent: {
     alignItems: 'center',

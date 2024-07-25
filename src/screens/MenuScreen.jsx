@@ -8,7 +8,7 @@ import { useTheme } from '../constants/colors';
 import CustomHeader from '../components/CustomHeader';
 import CustomBottomTab from '../components/CustomBottomTab';
 
-const MenuScreen = ({ navigation }) => {
+const MenuScreen = ({ navigation, route }) => {
   const theme = useTheme();
   const styles = getStyles(theme);
 
@@ -39,15 +39,15 @@ const MenuScreen = ({ navigation }) => {
           <View
             style={{width: '100%'}}
           >
-            {index !== 0 &&
-              <View style={{width: '100%', height: 1, backgroundColor: theme.separator}} />}
             <MenuItem
               item={item}
               navigation={navigation}
+              routeNames={route.params.routeNames}
             />
           </View>
         )}
         ListFooterComponent={lastViewVisible && <View style={{height: 18, alignSelf: 'flex-start', width: 10, backgroundColor: theme.primary}} />}
+        ItemSeparatorComponent={<View style={{width: '100%', height: 1, backgroundColor: theme.separator}} />}
         onScrollBeginDrag={() => {
           if (!lastViewVisible){
             setLastViewVisible(true);
@@ -57,7 +57,7 @@ const MenuScreen = ({ navigation }) => {
       <CustomHeader
         title={'Menü'}
         navigation={navigation}
-        noBack
+        hasDrawer
       />
       <CustomBottomTab 
         navigation={navigation} 
