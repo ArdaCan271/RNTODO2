@@ -36,18 +36,14 @@ const MenuScreen = ({ navigation, route }) => {
         data={menuBJSON}
         keyExtractor={(item) => item.mobile}
         renderItem={({ item, index }) => (
-          <View
-            style={{width: '100%'}}
-          >
             <MenuItem
               item={item}
               navigation={navigation}
               routeNames={route.params.routeNames}
             />
-          </View>
         )}
         ListFooterComponent={lastViewVisible && <View style={{height: 18, alignSelf: 'flex-start', width: 10, backgroundColor: theme.primary}} />}
-        ItemSeparatorComponent={<View style={{width: '100%', height: 1, backgroundColor: theme.separator}} />}
+        ItemSeparatorComponent={<View style={{width: '100%', height: 0.7, backgroundColor: theme.separator}} />}
         onScrollBeginDrag={() => {
           if (!lastViewVisible){
             setLastViewVisible(true);

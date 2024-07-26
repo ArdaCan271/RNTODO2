@@ -9,6 +9,7 @@ import CustomerDetailScreen from '../screens/CustomerDetailScreen';
 import PageNotFoundScreen from '../screens/PageNotFoundScreen';
 import MenuChildrenScreen from '../screens/MenuChildrenScreen';
 import SettingsScreen from '../screens/SettingsScreen';
+import UploadDataScreen from '../screens/UploadDataScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -66,6 +67,14 @@ const StackNavigator = ({ drawerNavigator }) => {
         options={{
           headerShown: false,
           animation: 'ios',
+        }}
+      />
+      <Stack.Screen
+        name="UploadData"
+        component={UploadDataScreen}
+        options={{
+          headerShown: false,
+          animation: 'slide_from_bottom',
         }}
       />
       <Stack.Screen

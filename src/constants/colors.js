@@ -67,6 +67,7 @@ export const lightTheme = {
   textAlt: '#7c7c7c',
   textPrimary: '#1571b2',
   separator: '#c0c0c0',
+  redSupport: "rgba(255, 3, 8, 0.15)",
   type:'light'
 };
 
@@ -84,6 +85,7 @@ export const darkTheme = {
   textAlt: '#b8bece',
   textPrimary: '#009fe3',
   separator: '#303650',
+  redSupport: "rgba(255, 3, 8, 0.15)",
   type:'dark'
 };
 

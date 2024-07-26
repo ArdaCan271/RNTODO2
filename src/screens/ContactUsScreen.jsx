@@ -5,7 +5,7 @@ import { changeTheme } from '../features/themeData/themeSlice';
 import CustomHeader from '../components/CustomHeader';
 import { useTheme } from '../constants/colors';
 
-const SettingsScreen = ({ navigation }) => {
+const ContactUsScreen = ({ navigation }) => {
 
   useEffect(() => {
     const backAction = () => {
@@ -27,7 +27,7 @@ const SettingsScreen = ({ navigation }) => {
   return (
     <View style={styles.container}>
       <CustomHeader
-        title="Settings"
+        title="İletişim"
         navigation={navigation}
         hasDrawer
       />
@@ -49,4 +49,4 @@ const getStyles = (theme) => StyleSheet.create({
   },
 });
 
-export default SettingsScreen;
+export default ContactUsScreen;

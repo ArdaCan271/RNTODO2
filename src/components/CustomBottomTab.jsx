@@ -1,6 +1,7 @@
 import React, {useState} from 'react';
 import { StyleSheet, View, Text, Pressable, Touchable, TouchableOpacity, Dimensions } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
+import FeatherIcon from 'react-native-vector-icons/Feather';
 
 import { useTheme } from '../constants/colors';
 
@@ -16,8 +17,18 @@ const CustomBottomTab = ({ navigation }) => {
   const dispatch = useDispatch();
   const currentTheme = useSelector((state) => state.themeData.value);
 
+  const [isConnected, setIsConnected] = useState(true);
+
+  const toggleConnection = () => {
+    setIsConnected(!isConnected);
+  };
+
   const toggleTheme = () => {
     dispatch(changeTheme());
+  };
+
+  const openDrawer = () => {
+    navigation.openDrawer();
   };
 
   const [modalVisible, setModalVisible] = useState(false);
@@ -37,7 +48,7 @@ const CustomBottomTab = ({ navigation }) => {
       </TouchableOpacity>
       <TouchableOpacity 
         style={styles.tabButton}
-        onPress={() => navigation.navigate('Settings')}
+        onPress={() => navigation.navigate('UploadData')}
       >
         <Icon name="cloud-upload-outline" size={24} color={theme.primary} />
         <Text style={styles.tabButtonText}>Yükle</Text>
@@ -48,15 +59,20 @@ const CustomBottomTab = ({ navigation }) => {
       </View>
       <Pressable 
         style={styles.menuButton}
-        onPress={() => setModalVisible(true)}
+        onPress={openDrawer}
       >
         <Icon name="menu" size={50} color={theme.background} />
       </Pressable>
       <TouchableOpacity 
         style={styles.tabButton}
+        onPress={toggleConnection}
       >
-        <Icon name="wifi-outline" size={24} color={theme.green} />
-        <Text style={styles.tabButtonText}>Bağlan</Text>
+        <FeatherIcon 
+          name={isConnected ? 'wifi' : 'wifi-off'} 
+          size={24} 
+          color={isConnected ? theme.green : theme.red}
+        />
+        <Text style={[styles.connectionButtonText, {color: isConnected ? theme.green : theme.red}]}>Bağlan</Text>
       </TouchableOpacity>
       <TouchableOpacity 
         style={styles.tabButton}
@@ -106,7 +122,6 @@ const getStyles = (theme) => StyleSheet.create({
     padding: 6,
   },
   connectionButtonText: {
-    color: theme.green,
     fontSize: 10,
   },
   emptyButton: {

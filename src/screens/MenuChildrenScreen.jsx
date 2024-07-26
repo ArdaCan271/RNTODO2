@@ -5,7 +5,6 @@ import { useSelector, useDispatch } from 'react-redux';
 import MenuItem from '../components/MenuItem';
 import { useTheme } from '../constants/colors';
 import CustomHeader from '../components/CustomHeader';
-import CustomBottomTab from '../components/CustomBottomTab';
 
 import { useNavigationState } from '@react-navigation/native';
 
@@ -54,15 +53,12 @@ const MenuChildrenScreen = ({ navigation, route }) => {
             setLastViewVisible(true);
           }
         }}
-        ListFooterComponent={lastViewVisible && <View style={{height: 18, alignSelf: 'flex-start', width: 10, backgroundColor: theme.primary}} />}
-        ItemSeparatorComponent={<View style={{width: '100%', height: 1, backgroundColor: theme.separator}} />}
+        ListFooterComponent={false && <View style={{height: 18, alignSelf: 'flex-start', width: 10, backgroundColor: theme.primary}} />}
+        ItemSeparatorComponent={<View style={{width: '100%', height: 0.7, backgroundColor: theme.separator}} />}
       />
       <CustomHeader
         title={parentItem.id}
         navigation={navigation}
-      />
-      <CustomBottomTab 
-        navigation={navigation} 
       />
     </View>
   );
@@ -73,7 +69,6 @@ const getStyles = (theme) => StyleSheet.create({
     flex: 1,
     backgroundColor: theme.background,
     paddingTop: theme.padding.header,
-    paddingBottom: theme.padding.bottomBar,
   },
 });
 

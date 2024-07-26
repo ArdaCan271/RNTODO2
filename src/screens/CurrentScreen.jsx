@@ -63,23 +63,20 @@ const CurrentScreen = ({ navigation, route }) => {
   }
 
   const renderItem = ({ item, index }) => (
-    <View>
-      <CustomerCard 
-        onPress={handleOnCustomerPress(item)} 
-        cariKod={item.CariKod} 
-        isim={item.Isim} 
-        alacak={item.Alacak} 
-        il={item.Il} 
-        dynamicColors={{
-          backgroundColor: index % 2 === 0 ? theme.background : theme.backgroundAlt,
-          borderMain: index % 2 === 0 ? theme.primary : theme.primaryAlt,
-          borderExtension1: index % 2 === 0 ? theme.primary_100 : theme.primaryAlt_100,
-          borderExtension2: index % 2 === 0 ? theme.primary_200 : theme.primaryAlt_200,
-          initialsWrapper: index % 2 === 0 ? theme.primary : theme.primaryAlt,
-        }}
-      />
-      <View style={{ height: 1, width: '100%', backgroundColor: theme.textAlt }} />
-    </View>
+    <CustomerCard
+      onPress={handleOnCustomerPress(item)}
+      cariKod={item.CariKod}
+      isim={item.Isim}
+      alacak={item.Alacak}
+      il={item.Il}
+      dynamicColors={{
+        backgroundColor: index % 2 === 0 ? theme.background : theme.backgroundAlt,
+        borderMain: index % 2 === 0 ? theme.primary : theme.primaryAlt,
+        borderExtension1: index % 2 === 0 ? theme.primary_100 : theme.primaryAlt_100,
+        borderExtension2: index % 2 === 0 ? theme.primary_200 : theme.primaryAlt_200,
+        initialsWrapper: index % 2 === 0 ? theme.primary : theme.primaryAlt,
+      }}
+    />
   );
 
   const renderSkeletonItem = ({ index }) => <CustomerCardSkeleton backgroundColor={index % 2 === 0 ? theme.backgroundAlt : theme.background} />;
@@ -126,6 +123,7 @@ const CurrentScreen = ({ navigation, route }) => {
         renderItem={loading ? renderSkeletonItem : renderItem}
         keyExtractor={(item, index) => (loading ? index.toString() : item.CariKod)}
         contentContainerStyle={styles.listContainer}
+        ItemSeparatorComponent={<View style={{height: 1, backgroundColor: theme.separator }} />}
         keyboardShouldPersistTaps='handled'
       />
     </View>

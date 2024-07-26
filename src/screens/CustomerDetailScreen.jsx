@@ -59,7 +59,7 @@ const CustomerDetailScreen = ({ navigation, route }) => {
             topTitle={summaryData.topTitle}
             topValue={summaryData.topValue}
             listElements={summaryData.listElements}
-            style={{ borderTopWidth: index === 0 ? 2 : 0, borderTopColor: theme.primary }}
+            style={{ borderTopWidth: index === 0 ? 2 : 0, borderTopColor: theme.primaryAlt }}
           />
         ))}
       </View>
@@ -73,7 +73,7 @@ const CustomerDetailScreen = ({ navigation, route }) => {
             routeNames={routeNames}
           />
         )}
-        ItemSeparatorComponent={<View style={{width: '100%', height: 1, backgroundColor: theme.separator}} />}
+        ItemSeparatorComponent={<View style={{width: '100%', height: 0.7, backgroundColor: theme.separator}} />}
       />
     </View>
   );

@@ -1,11 +1,9 @@
 import { StyleSheet, Text, View, BackHandler } from 'react-native';
 import React, { useEffect, useMemo, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { changeTheme } from '../features/themeData/themeSlice';
 import CustomHeader from '../components/CustomHeader';
 import { useTheme } from '../constants/colors';
 
-const SettingsScreen = ({ navigation }) => {
+const UploadDataScreen = ({ navigation }) => {
 
   useEffect(() => {
     const backAction = () => {
@@ -27,9 +25,8 @@ const SettingsScreen = ({ navigation }) => {
   return (
     <View style={styles.container}>
       <CustomHeader
-        title="Settings"
+        title="Yükle"
         navigation={navigation}
-        hasDrawer
       />
     </View>
   );
@@ -49,4 +46,4 @@ const getStyles = (theme) => StyleSheet.create({
   },
 });
 
-export default SettingsScreen;
+export default UploadDataScreen;

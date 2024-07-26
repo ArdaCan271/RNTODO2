@@ -1,6 +1,6 @@
 // CustomerCard.js
-import React, {useMemo} from 'react';
-import { View, Text, StyleSheet, Dimensions, Pressable, TouchableOpacity } from 'react-native';
+import React, { useMemo } from 'react';
+import { View, Text, StyleSheet, Dimensions, Pressable, TouchableOpacity, TouchableHighlight } from 'react-native';
 import colors from '../constants/colors';
 
 import { useTheme } from '../constants/colors';
@@ -34,39 +34,43 @@ const CustomerCard = ({ cariKod, isim, alacak, il, onPress, dynamicColors }) => 
   const initials = getInitials(isim);
 
   return (
-    <View style={[styles.cardWrapper, {borderLeftColor: dynamicColors.borderMain, backgroundColor: dynamicColors.backgroundColor}]}>
-      <TouchableOpacity 
-        onPress={onPress}
+    <TouchableHighlight 
+      style={[styles.cardWrapper, { borderLeftColor: dynamicColors.borderMain, backgroundColor: dynamicColors.backgroundColor }]}
+      onPress={onPress}
+      underlayColor={theme.gray}
+      activeOpacity={0.7}
+    >
+      <View
         style={styles.cardPressable}
       >
-        <View style={styles.topLeft}>
-          <View style={[styles.initialsWrapper, {backgroundColor: dynamicColors.initialsWrapper}]}>
-            <Text style={styles.initials}>
-              { initials }
+          <View style={styles.topLeft}>
+            <View style={[styles.initialsWrapper, { backgroundColor: dynamicColors.initialsWrapper }]}>
+              <Text style={styles.initials}>
+                {initials}
+              </Text>
+            </View>
+            <View style={styles.textWrapper}>
+              <Text style={styles.cariKod}>{cariKod}</Text>
+              <Text style={styles.isim}>{isim}</Text>
+            </View>
+          </View>
+          {il !== '' &&
+            <View style={styles.bottomLeft}>
+              <View style={styles.locationIconWrapper}>
+                <Ionicons name="location-outline" size={18} color={theme.primary} />
+              </View>
+              <Text style={styles.il}>{il}</Text>
+            </View>
+          }
+          <View style={styles.bottomRight}>
+            <Text style={styles.alacakWhole}>
+              ₺{lira}
+              <Text style={styles.alacakDecimal}>,{kurus}</Text>
             </Text>
           </View>
-          <View style={styles.textWrapper}>
-            <Text style={styles.cariKod}>{cariKod}</Text>
-            <Text style={styles.isim}>{isim}</Text>
-          </View>
-        </View>
-        {il !== '' &&
-          <View style={styles.bottomLeft}>
-          <View style={styles.locationIconWrapper}>
-            <Ionicons name="location-outline" size={18} color={theme.primary}/>
-          </View>
-          <Text style={styles.il}>{il}</Text>
-        </View>
-        }
-        <View style={styles.bottomRight}>
-          <Text style={styles.alacakWhole}>
-          ₺{lira}
-            <Text style={styles.alacakDecimal}>,{kurus}</Text>
-          </Text>
-        </View>
-        <Ionicons name="chevron-forward" size={24} color={theme.primary} style={styles.chevron} />
-      </TouchableOpacity>
-    </View>
+          <Ionicons name="chevron-forward" size={24} color={theme.primary} style={styles.chevron} />
+      </View>
+    </TouchableHighlight>
   );
 };
 
