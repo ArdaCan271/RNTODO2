@@ -1,84 +1,101 @@
-import React from 'react';
-import { ScrollView, View, FlatList, Text, StyleSheet } from 'react-native';
+import React, { useState } from 'react';
+import { ScrollView, View, FlatList, Text, StyleSheet, Button } from 'react-native';
 
 import { useTheme } from '../../constants/colors';
 
 import HeaderRow from './HeaderRow';
 import DataRow from './DataRow';
 
-const Table = ({ headerList, rowList, fieldWidths }) => {
+const Table = ({ headerList, rowList, fieldWidths, headerComponent, dataComponent }) => {
   const theme = useTheme();
   const styles = getStyles(theme);
 
-  const headerComponent = (title, item) => {
-    return (
-      <View style={styles.headerCellComponent}>
-        <Text style={styles.headerCellText}>{title}</Text>
-      </View>
-    );
+  const formattedDate = (date) => {
+    const dateObj = new Date(date);
+
+    if (isNaN(dateObj.getTime())) {
+      return '';
+    }
+
+    const day = String(dateObj.getDate()).padStart(2, '0');
+    const month = String(dateObj.getMonth() + 1).padStart(2, '0');
+    const year = dateObj.getFullYear();
+
+    return `${day}.${month}.${year}`;
   };
 
-  const dataComponent = (data, itemHeader, item) => {
+  const formattedCurrency = (currency) => {
+    if (isNaN(currency)) {
+      return '';
+    }
 
-    const formattedDate = (date) => {
-      const dateObj = new Date(date);
+    const formattedNumber = Number(currency).toFixed(2);
+    const [integerPart, decimalPart] = formattedNumber.split('.');
+    const integerPartWithSeparators = integerPart.replace(/\B(?=(\d{3})+(?!\d))/g, '.');
 
-      if (isNaN(dateObj.getTime())) {
-        return '';
-      }
+    return `${integerPartWithSeparators},${decimalPart}`;
+  };
 
-      const day = String(dateObj.getDate()).padStart(2, '0');
-      const month = String(dateObj.getMonth() + 1).padStart(2, '0');
-      const year = dateObj.getFullYear();
+  const formatData = (data, type) => {
+    if (type === 'date') {
+      return formattedDate(data);
+    } else if (type === 'currency') {
+      return formattedCurrency(data);
+    } else {
+      return data;
+    }
+  };
 
-      return `${day}.${month}.${year}`;
-    };
-
-    const formattedCurrency = (currency) => {
-      if (isNaN(currency)) {
-        return ''; 
-      }
-
-      const formattedNumber = Number(currency).toFixed(2);
-      const [integerPart, decimalPart] = formattedNumber.split('.');
-      const integerPartWithSeparators = integerPart.replace(/\B(?=(\d{3})+(?!\d))/g, '.');
-
-      return `${integerPartWithSeparators},${decimalPart}`;
-    };
-
-    if (itemHeader.Type === 'date') {
-      return (
-        <View style={styles.dataCellComponent}>
-          <Text style={styles.dataCellText}>{formattedDate(data)}</Text>
-        </View>
-      );
-    } else if (itemHeader.Type === 'currency') {
-      return (
-        <View style={styles.dataCellComponent}>
-          <Text style={styles.dataCellText}>{formattedCurrency(data)}</Text>
-        </View>
-      );
+  const tableHeaderComponent = (title, item) => {
+    if (headerComponent) {
+      return headerComponent(title, item, styles);
     } else {
       return (
-        <View style={styles.dataCellComponent}>
-          <Text numberOfLines={2} style={styles.dataCellText}>{data}</Text>
+        <View 
+          style={styles.headerCellComponent}
+        >
+          <Text 
+            style={styles.headerCellText}
+            numberOfLines={2}
+          >
+            {title}
+          </Text>
+        </View>
+      );
+    }
+  };
+
+  const tableDataComponent = (data, itemHeader, item) => {
+    if (dataComponent) {
+      return dataComponent(data, itemHeader, item, formatData, styles);
+    } else {
+      return (
+        <View 
+          style={styles.dataCellComponent}
+        >
+          <Text 
+            style={styles.dataCellText}
+            numberOfLines={1}
+          >
+            {formatData(data, itemHeader.Type)}
+          </Text>
         </View>
       );
     }
   };
 
   return (
-    <ScrollView contentContainerStyle={styles.tableContainer} horizontal>
+    <ScrollView contentContainerStyle={styles.tableContainer} horizontal bounces={false}>
       <View style={styles.tableContainerView}>
         <HeaderRow
           headerList={headerList}
-          headerComponent={headerComponent}
+          headerComponent={tableHeaderComponent}
           headerCellStyle={{
             width: 100,
-            height: 40,
+            height: 34,
             justifyContent: 'center',
             alignItems: 'center',
-            backgroundColor: theme.primary,                    
+            backgroundColor: theme.primary,
           }}
           fieldWidths={fieldWidths}
         />
@@ -89,10 +106,10 @@ const Table = ({ headerList, rowList, fieldWidths }) => {
             <DataRow
               item={item}
               headerList={headerList}
-              dataComponent={dataComponent}
+              dataComponent={tableDataComponent}
               dataCellStyle={{
                 width: 100,
-                height: 40,
+                height: 32,
                 justifyContent: 'center',
                 alignItems: 'center',
                 backgroundColor: index % 2 === 0 ? theme.background : theme.backgroundAlt,
@@ -123,6 +140,8 @@ const getStyles = (theme) => StyleSheet.create({
   headerCellText: {
     color: theme.white,
     textAlign: 'center',
+    fontSize: 12,
+    marginHorizontal: 5,
   },
   dataCellComponent: {
     justifyContent: 'center',
@@ -131,6 +150,15 @@ const getStyles = (theme) => StyleSheet.create({
   dataCellText: {
     color: theme.text,
     textAlign: 'center',
+  },
+  paginationContainer: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 10,
+  },
+  pageIndicator: {
+    marginHorizontal: 10,
   },
 });
 

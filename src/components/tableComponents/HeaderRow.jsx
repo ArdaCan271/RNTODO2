@@ -13,6 +13,7 @@ const HeaderRow = ({ headerList, headerComponent, headerCellStyle, fieldWidths }
   return (
     <View style={styles.headerContainer}>
       {headerList.map((header, index) => (
+        header.Visibility &&
         <HeaderCell 
           key={index} 
           visible={header.Visibility} 

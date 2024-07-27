@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, View, BackHandler, Text, ScrollView, FlatList} from 'react-native';
+import { StyleSheet, View, BackHandler, Text, ScrollView, FlatList, TouchableOpacity} from 'react-native';
 import { useTheme } from '../constants/colors';
 
 import axios from 'axios';
@@ -8,6 +8,8 @@ import { useSelector } from 'react-redux';
 import CustomHeader from '../components/CustomHeader';
 
 import Table from '../components/tableComponents/Table';
+
+import FontAwesome from 'react-native-vector-icons/FontAwesome';
 
 const ExtractReportScreen = ({ navigation }) => {
 
@@ -50,38 +52,85 @@ const ExtractReportScreen = ({ navigation }) => {
     }
   };
 
-  const sampleFields = {
-      "CurrentCode": "100 01 001",
-      "CurrentName": "MÜŞTERİ 005",
-      "CurrentCity": "",
-      "SalesmanCode": "90",
-      "IncNo": 13235,
-      "Date": "2022-01-28T00:00:00",
-      "ReceiptNo": "MS39",
-      "Description": "ACIKLAMA SATIRI",
-      "TermDate": "2022-01-28T00:00:00",
-      "Debit": 0.00000000,
-      "Credit": 320.25000000,
-      "DebitBalance": 0.00000000,
-      "CreditBalance": -5707466.90260000,
-      "SubDocumentConnectionId": "MS39"
-  };
-
   const fieldWidths = {
-    CurrentCode: 100,
+    CurrentCode: 120,
     CurrentName: 200,
-    CurrentCity: 100,
-    SalesmanCode: 100,
+    CurrentCity: 120,
+    SalesmanCode: 150,
     IncNo: 0,
-    Date: 100,
-    ReceiptNo: 100,
+    Date: 120,
+    ReceiptNo: 150,
     Description: 250,
-    TermDate: 100,
+    TermDate: 120,
     Debit: 120,
     Credit: 120,
     DebitBalance: 120,
     CreditBalance: 120,
     SubDocumentConnectionId: 0,
+  };
+
+  const headerComponent = (title, item, defaultStyle) => {
+    return (
+      <View style={[defaultStyle.headerCellComponent, styles.headerCellComponent]}>
+        {item.IsFilter &&
+          <TouchableOpacity
+            onPress={() => {
+              console.log('Filter pressed');
+            }}
+            style={styles.filterButton}
+          >
+            <FontAwesome name="filter" size={20} color={theme.white} />
+          </TouchableOpacity>
+        }
+        <Text 
+          style={[defaultStyle.headerCellText, styles.headerCellText]}
+          numberOfLines={2}
+        >
+          {title}
+        </Text>
+        {item.Sortable &&
+          <TouchableOpacity
+            onPress={() => {
+              console.log('Sort pressed');
+            }}
+            style={styles.sortButton}
+          >
+            <FontAwesome name="sort" size={20} color={theme.white} />
+          </TouchableOpacity>
+        }
+      </View>
+    );
+  };
+
+  const dataComponent = (data, itemHeader, item, formatter, defaultStyle) => {
+    return (
+      <View style={[defaultStyle.dataCellComponent, styles.dataCellComponent]}>
+        <Text 
+          style={[defaultStyle.dataCellText, styles.dataCellText]}
+          numberOfLines={1}
+        >
+          {formatter(data, itemHeader.Type)}
+        </Text>
+      </View>
+    );
+  };
+
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 30;
+
+  const totalPages = Math.ceil(rowList.length / itemsPerPage);
+  const paginatedData = rowList.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
+
+  const handleNextPage = () => {
+    if (currentPage < totalPages) {
+      setCurrentPage(currentPage + 1);
+    }
+  };
+
+  const handlePreviousPage = () => {
+    if (currentPage > 1) {
+      setCurrentPage(currentPage - 1);
+    }
   };
 
 
@@ -91,10 +140,27 @@ const ExtractReportScreen = ({ navigation }) => {
         title="Genel Ekstre Raporu"
         navigation={navigation}
       />
+      <View style={{ flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'center' }}>
+        <TouchableOpacity
+          onPress={handlePreviousPage}
+          style={{ padding: 6, backgroundColor: theme.primary, borderRadius: 5, marginRight: 5 }}
+        >
+          <FontAwesome name="chevron-left" size={20} color={theme.white} />
+        </TouchableOpacity>
+        <Text style={{ color: theme.text }}>{`${currentPage} / ${totalPages}`}</Text>
+        <TouchableOpacity
+          onPress={handleNextPage}
+          style={{ padding: 6, backgroundColor: theme.primary, borderRadius: 5, marginLeft: 5, marginRight: 50 }}
+        >
+          <FontAwesome name="chevron-right" size={20} color={theme.white} />
+        </TouchableOpacity>
+      </View>
       <Table
         headerList={headerList}
-        rowList={rowList}
+        rowList={paginatedData}
         fieldWidths={fieldWidths}
+        headerComponent={headerComponent}
+        dataComponent={dataComponent}
       />
     </View>
   );
@@ -107,44 +173,37 @@ const getStyles = (theme) => StyleSheet.create({
     backgroundColor: theme.background,
     paddingTop: theme.padding.header,
   },
-  tableContainer: {
-  },
-  tableContainerView: {
-    flex: 1,
-    flexDirection: 'column',
-  },
-  headerContainer: {
-    flexDirection: 'row',
-    height: 40,
-  },
-  headerCell: {
+  headerCellComponent: {
+    width: '100%',
+    height: '100%',
     justifyContent: 'center',
     alignItems: 'center',
-    paddingHorizontal: 6,
-    backgroundColor: theme.primary,
-    borderWidth: 1,
-    borderColor: theme.black,
-    width: 100,
+    flexDirection: 'row',
   },
-  headerText: {
+  filterButton: {
+    flex: 1,
+    padding: 3,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  sortButton: {
+    flex: 1,
+    padding: 3,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  headerCellText: {
     color: theme.white,
     textAlign: 'center',
+    flex: 2,
   },
-  rowContainer: {
-    flexDirection: 'row',
-    height: 40,
-  },
-  rowCell: {
+  dataCellComponent: {
+    flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    paddingHorizontal: 6,
-    backgroundColor: theme.background,
-    borderWidth: 1,
-    borderColor: theme.red,
-    width: 100,
   },
-  rowText: {
-    color: theme.black,
+  dataCellText: {
+    color: theme.text,
     textAlign: 'center',
   },
 });

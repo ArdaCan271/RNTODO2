@@ -31,10 +31,8 @@ const MenuItem = ({ item, level = 0, onPress, navigation, style, props = '', rou
           onPress={() => {
             if(routeNames.includes(item.mobile)) {
               navigation.navigate(item.mobile, { childrenOfMenuItem: item.children, props: props });
-              console.log(routeNames);
             } else if (hasChildren) {
               navigation.navigate('MenuChildren', { parent: item });
-              console.log(routeNames);
             } else {
               navigation.navigate('PageNotFound', { routeName: item.id });
               console.log('No route found for ' + item.mobile);

@@ -68,7 +68,6 @@ const StackNavigator = ({ drawerNavigator }) => {
         options={{
           headerShown: false,
           animation: 'ios',
-          orientation: 'landscape',
         }}
       />
       <Stack.Screen

@@ -12,6 +12,7 @@ const DataRow = ({ item, headerList, dataComponent, dataCellStyle, fieldWidths }
   return (
     <View style={styles.rowContainer}>
       {headerList.map((header, index) => (
+        header.Visibility &&
         <DataCell 
           key={index} 
           visible={header.Visibility} 

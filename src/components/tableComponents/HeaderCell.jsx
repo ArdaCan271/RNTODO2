@@ -10,8 +10,8 @@ const HeaderCell = ({children, visible, cellStyle, fieldWidth}) => {
 
   return (
     <View style={[cellStyle, {
-        width: visible ? fieldWidth : 0, 
-        paddingHorizontal: visible ? 6 : 0,
+        width: visible ? fieldWidth : 0,
+        borderTopWidth: visible ? 1 : 0,
         borderRightWidth: visible ? 1 : 0,
         borderBottomWidth: visible ? 1 : 0,
       }]}>
