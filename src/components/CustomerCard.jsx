@@ -1,6 +1,6 @@
 // CustomerCard.js
 import React, { useMemo } from 'react';
-import { View, Text, StyleSheet, Dimensions, Pressable, TouchableOpacity, TouchableHighlight } from 'react-native';
+import { View, Text, StyleSheet, Dimensions, Pressable, TouchableOpacity, TouchableHighlight, useWindowDimensions } from 'react-native';
 import colors from '../constants/colors';
 
 import { useTheme } from '../constants/colors';
@@ -26,6 +26,8 @@ const getInitials = (isim) => {
 
 const CustomerCard = ({ cariKod, isim, alacak, il, onPress, dynamicColors }) => {
 
+  const windowWidth = useWindowDimensions().width;
+
   const theme = useTheme();
   const styles = useMemo(() => getStyles(theme), [theme]);
 
@@ -35,7 +37,7 @@ const CustomerCard = ({ cariKod, isim, alacak, il, onPress, dynamicColors }) => 
 
   return (
     <TouchableHighlight 
-      style={[styles.cardWrapper, { borderLeftColor: dynamicColors.borderMain, backgroundColor: dynamicColors.backgroundColor }]}
+      style={[styles.cardWrapper, { width: windowWidth, borderLeftColor: dynamicColors.borderMain, backgroundColor: dynamicColors.backgroundColor }]}
       onPress={onPress}
       underlayColor={theme.gray}
       activeOpacity={0.7}
@@ -77,7 +79,6 @@ const CustomerCard = ({ cariKod, isim, alacak, il, onPress, dynamicColors }) => 
 const getStyles = (theme) => StyleSheet.create({
   cardWrapper: {
     backgroundColor: theme.background,
-    width: Dimensions.get('window').width,
     height: 100,
     borderLeftWidth: 15,
     overflow: 'hidden',

@@ -10,6 +10,7 @@ import PageNotFoundScreen from '../screens/PageNotFoundScreen';
 import MenuChildrenScreen from '../screens/MenuChildrenScreen';
 import SettingsScreen from '../screens/SettingsScreen';
 import UploadDataScreen from '../screens/UploadDataScreen';
+import ExtractReportScreen from '../screens/ExtractReportScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -59,6 +60,15 @@ const StackNavigator = ({ drawerNavigator }) => {
         options={{
           headerShown: false,
           animation: 'ios',
+        }}
+      />
+      <Stack.Screen
+        name="ExtractReport"
+        component={ExtractReportScreen}
+        options={{
+          headerShown: false,
+          animation: 'ios',
+          orientation: 'landscape',
         }}
       />
       <Stack.Screen

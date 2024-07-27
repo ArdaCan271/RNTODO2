@@ -50,8 +50,10 @@ const CustomerDetailScreen = ({ navigation, route }) => {
   return (
     <View style={styles.container}>
       <CustomHeader navigation={navigation} title="Müşteri Detayı" />
-      <Text style={styles.customerName}>{route.params.customer.Isim}</Text>
-      <View style={styles.summariesWrapper}>
+      <View style={styles.customerNameWrapper}>
+        <Text style={styles.customerName}>{route.params.customer.Isim}</Text>
+      </View>
+      {/* <View style={styles.summariesWrapper}>
         {sampleSummaryData.map((summaryData, index) => (
           <CustomerDetailSummary
             key={index}
@@ -62,7 +64,7 @@ const CustomerDetailScreen = ({ navigation, route }) => {
             style={{ borderTopWidth: index === 0 ? 2 : 0, borderTopColor: theme.primaryAlt }}
           />
         ))}
-      </View>
+      </View> */}
       <FlatList
         data={menuItems}
         keyExtractor={(item) => item.mobile}
@@ -73,7 +75,20 @@ const CustomerDetailScreen = ({ navigation, route }) => {
             routeNames={routeNames}
           />
         )}
-        ItemSeparatorComponent={<View style={{width: '100%', height: 0.7, backgroundColor: theme.separator}} />}
+        ListHeaderComponent={
+          <View style={styles.summariesWrapper}>
+          {sampleSummaryData.map((summaryData, index) => (
+            <CustomerDetailSummary
+              key={index}
+              topCircleColor={summaryData.topCircleColor}
+              topTitle={summaryData.topTitle}
+              topValue={summaryData.topValue}
+              listElements={summaryData.listElements}
+            />
+          ))}
+        </View>
+        }
+        ItemSeparatorComponent={<View style={{width: '100%', height: 1, backgroundColor: theme.separator}} />}
       />
     </View>
   );
@@ -83,7 +98,13 @@ const getStyles = (theme) => StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: theme.background,
-    paddingTop: 50,
+    paddingTop: theme.padding.header,
+  },
+  customerNameWrapper: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderBottomColor: theme.primaryAlt,
+    borderBottomWidth: 2,
   },
   customerName: {
     marginTop: 4,
@@ -95,7 +116,6 @@ const getStyles = (theme) => StyleSheet.create({
   summariesWrapper: {
     flexDirection: 'column',
     justifyContent: 'flex-start',
-    paddingTop: 4,
   },
 });
 

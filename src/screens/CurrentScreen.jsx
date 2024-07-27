@@ -1,16 +1,21 @@
 // CurrentScreen.js
 import React, { useState, useEffect, useRef, useMemo } from 'react';
-import { StyleSheet, Text, View, BackHandler, FlatList, Dimensions, TextInput } from 'react-native';
+import { StyleSheet, Text, View, BackHandler, FlatList, Dimensions, TextInput, useWindowDimensions } from 'react-native';
 import axios from 'axios';
 import { useSelector } from 'react-redux';
 import { useTheme } from '../constants/colors';
+
+
 import CustomHeader from '../components/CustomHeader';
 import CustomerCard from '../components/CustomerCard';
-import CustomerCardSkeleton from '../components/CustomerCardSkeleton'; // Import the skeleton component
+import CustomerCardSkeleton from '../components/CustomerCardSkeleton';
 
 const CurrentScreen = ({ navigation, route }) => {
   const { childrenOfMenuItem } = route.params;
+
   const userToken = useSelector((state) => state.userData.data.token);
+  const baseRequestURL = useSelector((state) => state.baseRequestURL.value);
+
   const theme = useTheme();
   const styles = useMemo(() => getStyles(theme), [theme]);
 
@@ -21,6 +26,8 @@ const CurrentScreen = ({ navigation, route }) => {
 
   const searchTimeout = useRef(null);
   const searchInputRef = useRef(null);
+
+  const windowWidth = useWindowDimensions().width;
 
   useEffect(() => {
     getCustomerList();
@@ -43,7 +50,7 @@ const CurrentScreen = ({ navigation, route }) => {
   }, [navigation]);
 
   const getCustomerList = async () => {
-    const apiUrl = 'https://duyu.alter.net.tr/api/getCustomerList';
+    const apiUrl = `${baseRequestURL}/getCustomerList`;
     try {
       const response = await axios.post(apiUrl, {
         token: 'RasyoIoToken2021',
@@ -51,10 +58,10 @@ const CurrentScreen = ({ navigation, route }) => {
       });
       setCustomerList(response.data);
       setFilteredCustomerList(response.data); // Initialize the filtered list
-      setLoading(false); // Set loading to false after fetching data
+      setLoading(false);
     } catch (error) {
       console.log(error);
-      setLoading(false); // Set loading to false in case of an error
+      setLoading(false);
     }
   };
 
@@ -122,7 +129,7 @@ const CurrentScreen = ({ navigation, route }) => {
         data={loading ? Array(10).fill({}) : filteredCustomerList} // Show skeleton loaders if loading
         renderItem={loading ? renderSkeletonItem : renderItem}
         keyExtractor={(item, index) => (loading ? index.toString() : item.CariKod)}
-        contentContainerStyle={styles.listContainer}
+        contentContainerStyle={[styles.listContainer, { width: windowWidth}]}
         ItemSeparatorComponent={<View style={{height: 1, backgroundColor: theme.separator }} />}
         keyboardShouldPersistTaps='handled'
       />
@@ -140,7 +147,6 @@ const getStyles = (theme) => StyleSheet.create({
     paddingTop: theme.padding.header,
   },
   listContainer: {
-    width: Dimensions.get('window').width,
     alignItems: 'center',
   },
   searchInputWrapper: {

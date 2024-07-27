@@ -1,9 +1,13 @@
 import React, { useState, useRef } from 'react';
 import { View, Text, TextInput, Button, StyleSheet, Pressable, Keyboard, TouchableOpacity } from 'react-native';
+
+
 import { useDispatch, useSelector } from 'react-redux';
 import { setEmail, setPassword } from '../features/loginData/loginDataSlice';
 import { setMenuBJSON } from '../features/userMenuBJSON/userMenuBJSONSlice';
 import { setUserData } from '../features/userData/userDataSlice';
+import { setBaseRequestURL } from '../features/baseRequestURL/baseRequestURLSlice';
+
 import axios from 'axios';
 import { useTheme } from '../constants/colors';
 import Icon from 'react-native-vector-icons/Ionicons';
@@ -36,6 +40,7 @@ const LoginScreen = ({ navigation }) => {
       dispatch(setPassword(inputPassword));
       dispatch(setMenuBJSON(response.data.menu_bjson));
       dispatch(setUserData(response.data));
+      dispatch(setBaseRequestURL(response.data['target-url']));
       setInputPassword('');
       setInputWarning('');
       setShowPassword(false);

@@ -24,7 +24,7 @@ const CustomHeader = ({ navigation, title, hasDrawer }) => {
         style={styles.button}
         onPress={handleButtonPress}
       >
-        <Ionicons name={hasDrawer ? 'menu' : 'arrow-back'} size={30} color={theme.primary} />
+        <Ionicons name={hasDrawer ? 'menu' : 'caret-back'} size={30} color={theme.primary} />
       </TouchableOpacity>
 
       <Text style={styles.title}>{title}</Text>
@@ -43,13 +43,15 @@ const getStyles = (theme) => StyleSheet.create({
     position: 'absolute',
     top: 0,
     width: '100%',
-    height: 54,
+    height: 45,
     elevation: 4,
   },
   title: {
-    fontSize: 20,
+    fontSize: 18,
     fontWeight: 'bold',
     color: theme.primary,
+    width: '70%',
+    textAlign: 'center',
   },
   button: {
     padding: 6,

@@ -1,5 +1,5 @@
-import React, {useState} from 'react';
-import { StyleSheet, View, Text, Pressable, Touchable, TouchableOpacity, Dimensions } from 'react-native';
+import React, {useEffect, useState} from 'react';
+import { StyleSheet, View, Text, Pressable, Touchable, TouchableOpacity, Dimensions, useWindowDimensions } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import FeatherIcon from 'react-native-vector-icons/Feather';
 
@@ -11,6 +11,9 @@ import DrawerMenu from './DrawerMenu';
 
 
 const CustomBottomTab = ({ navigation }) => {
+
+  const windowWidth = useWindowDimensions().width;
+
   const theme = useTheme();
   const styles = getStyles(theme);
 
@@ -58,7 +61,7 @@ const CustomBottomTab = ({ navigation }) => {
       >
       </View>
       <Pressable 
-        style={styles.menuButton}
+        style={[styles.menuButton, {left: windowWidth / 2 - 31}]}
         onPress={openDrawer}
       >
         <Icon name="menu" size={50} color={theme.background} />
@@ -113,7 +116,6 @@ const getStyles = (theme) => StyleSheet.create({
     padding: 6,
     position: 'absolute',
     bottom: 10,
-    left: Dimensions.get('window').width / 2 - 31,
     elevation: 6,
   },
   connectionButton: {

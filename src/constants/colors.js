@@ -32,7 +32,7 @@ const baseTheme = {
     display2: 36,
   },
   padding: {
-    header: 54,
+    header: 45,
     bottomBar: 54,
   },
   dimensions:{

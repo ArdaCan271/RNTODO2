@@ -43,7 +43,7 @@ const MenuScreen = ({ navigation, route }) => {
             />
         )}
         ListFooterComponent={lastViewVisible && <View style={{height: 18, alignSelf: 'flex-start', width: 10, backgroundColor: theme.primary}} />}
-        ItemSeparatorComponent={<View style={{width: '100%', height: 0.7, backgroundColor: theme.separator}} />}
+        ItemSeparatorComponent={<View style={{width: '100%', height: 1, backgroundColor: theme.separator}} />}
         onScrollBeginDrag={() => {
           if (!lastViewVisible){
             setLastViewVisible(true);
