@@ -5,7 +5,6 @@ import axios from 'axios';
 import { useSelector } from 'react-redux';
 import { useTheme } from '../constants/colors';
 
-
 import CustomHeader from '../components/CustomHeader';
 import CustomerCard from '../components/CustomerCard';
 import CustomerCardSkeleton from '../components/CustomerCardSkeleton';
@@ -102,7 +101,7 @@ const CurrentScreen = ({ navigation, route }) => {
         );
         setFilteredCustomerList(filteredList);
       }
-    }, 1500);
+    }, 500);
   };
 
   const handleInputSubmit = () => {
