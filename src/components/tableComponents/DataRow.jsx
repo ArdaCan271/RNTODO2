@@ -4,7 +4,7 @@ import DataCell from './DataCell';
 
 import { useTheme } from '../../constants/colors';
 
-const DataRow = ({ item, headerList, dataComponent, dataCellStyle, fieldWidths }) => {
+const DataRow = ({ item, headerList, customDataComponent, dataCellStyle, fieldWidths }) => {
 
   const theme = useTheme();
   const styles = getStyles(theme);
@@ -19,7 +19,7 @@ const DataRow = ({ item, headerList, dataComponent, dataCellStyle, fieldWidths }
           cellStyle={dataCellStyle}
           fieldWidth={fieldWidths && fieldWidths[header.Field] ? fieldWidths[header.Field] : 100}
         >
-          {dataComponent(item[header.Field], header, item)}
+          {customDataComponent(item[header.Field], header, item)}
         </DataCell>
       ))}
     </View>

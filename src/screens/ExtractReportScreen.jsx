@@ -115,52 +115,18 @@ const ExtractReportScreen = ({ navigation }) => {
     );
   };
 
-  const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 30;
-
-  const totalPages = Math.ceil(rowList.length / itemsPerPage);
-  const paginatedData = rowList.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
-
-  const handleNextPage = () => {
-    if (currentPage < totalPages) {
-      setCurrentPage(currentPage + 1);
-    }
-  };
-
-  const handlePreviousPage = () => {
-    if (currentPage > 1) {
-      setCurrentPage(currentPage - 1);
-    }
-  };
-
-
   return (
     <View style={styles.container}>
       <CustomHeader
         title="Genel Ekstre Raporu"
         navigation={navigation}
       />
-      <View style={{ flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'center' }}>
-        <TouchableOpacity
-          onPress={handlePreviousPage}
-          style={{ padding: 6, backgroundColor: theme.primary, borderRadius: 5, marginRight: 5 }}
-        >
-          <FontAwesome name="chevron-left" size={20} color={theme.white} />
-        </TouchableOpacity>
-        <Text style={{ color: theme.text }}>{`${currentPage} / ${totalPages}`}</Text>
-        <TouchableOpacity
-          onPress={handleNextPage}
-          style={{ padding: 6, backgroundColor: theme.primary, borderRadius: 5, marginLeft: 5, marginRight: 50 }}
-        >
-          <FontAwesome name="chevron-right" size={20} color={theme.white} />
-        </TouchableOpacity>
-      </View>
       <Table
         headerList={headerList}
-        rowList={paginatedData}
+        rowList={rowList}
         fieldWidths={fieldWidths}
-        headerComponent={headerComponent}
-        dataComponent={dataComponent}
+        customDataComponent={dataComponent}
+        itemsPerPage={30}
       />
     </View>
   );
