@@ -31,7 +31,6 @@ const ExtractReportScreen = ({ navigation }) => {
     return () => backHandler.remove();
   }, []);
 
-
   const userToken = useSelector((state) => state.userData.data.token);
   const baseRequestURL = useSelector((state) => state.baseRequestURL.value);
 
@@ -69,52 +68,6 @@ const ExtractReportScreen = ({ navigation }) => {
     SubDocumentConnectionId: 0,
   };
 
-  const headerComponent = (title, item, defaultStyle) => {
-    return (
-      <View style={[defaultStyle.headerCellComponent, styles.headerCellComponent]}>
-        {item.IsFilter &&
-          <TouchableOpacity
-            onPress={() => {
-              console.log('Filter pressed');
-            }}
-            style={styles.filterButton}
-          >
-            <FontAwesome name="filter" size={20} color={theme.white} />
-          </TouchableOpacity>
-        }
-        <Text 
-          style={[defaultStyle.headerCellText, styles.headerCellText]}
-          numberOfLines={2}
-        >
-          {title}
-        </Text>
-        {item.Sortable &&
-          <TouchableOpacity
-            onPress={() => {
-              console.log('Sort pressed');
-            }}
-            style={styles.sortButton}
-          >
-            <FontAwesome name="sort" size={20} color={theme.white} />
-          </TouchableOpacity>
-        }
-      </View>
-    );
-  };
-
-  const dataComponent = (data, itemHeader, item, formatter, defaultStyle) => {
-    return (
-      <View style={[defaultStyle.dataCellComponent, styles.dataCellComponent]}>
-        <Text 
-          style={[defaultStyle.dataCellText, styles.dataCellText]}
-          numberOfLines={1}
-        >
-          {formatter(data, itemHeader.Type)}
-        </Text>
-      </View>
-    );
-  };
-
   return (
     <View style={styles.container}>
       <CustomHeader
@@ -125,8 +78,8 @@ const ExtractReportScreen = ({ navigation }) => {
         headerList={headerList}
         rowList={rowList}
         fieldWidths={fieldWidths}
-        customDataComponent={dataComponent}
-        itemsPerPage={30}
+        paginationEnabled
+        itemsPerPage={10}
       />
     </View>
   );
