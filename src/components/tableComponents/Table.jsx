@@ -23,13 +23,11 @@ const Table = ({ fieldWidths, customHeaderComponent, customDataComponent, reques
   const styles = getStyles(theme);
 
   const [rowsPerPage, setRowsPerPage] = useState(itemsPerPage);
-  
+
   const fetchTableData = async (requestPageNumber = 1, requestPageSize = 10) => {
     const apiUrl = `${baseRequestURL}/${requestUrl}`;
     try {
       setIsLoading(true);
-      console.log('sending request with requestPageNumber: ' + requestPageNumber);
-      console.log('sending request with requestPageSize: ' + requestPageSize);
       const response = await axios.post(apiUrl, {
         token: 'RasyoIoToken2021',
         user_token: userToken,
@@ -37,11 +35,8 @@ const Table = ({ fieldWidths, customHeaderComponent, customDataComponent, reques
         pageNumber: requestPageNumber,
       });
       setTableHeaderList(response.data[0]);
-      setTableCurrentPage(response.data[1][0].PageNumber);
       setTableTotalPages(response.data[1][0].PageCount);
       setTableRowList(response.data[2]);
-      console.log('received response with PageNumber: ' + response.data[1][0].PageNumber);
-      console.log('received response with PageCount: ' + response.data[1][0].PageCount);
     } catch (error) {
       console.log(error);
     } finally {
@@ -55,17 +50,22 @@ const Table = ({ fieldWidths, customHeaderComponent, customDataComponent, reques
   const [tableRowList, setTableRowList] = useState([]);
 
   const [tableCurrentPage, setTableCurrentPage] = useState(1);
+
   const [tableTotalPages, setTableTotalPages] = useState(1);
-  
-  useEffect(() => {
-    setTableCurrentPage(0);
-  }, [rowsPerPage]);
 
   useEffect(() => {
-    if (tableCurrentPage === 0) {
-      fetchTableData(1, rowsPerPage);
+    if (tableCurrentPage !== 1) {
+      setTableCurrentPage(1);
     } else {
+      fetchTableData(1, rowsPerPage);
+      setSelectedRowIndex(null);
+    }
+  }, [rowsPerPage])
+
+  useEffect(() => {
+    if (!isLoading) {
       fetchTableData(tableCurrentPage, rowsPerPage);
+      setSelectedRowIndex(null);
     }
   }, [tableCurrentPage]);
 
@@ -91,6 +91,30 @@ const Table = ({ fieldWidths, customHeaderComponent, customDataComponent, reques
     }
   };
 
+  const [selectedRowIndex, setSelectedRowIndex] = useState(null);
+
+  const lastTap = useRef(0);
+  const timer = useRef(null);
+
+  const handleRowClick = (index) => {
+    const now = Date.now();
+    const DOUBLE_PRESS_DELAY = 300;
+
+    if (lastTap.current && (now - lastTap.current) < DOUBLE_PRESS_DELAY) {
+      console.log('double clicked');
+      clearTimeout(timer.current); 
+    } else {
+      lastTap.current = now;
+      timer.current = setTimeout(() => {
+        if (selectedRowIndex === index) {
+          setSelectedRowIndex(null);
+        } else {
+          setSelectedRowIndex(index);
+        }
+      }, DOUBLE_PRESS_DELAY);
+    }
+  };
+
   return (
     <View style={styles.tableContainer}>
       {paginationEnabled &&
@@ -105,41 +129,36 @@ const Table = ({ fieldWidths, customHeaderComponent, customDataComponent, reques
           isLoading={isLoading}
         />
       }
-      {
-        isLoading ?
-          <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-            <ActivityIndicator size="large" color={theme.primary} />
+      {isLoading ?
+        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+          <ActivityIndicator size="large" color={theme.primary} />
+        </View>
+        :
+        <ScrollView horizontal>
+          <View style={[styles.tableContainerView, { height: windowHeight - (theme.padding.header + 32), minWidth: windowWidth }]}>
+            <HeaderRow
+              headerList={tableHeaderList}
+              customHeaderComponent={customHeaderComponent}
+              fieldWidths={fieldWidths}
+            />
+            <FlatList
+              data={tableRowList}
+              keyExtractor={(item, index) => index.toString()}
+              renderItem={({ item, index }) => (
+                <TouchableOpacity key={index} style={{ flexDirection: 'row' }} onPress={() => handleRowClick(index)}>
+                  <DataRow
+                    item={item}
+                    headerList={tableHeaderList}
+                    customDataComponent={customDataComponent}
+                    dataRowIndex={index}
+                    fieldWidths={fieldWidths}
+                    backgroundColor={index === selectedRowIndex ? theme.tableHighlight : (index % 2 === 0 ? theme.background : theme.backgroundAlt)}
+                  />
+                </TouchableOpacity>
+              )}
+            />
           </View>
-          :
-          <ScrollView horizontal>
-            <View style={[styles.tableContainerView, { height: windowHeight - (theme.padding.header + 32), minWidth: windowWidth }]}>
-              <HeaderRow
-                headerList={tableHeaderList}
-                customHeaderComponent={customHeaderComponent}
-                fieldWidths={fieldWidths}
-              />
-              <FlashList
-                data={tableRowList}
-                keyExtractor={(item, index) => index.toString()}
-                estimatedItemSize={32}
-                renderItem={({ item, index }) => (
-                  <TouchableOpacity
-                    key={index}
-                    style={{ flexDirection: 'row' }}
-                  >
-                    <DataRow
-                      item={item}
-                      headerList={tableHeaderList}
-                      customDataComponent={customDataComponent}
-                      dataRowIndex={index}
-                      fieldWidths={fieldWidths}
-                      backgroundColor={index % 2 === 0 ? theme.background : theme.backgroundAlt}
-                      />
-                  </TouchableOpacity>
-                )}
-              />
-            </View>
-          </ScrollView>
+        </ScrollView>
       }
     </View>
   );

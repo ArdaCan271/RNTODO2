@@ -68,6 +68,7 @@ export const lightTheme = {
   textPrimary: '#1571b2',
   separator: '#c0c0c0',
   redSupport: "rgba(255, 3, 8, 0.15)",
+  tableHighlight: '#ffff00',
   type:'light'
 };
 
@@ -86,6 +87,7 @@ export const darkTheme = {
   textPrimary: '#009fe3',
   separator: '#303650',
   redSupport: "rgba(255, 3, 8, 0.15)",
+  tableHighlight: '#805500',
   type:'dark'
 };
 
