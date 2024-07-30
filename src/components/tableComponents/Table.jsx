@@ -53,16 +53,6 @@ const Table = ({ fieldWidths, customHeaderComponent, customDataComponent, reques
     }
   };
 
-  useEffect(() => {
-    if (tableCurrentPage !== 1) {
-      setTableCurrentPage(1);
-    } else {
-      fetchTableData(1, rowsPerPage);
-      setSelectedRowIndex(null);
-    }
-  }, [rowsPerPage])
-
-
   const changeRowsPerPage = (newRowsPerPage) => {
     setRowsPerPage(newRowsPerPage);
   };
@@ -109,14 +99,23 @@ const Table = ({ fieldWidths, customHeaderComponent, customDataComponent, reques
   };
 
   const [sortByField, setSortByField] = useState(null);
-  const [sortDirection, setSortDirection] = useState('desc');
+  const [sortDirection, setSortDirection] = useState(null);
+
+  useEffect(() => {
+    if (tableCurrentPage !== 1) {
+      setTableCurrentPage(1);
+    } else {
+      fetchTableData(1, rowsPerPage);
+      setSelectedRowIndex(null);
+    }
+  }, [rowsPerPage, sortByField, sortDirection])
 
   useEffect(() => {
     if (!isLoading) {
       fetchTableData(tableCurrentPage, rowsPerPage);
       setSelectedRowIndex(null);
     }
-  }, [tableCurrentPage, sortByField]);
+  }, [tableCurrentPage]);
 
   return (
     <View style={styles.tableContainer}>
@@ -143,7 +142,10 @@ const Table = ({ fieldWidths, customHeaderComponent, customDataComponent, reques
               headerList={tableHeaderList}
               customHeaderComponent={customHeaderComponent}
               fieldWidths={fieldWidths}
+              sortByField={sortByField}
               setSortByField={setSortByField}
+              sortDirection={sortDirection}
+              setSortDirection={setSortDirection}
             />
             <FlatList
               data={tableRowList}

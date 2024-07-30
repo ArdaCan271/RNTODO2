@@ -1,20 +1,40 @@
 import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
-import React from 'react';
-
+import React, { useState } from 'react';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
-
 import { useTheme } from '../../constants/colors';
 
-
-const DefaultHeaderCellComponent = ({ title, item, setSortByField }) => {
-
+const DefaultHeaderCellComponent = ({ title, item, sortByField, setSortByField, sortDirection, setSortDirection }) => {
   const theme = useTheme();
   const styles = getStyles(theme);
 
   const handleSortPress = () => {
     setSortByField(item.Field);
-    console.log('Sort pressed on ' + item.Field);
+    if (sortDirection === 'asc') {
+      setSortDirection('desc');
+    } else if (sortDirection === 'desc') {
+      setSortDirection(null);
+    } else {
+      setSortDirection('asc');
+    }
   };
+
+  const getSortIcon = () => {
+    if (item.Field === sortByField) {
+      if (sortDirection === 'asc') {
+        return 'sort-asc';
+      } else if (sortDirection === 'desc') {
+        return 'sort-desc';
+      }
+    }
+    return 'sort';
+  }
+
+  const getSortIconColor = () => {
+    if (item.Field === sortByField && (sortDirection === 'asc' || sortDirection === 'desc')) {
+      return theme.tableHighlight;
+    }
+    return theme.white;
+  }
 
   return (
     <View style={styles.headerCellComponent}>
@@ -36,7 +56,11 @@ const DefaultHeaderCellComponent = ({ title, item, setSortByField }) => {
           onPress={handleSortPress}
           style={styles.sortButton}
         >
-          <FontAwesome name="sort" size={20} color={theme.white} />
+          <FontAwesome 
+            name={getSortIcon()} 
+            size={20} 
+            color={getSortIconColor()}
+          />
         </TouchableOpacity>
       }
     </View>
