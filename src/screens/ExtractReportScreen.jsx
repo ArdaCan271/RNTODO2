@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { StyleSheet, View, BackHandler } from 'react-native';
 import { useTheme } from '../constants/colors';
 
@@ -42,6 +42,18 @@ const ExtractReportScreen = ({ navigation }) => {
     SubDocumentConnectionId: 0,
   };
 
+  const [fieldFilters, setFieldFilters] = useState({
+    DateStart: '',
+    DateEnd: '',
+    TermDateStart: '',
+    TermDateEnd: '',
+    CurrentName: '',
+    CurrentCity: '',
+    ReceiptNo: '',
+    SalesmanCode: '',
+    CurrentCode: '',
+  });
+
   return (
     <View style={styles.container}>
       <CustomHeader
@@ -53,6 +65,8 @@ const ExtractReportScreen = ({ navigation }) => {
         requestUrl="DuyuII/CustomerExtract/GetListPaging"
         paginationEnabled
         itemsPerPage={10}
+        fieldFilters={fieldFilters}
+        setFieldFilters={setFieldFilters}
       />
     </View>
   );

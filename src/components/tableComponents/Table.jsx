@@ -8,8 +8,9 @@ import Pagination from './Pagination';
 import axios from 'axios';
 
 import { useSelector } from 'react-redux';
+import FilterModal from '../FilterModal';
 
-const Table = ({ fieldWidths, customHeaderComponent, customDataComponent, requestUrl, paginationEnabled, itemsPerPage = 1 }) => {
+const Table = ({ fieldWidths, customHeaderComponent, customDataComponent, requestUrl, paginationEnabled, itemsPerPage = 1, fieldFilters, setFieldFilters }) => {
 
   const userToken = useSelector((state) => state.userData.data.token);
   const baseRequestURL = useSelector((state) => state.baseRequestURL.value);
@@ -117,6 +118,14 @@ const Table = ({ fieldWidths, customHeaderComponent, customDataComponent, reques
     }
   }, [tableCurrentPage]);
 
+  const [filterModalVisible, setFilterModalVisible] = useState(false);
+  const [filterModalType, setFilterModalType] = useState(null);
+  const [filterModalField, setFilterModalField] = useState(null);
+
+  useEffect(() => {
+    console.log('fieldFilters changed: ' + JSON.stringify(fieldFilters));
+  }, [fieldFilters]);
+
   return (
     <View style={styles.tableContainer}>
       {paginationEnabled &&
@@ -146,6 +155,14 @@ const Table = ({ fieldWidths, customHeaderComponent, customDataComponent, reques
               setSortByField={setSortByField}
               sortDirection={sortDirection}
               setSortDirection={setSortDirection}
+              fieldFilters={fieldFilters}
+              setFieldFilters={setFieldFilters}
+              filterModalVisible={filterModalVisible}
+              setFilterModalVisible={setFilterModalVisible}
+              filterModalType={filterModalType}
+              setFilterModalType={setFilterModalType}
+              filterModalField={filterModalField}
+              setFilterModalField={setFilterModalField}
             />
             <FlatList
               data={tableRowList}

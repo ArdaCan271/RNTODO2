@@ -49,8 +49,8 @@ const getStyles = (theme) => StyleSheet.create({
     backgroundColor: theme.background,
     borderRadius: 10,
     padding: 20,
-    width: '60%',
-    maxHeight: '50%',
+    width: '70%',
+    maxHeight: '70%',
     alignItems: 'center',
   },
   option: {

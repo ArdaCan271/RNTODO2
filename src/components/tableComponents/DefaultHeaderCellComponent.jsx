@@ -3,9 +3,22 @@ import React, { useState } from 'react';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import { useTheme } from '../../constants/colors';
 
-const DefaultHeaderCellComponent = ({ title, item, sortByField, setSortByField, sortDirection, setSortDirection }) => {
+const DefaultHeaderCellComponent = ({ title, item, sortByField, setSortByField, sortDirection, setSortDirection, fieldFilters, setFilterModalVisible, setFilterModalType, setFilterModalField }) => {
   const theme = useTheme();
   const styles = getStyles(theme);
+
+  const handleFilterPress = () => {
+    setFilterModalVisible(true);
+    setFilterModalType(item.FilterType);
+    setFilterModalField(item.Field);
+  };
+
+  const getFilterIconColor = () => {
+    if (fieldFilters && fieldFilters[item.Field] && fieldFilters[item.Field].length > 0) {
+      return theme.tableHighlight;
+    }
+    return theme.white;
+  }
 
   const handleSortPress = () => {
     setSortByField(item.Field);
@@ -40,12 +53,14 @@ const DefaultHeaderCellComponent = ({ title, item, sortByField, setSortByField, 
     <View style={styles.headerCellComponent}>
       {item.IsFilter &&
         <TouchableOpacity
-          onPress={() => {
-            console.log('Filter pressed on ' + item.Field);
-          }}
+          onPress={handleFilterPress}
           style={styles.filterButton}
         >
-          <FontAwesome name="filter" size={20} color={theme.white} />
+          <FontAwesome
+            name="filter" 
+            size={20}
+            color={getFilterIconColor()} 
+          />
         </TouchableOpacity>
       }
       <Text style={styles.headerCellText} numberOfLines={2}>
