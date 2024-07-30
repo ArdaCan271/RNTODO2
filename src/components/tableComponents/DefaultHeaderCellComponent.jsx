@@ -6,10 +6,15 @@ import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import { useTheme } from '../../constants/colors';
 
 
-const DefaultHeaderCellComponent = ({ title, item }) => {
+const DefaultHeaderCellComponent = ({ title, item, setSortByField }) => {
 
   const theme = useTheme();
   const styles = getStyles(theme);
+
+  const handleSortPress = () => {
+    setSortByField(item.Field);
+    console.log('Sort pressed on ' + item.Field);
+  };
 
   return (
     <View style={styles.headerCellComponent}>
@@ -28,9 +33,7 @@ const DefaultHeaderCellComponent = ({ title, item }) => {
       </Text>
       {item.Sortable &&
         <TouchableOpacity
-          onPress={() => {
-            console.log('Sort pressed on ' + item.Field);
-          }}
+          onPress={handleSortPress}
           style={styles.sortButton}
         >
           <FontAwesome name="sort" size={20} color={theme.white} />

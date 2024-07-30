@@ -5,7 +5,7 @@ import { useTheme } from '../../constants/colors';
 
 import DefaultHeaderCellComponent from './DefaultHeaderCellComponent';
 
-const HeaderCell = ({fieldWidth, customHeaderComponent, header}) => {
+const HeaderCell = ({fieldWidth, customHeaderComponent, header, setSortByField}) => {
 
   const theme = useTheme();
   const styles = getStyles(theme);
@@ -15,7 +15,11 @@ const HeaderCell = ({fieldWidth, customHeaderComponent, header}) => {
       {customHeaderComponent ?
         customHeaderComponent(header.Title, header)
         :
-        <DefaultHeaderCellComponent title={header.Title} item={header} />
+        <DefaultHeaderCellComponent 
+          title={header.Title} 
+          item={header}
+          setSortByField={setSortByField}
+        />
       }
     </View>
   );

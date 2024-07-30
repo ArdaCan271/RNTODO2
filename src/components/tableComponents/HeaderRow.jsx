@@ -1,11 +1,11 @@
 import React from 'react';
-import { View, StyleSheet } from 'react-native';
+import { View, StyleSheet, TouchableOpacity } from 'react-native';
 
 import { useTheme } from '../../constants/colors';
 
 import HeaderCell from './HeaderCell';
 
-const HeaderRow = ({ headerList, customHeaderComponent, fieldWidths }) => {
+const HeaderRow = ({ headerList, customHeaderComponent, fieldWidths, setSortByField }) => {
 
   const theme = useTheme();
   const styles = getStyles(theme);
@@ -19,6 +19,7 @@ const HeaderRow = ({ headerList, customHeaderComponent, fieldWidths }) => {
           fieldWidth={fieldWidths && fieldWidths[header.Field] ? fieldWidths[header.Field] : 100}
           customHeaderComponent={customHeaderComponent}
           header={header}
+          setSortByField={setSortByField}
         />
       ))}
     </View>

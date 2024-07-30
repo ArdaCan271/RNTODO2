@@ -7,8 +7,6 @@ import Pagination from './Pagination';
 
 import axios from 'axios';
 
-import { FlashList } from '@shopify/flash-list';
-
 import { useSelector } from 'react-redux';
 
 const Table = ({ fieldWidths, customHeaderComponent, customDataComponent, requestUrl, paginationEnabled, itemsPerPage = 1 }) => {
@@ -22,6 +20,15 @@ const Table = ({ fieldWidths, customHeaderComponent, customDataComponent, reques
   const theme = useTheme();
   const styles = getStyles(theme);
 
+  const [isLoading, setIsLoading] = useState(true);
+
+  const [tableHeaderList, setTableHeaderList] = useState([]);
+  const [tableRowList, setTableRowList] = useState([]);
+
+  const [tableCurrentPage, setTableCurrentPage] = useState(1);
+  const [tableTotalPages, setTableTotalPages] = useState(1);
+  
+
   const [rowsPerPage, setRowsPerPage] = useState(itemsPerPage);
 
   const fetchTableData = async (requestPageNumber = 1, requestPageSize = 10) => {
@@ -31,8 +38,10 @@ const Table = ({ fieldWidths, customHeaderComponent, customDataComponent, reques
       const response = await axios.post(apiUrl, {
         token: 'RasyoIoToken2021',
         user_token: userToken,
-        pageSize: requestPageSize,
-        pageNumber: requestPageNumber,
+        PageSize: requestPageSize,
+        PageNumber: requestPageNumber,
+        SortBy: sortByField,
+        SortDirection: sortDirection,
       });
       setTableHeaderList(response.data[0]);
       setTableTotalPages(response.data[1][0].PageCount);
@@ -44,15 +53,6 @@ const Table = ({ fieldWidths, customHeaderComponent, customDataComponent, reques
     }
   };
 
-  const [isLoading, setIsLoading] = useState(true);
-
-  const [tableHeaderList, setTableHeaderList] = useState([]);
-  const [tableRowList, setTableRowList] = useState([]);
-
-  const [tableCurrentPage, setTableCurrentPage] = useState(1);
-
-  const [tableTotalPages, setTableTotalPages] = useState(1);
-
   useEffect(() => {
     if (tableCurrentPage !== 1) {
       setTableCurrentPage(1);
@@ -62,12 +62,6 @@ const Table = ({ fieldWidths, customHeaderComponent, customDataComponent, reques
     }
   }, [rowsPerPage])
 
-  useEffect(() => {
-    if (!isLoading) {
-      fetchTableData(tableCurrentPage, rowsPerPage);
-      setSelectedRowIndex(null);
-    }
-  }, [tableCurrentPage]);
 
   const changeRowsPerPage = (newRowsPerPage) => {
     setRowsPerPage(newRowsPerPage);
@@ -92,19 +86,18 @@ const Table = ({ fieldWidths, customHeaderComponent, customDataComponent, reques
   };
 
   const [selectedRowIndex, setSelectedRowIndex] = useState(null);
-
-  const lastTap = useRef(0);
+  const lastTap = useRef({ time: 0, index: null });
   const timer = useRef(null);
 
   const handleRowClick = (index) => {
     const now = Date.now();
     const DOUBLE_PRESS_DELAY = 300;
 
-    if (lastTap.current && (now - lastTap.current) < DOUBLE_PRESS_DELAY) {
+    if (lastTap.current.time && (now - lastTap.current.time) < DOUBLE_PRESS_DELAY && lastTap.current.index === index) {
       console.log('double clicked');
-      clearTimeout(timer.current); 
+      clearTimeout(timer.current);
     } else {
-      lastTap.current = now;
+      lastTap.current = { time: now, index };
       timer.current = setTimeout(() => {
         if (selectedRowIndex === index) {
           setSelectedRowIndex(null);
@@ -114,6 +107,16 @@ const Table = ({ fieldWidths, customHeaderComponent, customDataComponent, reques
       }, DOUBLE_PRESS_DELAY);
     }
   };
+
+  const [sortByField, setSortByField] = useState(null);
+  const [sortDirection, setSortDirection] = useState('desc');
+
+  useEffect(() => {
+    if (!isLoading) {
+      fetchTableData(tableCurrentPage, rowsPerPage);
+      setSelectedRowIndex(null);
+    }
+  }, [tableCurrentPage, sortByField]);
 
   return (
     <View style={styles.tableContainer}>
@@ -140,6 +143,7 @@ const Table = ({ fieldWidths, customHeaderComponent, customDataComponent, reques
               headerList={tableHeaderList}
               customHeaderComponent={customHeaderComponent}
               fieldWidths={fieldWidths}
+              setSortByField={setSortByField}
             />
             <FlatList
               data={tableRowList}

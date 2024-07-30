@@ -12,7 +12,7 @@ const DefaultDataCellComponent = ({ data, itemHeader, formatData, item }) => {
 
   return (
     <View style={styles.dataCellComponent}>
-      <Text style={styles.dataCellText} numberOfLines={1}>
+      <Text style={[styles.dataCellText, {textAlign: itemHeader.Type === 'currency' ? 'right' : 'center', paddingRight: itemHeader.Type === 'currency' ? 4 : 0}]} numberOfLines={1}>
         {formatData(data, itemHeader.Type)}
       </Text>
     </View>
@@ -21,13 +21,16 @@ const DefaultDataCellComponent = ({ data, itemHeader, formatData, item }) => {
 
 const getStyles = (theme) => StyleSheet.create({
   dataCellComponent: {
-    flex: 1,
+    width: '100%',
+    height: '100%',
     justifyContent: 'center',
     alignItems: 'center',
   },
   dataCellText: {
     color: theme.text,
-    textAlign: 'center',
+    paddingTop: 6,
+    width: '100%',
+    height: '100%',
   },
 });
 
