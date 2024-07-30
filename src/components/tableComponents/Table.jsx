@@ -43,6 +43,7 @@ const Table = ({ fieldWidths, customHeaderComponent, customDataComponent, reques
         PageNumber: requestPageNumber,
         SortBy: sortByField,
         SortDirection: sortDirection,
+        ...fieldFilters,
       });
       setTableHeaderList(response.data[0]);
       setTableTotalPages(response.data[1][0].PageCount);
@@ -109,7 +110,7 @@ const Table = ({ fieldWidths, customHeaderComponent, customDataComponent, reques
       fetchTableData(1, rowsPerPage);
       setSelectedRowIndex(null);
     }
-  }, [rowsPerPage, sortByField, sortDirection])
+  }, [rowsPerPage, sortByField, sortDirection, fieldFilters])
 
   useEffect(() => {
     if (!isLoading) {
@@ -118,13 +119,16 @@ const Table = ({ fieldWidths, customHeaderComponent, customDataComponent, reques
     }
   }, [tableCurrentPage]);
 
-  const [filterModalVisible, setFilterModalVisible] = useState(false);
-  const [filterModalType, setFilterModalType] = useState(null);
-  const [filterModalField, setFilterModalField] = useState(null);
-
   useEffect(() => {
-    console.log('fieldFilters changed: ' + JSON.stringify(fieldFilters));
+    console.log(fieldFilters);
   }, [fieldFilters]);
+
+  const [filterModalInfo, setFilterModalInfo] = useState({
+    visible: false,
+    type: null,
+    field: null,
+    title: null,
+  });
 
   return (
     <View style={styles.tableContainer}>
@@ -145,7 +149,7 @@ const Table = ({ fieldWidths, customHeaderComponent, customDataComponent, reques
           <ActivityIndicator size="large" color={theme.primary} />
         </View>
         :
-        <ScrollView horizontal>
+        <ScrollView horizontal keyboardShouldPersistTaps='handled'>
           <View style={[styles.tableContainerView, { height: windowHeight - (theme.padding.header + 32), minWidth: windowWidth }]}>
             <HeaderRow
               headerList={tableHeaderList}
@@ -157,12 +161,8 @@ const Table = ({ fieldWidths, customHeaderComponent, customDataComponent, reques
               setSortDirection={setSortDirection}
               fieldFilters={fieldFilters}
               setFieldFilters={setFieldFilters}
-              filterModalVisible={filterModalVisible}
-              setFilterModalVisible={setFilterModalVisible}
-              filterModalType={filterModalType}
-              setFilterModalType={setFilterModalType}
-              filterModalField={filterModalField}
-              setFilterModalField={setFilterModalField}
+              filterModalInfo={filterModalInfo}
+              setFilterModalInfo={setFilterModalInfo}
             />
             <FlatList
               data={tableRowList}

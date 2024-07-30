@@ -3,7 +3,7 @@ import React from 'react';
 
 import { useTheme } from '../constants/colors';
 
-const FilterRange = () => {
+const FilterRange = ({ field, fieldFilters, setFieldFilters, filterModalInfo, setFilterModalInfo, onClose }) => {
 
   const theme = useTheme();
   const styles = getStyles(theme);

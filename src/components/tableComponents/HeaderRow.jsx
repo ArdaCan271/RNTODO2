@@ -7,7 +7,7 @@ import HeaderCell from './HeaderCell';
 
 import FilterModal from '../FilterModal';
 
-const HeaderRow = ({ headerList, customHeaderComponent, fieldWidths, sortByField, setSortByField, sortDirection, setSortDirection, fieldFilters, setFieldFilters, filterModalVisible, setFilterModalVisible, filterModalType, setFilterModalType, filterModalField, setFilterModalField }) => {
+const HeaderRow = ({ headerList, customHeaderComponent, fieldWidths, sortByField, setSortByField, sortDirection, setSortDirection, fieldFilters, setFieldFilters, filterModalInfo, setFilterModalInfo }) => {
 
   const theme = useTheme();
   const styles = getStyles(theme);
@@ -15,11 +15,17 @@ const HeaderRow = ({ headerList, customHeaderComponent, fieldWidths, sortByField
   return (
     <View style={styles.headerContainer}>
       <FilterModal
-        filterModalVisible={filterModalVisible}
-        filterModalType={filterModalType}
         fieldFilters={fieldFilters}
         setFieldFilters={setFieldFilters}
-        onClose={() => setFilterModalVisible(false)}
+        filterModalInfo={filterModalInfo}
+        onClose={() => setFilterModalInfo(
+          {
+            visible: false,
+            type: null,
+            field: null,
+            title: null,
+          }
+        )}
       />
       {headerList.map((header, index) => (
         header.Visibility &&
@@ -33,9 +39,7 @@ const HeaderRow = ({ headerList, customHeaderComponent, fieldWidths, sortByField
           sortDirection={sortDirection}
           setSortDirection={setSortDirection}
           fieldFilters={fieldFilters}
-          setFilterModalVisible={setFilterModalVisible}
-          setFilterModalType={setFilterModalType}
-          setFilterModalField={setFilterModalField}
+          setFilterModalInfo={setFilterModalInfo}
         />
       ))}
     </View>

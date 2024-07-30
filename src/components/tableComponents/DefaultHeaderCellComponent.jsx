@@ -3,14 +3,17 @@ import React, { useState } from 'react';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import { useTheme } from '../../constants/colors';
 
-const DefaultHeaderCellComponent = ({ title, item, sortByField, setSortByField, sortDirection, setSortDirection, fieldFilters, setFilterModalVisible, setFilterModalType, setFilterModalField }) => {
+const DefaultHeaderCellComponent = ({ title, item, sortByField, setSortByField, sortDirection, setSortDirection, fieldFilters, setFilterModalInfo }) => {
   const theme = useTheme();
   const styles = getStyles(theme);
 
   const handleFilterPress = () => {
-    setFilterModalVisible(true);
-    setFilterModalType(item.FilterType);
-    setFilterModalField(item.Field);
+    setFilterModalInfo({
+      visible: true,
+      type: item.FilterType,
+      field: item.Field,
+      title: item.Title,
+    });
   };
 
   const getFilterIconColor = () => {

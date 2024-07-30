@@ -6,7 +6,7 @@ import { useTheme } from '../constants/colors';
 import FilterSingle from './FilterSingle';
 import FilterRange from './FilterRange';
 
-const FilterModal = ({ filterModalVisible, filterModalType, filterModalField, onClose }) => {
+const FilterModal = ({ fieldFilters, setFieldFilters, filterModalInfo, setFilterModalInfo, onClose }) => {
 
   const theme = useTheme();
   const styles = getStyles(theme);
@@ -14,7 +14,7 @@ const FilterModal = ({ filterModalVisible, filterModalType, filterModalField, on
   return (
     <Modal
       transparent={true}
-      visible={filterModalVisible}
+      visible={filterModalInfo.visible}
       animationType="fade"
       onRequestClose={onClose}
     >
@@ -26,14 +26,22 @@ const FilterModal = ({ filterModalVisible, filterModalType, filterModalField, on
           style={styles.modalContainer}
           android_disableSound
         >
-          {filterModalType === 'Single' && 
+          {filterModalInfo.type === 'Single' && 
             <FilterSingle
-              field={filterModalField}
+              fieldFilters={fieldFilters}
+              setFieldFilters={setFieldFilters}
+              filterModalInfo={filterModalInfo}
+              setFilterModalInfo={setFilterModalInfo}
+              onClose={onClose}
             />
           }
-          {filterModalType === 'Range' && 
+          {filterModalInfo.type === 'Range' && 
             <FilterRange
-              field={filterModalField}
+              fieldFilters={fieldFilters}
+              setFieldFilters={setFieldFilters}
+              filterModalInfo={filterModalInfo}
+              setFilterModalInfo={setFilterModalInfo}
+              onClose={onClose}
             />
           }
         </Pressable>
@@ -53,8 +61,6 @@ const getStyles = (theme) => StyleSheet.create({
     backgroundColor: theme.background,
     borderRadius: 10,
     width: '70%',
-    height: '70%',
-    alignItems: 'center',
   },
 });
 
