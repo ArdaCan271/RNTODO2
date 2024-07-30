@@ -4,17 +4,6 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import colors from '../constants/colors';
 import { useTheme } from '../constants/colors';
 
-const getBackgroundColor = (level) => {
-  const baseColorR = 239;
-  const baseColorG = 242;
-  const baseColorB = 255;
-  const colorStep = 10;
-  const colorValueR = baseColorR - level * colorStep; // Ensure it doesn't get too dark
-  const colorValueG = baseColorG - level * colorStep; // Ensure it doesn't get too dark
-  const colorValueB = baseColorB - level * colorStep; // Ensure it doesn't get too dark
-  return `rgb(${colorValueR}, ${colorValueG}, ${colorValueB})`;
-};
-
 const MenuItem = ({ item, level = 0, onPress, navigation, style, props = '', routeNames }) => {
 
   const theme = useTheme();

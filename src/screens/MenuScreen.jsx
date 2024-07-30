@@ -1,4 +1,4 @@
-import { StyleSheet, View, FlatList, BackHandler } from 'react-native';
+import { StyleSheet, View, FlatList, BackHandler, useWindowDimensions } from 'react-native';
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 
@@ -8,9 +8,16 @@ import { useTheme } from '../constants/colors';
 import CustomHeader from '../components/CustomHeader';
 import CustomBottomTab from '../components/CustomBottomTab';
 
+import { useIsFocused } from '@react-navigation/native';
+
 const MenuScreen = ({ navigation, route }) => {
   const theme = useTheme();
   const styles = getStyles(theme);
+
+  const windowWidth = useWindowDimensions().width;
+  const windowHeight = useWindowDimensions().height;
+
+  const isFocused = useIsFocused();
 
   useEffect(() => {
     const backAction = () => {
@@ -64,7 +71,6 @@ const MenuScreen = ({ navigation, route }) => {
 
 const getStyles = (theme) => StyleSheet.create({
   container: {
-    flex: 1,
     backgroundColor: theme.background,
     paddingTop: theme.padding.header,
     paddingBottom: theme.padding.bottomBar,

@@ -1,9 +1,11 @@
 import React, { useRef } from 'react';
-import { StyleSheet, TouchableOpacity} from 'react-native';
+import { StyleSheet, TouchableOpacity, View } from 'react-native';
 import DataCell from './DataCell';
 import { useTheme } from '../../constants/colors';
 
-const DataRow = ({ item, headerList, customDataComponent, fieldWidths, dataRowIndex, selectedRowIndex, setSelectedRowIndex }) => {
+import { FlashList } from '@shopify/flash-list';
+
+const DataRow = ({ item, headerList, customDataComponent, fieldWidths, backgroundColor }) => {
   const theme = useTheme();
   const styles = getStyles(theme);
 
@@ -11,39 +13,40 @@ const DataRow = ({ item, headerList, customDataComponent, fieldWidths, dataRowIn
 
   const handleTap = () => {
     const now = Date.now();
-    const DOUBLE_PRESS_DELAY = 300; // milliseconds
+    const DOUBLE_PRESS_DELAY = 300;
 
     if (lastTap.current && (now - lastTap.current) < DOUBLE_PRESS_DELAY) {
       console.log('double tapped');
-      // Add any additional logic for double tap here
     } else {
       lastTap.current = now;
-      setSelectedRowIndex(prevIndex => (prevIndex === dataRowIndex ? null : dataRowIndex));
     }
   };
 
+  const renderDataCell = ({ item: header, index }) => (
+    header.Visibility && (
+      <DataCell
+        key={index}
+        fieldWidth={fieldWidths && fieldWidths[header.Field] ? fieldWidths[header.Field] : 100}
+        customDataComponent={customDataComponent}
+        data={item[header.Field]}
+        itemHeader={header}
+        item={item}
+      />
+    )
+  );
+
   return (
-    <TouchableOpacity
-      style={[
-        styles.rowContainer,
-        {
-          backgroundColor: selectedRowIndex === dataRowIndex ? 'yellow' : (dataRowIndex % 2 === 0 ? theme.background : theme.backgroundAlt),
-        },
-      ]}
-      onPress={handleTap}
+    <View
+      style={[styles.rowContainer, { backgroundColor: backgroundColor }]}
     >
-      {headerList.map((header, index) => (
-        header.Visibility &&
-        <DataCell
-          key={index}
-          fieldWidth={fieldWidths && fieldWidths[header.Field] ? fieldWidths[header.Field] : 100}
-          customDataComponent={customDataComponent}
-          data={item[header.Field]}
-          itemHeader={header}
-          item={item}
-        />
-      ))}
-    </TouchableOpacity>
+      <FlashList
+        data={headerList}
+        horizontal
+        renderItem={renderDataCell}
+        keyExtractor={(header, index) => index.toString()}
+        estimatedItemSize={80}
+      />
+    </View>
   );
 };
 

@@ -26,7 +26,7 @@ const MenuChildrenScreen = ({ navigation, route }) => {
     );
 
     return () => backHandler.remove();
-  }, [navigation]);
+  }, []);
 
   const parentItem = route.params.parent;
 

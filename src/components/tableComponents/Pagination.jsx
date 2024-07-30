@@ -7,7 +7,7 @@ import { useTheme } from '../../constants/colors';
 
 import PickerModal from '../PickerModal';
 
-const Pagination = ({currentPage, totalPages, handleNextPage, handlePreviousPage, handleGoToPage, rowsPerPage, setRowsPerPage}) => {
+const Pagination = ({currentPage, totalPages, handleNextPage, handlePreviousPage, handleGoToPage, rowsPerPage, changeRowsPerPage}) => {
 
   const theme = useTheme();
   const styles = getStyles(theme);
@@ -31,7 +31,7 @@ const Pagination = ({currentPage, totalPages, handleNextPage, handlePreviousPage
   const [isModalVisible, setIsModalVisible] = useState(false);
 
   const handleSelectRowsPerPage = (option) => {
-    setRowsPerPage(option);
+    changeRowsPerPage(option);
     setIsModalVisible(false);
   };
 
@@ -39,7 +39,7 @@ const Pagination = ({currentPage, totalPages, handleNextPage, handlePreviousPage
     <Pressable style={styles.container} android_disableSound onPress={() => Keyboard.dismiss()}>
       <PickerModal
         visible={isModalVisible}
-        options={[10, 30, 60, 'Hepsi']}
+        options={[10, 30, 60]}
         selectedOption={rowsPerPage} // Pass the selectedOption prop
         onSelect={handleSelectRowsPerPage}
         onClose={() => setIsModalVisible(false)}
@@ -55,6 +55,7 @@ const Pagination = ({currentPage, totalPages, handleNextPage, handlePreviousPage
         onChangeText={handleInputChange}
         placeholderTextColor={theme.textAlt}
         numberOfLines={2}
+        onSubmitEditing={() => handleGoToPage(parseInt(goToInput, 10))}
       />
       <TouchableOpacity
         onPress={() => handleGoToPage(parseInt(goToInput, 10))}
@@ -65,7 +66,7 @@ const Pagination = ({currentPage, totalPages, handleNextPage, handlePreviousPage
       <TouchableOpacity
         onPress={handlePreviousPage}
         style={styles.changePageButton}
-      >
+      > 
         <FontAwesome name="chevron-left" size={20} color={theme.white} />
       </TouchableOpacity>
       <Text style={styles.pageIndicatorText}>{`${currentPage} / ${totalPages}`}</Text>
@@ -85,40 +86,47 @@ const getStyles = (theme) => StyleSheet.create({
     justifyContent: 'flex-end',
     alignItems: 'center',
     width: '100%',
-    paddingRight: 40,
+    paddingRight: 20,
+    height: 32,
   },
   rowsPerPageButton: {
+    height: 34,
     paddingVertical: 6,
     paddingHorizontal: 8,
     backgroundColor: theme.primaryAlt,
     borderRadius: 5,
     borderWidth: 1,
     borderColor: theme.text,
-    marginRight: 16,
+    marginRight: 10,
   },
   rowsPerPageButtonText: {
     color: theme.white,
   },
   goToPageInput: {
     height: 34,
-    width: 54,
+    width: 60,
     backgroundColor: theme.backgroundAlt,
     borderColor: theme.text,
     borderWidth: 1,
     borderRadius: 5,
-    marginRight: 2,
+    borderTopRightRadius: 0,
+    borderBottomRightRadius: 0,
     fontSize: 12,
     textAlign: 'center',
     padding: 0,
     color: theme.text,
   },
   goToPageButton: {
+    height: 34,
     paddingVertical: 6,
     paddingHorizontal: 8,
     backgroundColor: theme.primaryAlt,
     borderRadius: 5,
-    marginRight: 25,
+    borderTopLeftRadius: 0,
+    borderBottomLeftRadius: 0,
+    marginRight: 10,
     borderWidth: 1,
+    borderLeftWidth: 0,
     borderColor: theme.text,
   },
   pageIndicatorText: {
@@ -126,6 +134,9 @@ const getStyles = (theme) => StyleSheet.create({
     marginHorizontal: 10,
   },
   changePageButton: {
+    height: 34,
+    justifyContent: 'center',
+    alignItems: 'center',
     paddingVertical: 6,
     paddingHorizontal: 9,
     backgroundColor: theme.primaryAlt,

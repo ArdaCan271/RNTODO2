@@ -1,36 +1,93 @@
-import React, { useState } from 'react';
-import { ScrollView, View, FlatList, StyleSheet } from 'react-native';
+import React, { useEffect, useState, useRef } from 'react';
+import { ScrollView, View, FlatList, StyleSheet, useWindowDimensions, ActivityIndicator, TouchableOpacity } from 'react-native';
 import { useTheme } from '../../constants/colors';
 import HeaderRow from './HeaderRow';
 import DataRow from './DataRow';
 import Pagination from './Pagination';
 
-const Table = ({ headerList, rowList, fieldWidths, customHeaderComponent, customDataComponent, paginationEnabled, itemsPerPage = 1 }) => {
+import axios from 'axios';
+
+import { FlashList } from '@shopify/flash-list';
+
+import { useSelector } from 'react-redux';
+
+const Table = ({ fieldWidths, customHeaderComponent, customDataComponent, requestUrl, paginationEnabled, itemsPerPage = 1 }) => {
+
+  const userToken = useSelector((state) => state.userData.data.token);
+  const baseRequestURL = useSelector((state) => state.baseRequestURL.value);
+
+  const windowWidth = useWindowDimensions().width;
+  const windowHeight = useWindowDimensions().height;
+
   const theme = useTheme();
   const styles = getStyles(theme);
 
-  const [currentPage, setCurrentPage] = useState(1);
   const [rowsPerPage, setRowsPerPage] = useState(itemsPerPage);
-  const [selectedRowIndex, setSelectedRowIndex] = useState(null); // State to track the selected row index
   
-  const totalPages = Math.ceil(rowList.length / (rowsPerPage === 'Hepsi' ? rowList.length : rowsPerPage));
-  const paginatedData = rowList.slice((currentPage - 1) * (rowsPerPage === 'Hepsi' ? rowList.length : rowsPerPage), currentPage * (rowsPerPage === 'Hepsi' ? rowList.length : rowsPerPage));
+  const fetchTableData = async (requestPageNumber = 1, requestPageSize = 10) => {
+    const apiUrl = `${baseRequestURL}/${requestUrl}`;
+    try {
+      setIsLoading(true);
+      console.log('sending request with requestPageNumber: ' + requestPageNumber);
+      console.log('sending request with requestPageSize: ' + requestPageSize);
+      const response = await axios.post(apiUrl, {
+        token: 'RasyoIoToken2021',
+        user_token: userToken,
+        pageSize: requestPageSize,
+        pageNumber: requestPageNumber,
+      });
+      setTableHeaderList(response.data[0]);
+      setTableCurrentPage(response.data[1][0].PageNumber);
+      setTableTotalPages(response.data[1][0].PageCount);
+      setTableRowList(response.data[2]);
+      console.log('received response with PageNumber: ' + response.data[1][0].PageNumber);
+      console.log('received response with PageCount: ' + response.data[1][0].PageCount);
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const [isLoading, setIsLoading] = useState(true);
+
+  const [tableHeaderList, setTableHeaderList] = useState([]);
+  const [tableRowList, setTableRowList] = useState([]);
+
+  const [tableCurrentPage, setTableCurrentPage] = useState(1);
+  const [tableTotalPages, setTableTotalPages] = useState(1);
   
+  useEffect(() => {
+    setTableCurrentPage(0);
+  }, [rowsPerPage]);
+
+  useEffect(() => {
+    if (tableCurrentPage === 0) {
+      fetchTableData(1, rowsPerPage);
+    } else {
+      fetchTableData(tableCurrentPage, rowsPerPage);
+    }
+  }, [tableCurrentPage]);
+
+  const changeRowsPerPage = (newRowsPerPage) => {
+    setRowsPerPage(newRowsPerPage);
+  };
+
   const handleNextPage = () => {
-    if (currentPage < totalPages) {
-      setCurrentPage(currentPage + 1);
+    if (tableCurrentPage < tableTotalPages && !isLoading) {
+      setTableCurrentPage(tableCurrentPage + 1);
     }
   };
 
   const handlePreviousPage = () => {
-    if (currentPage > 1) {
-      setCurrentPage(currentPage - 1);
+    if (tableCurrentPage > 1 && !isLoading) {
+      setTableCurrentPage(tableCurrentPage - 1);
     }
   };
 
   const handleGoToPage = (page) => {
-    if (page >= 1 && page <= totalPages) {
-      setCurrentPage(page);
+    if (page >= 1 && page <= tableTotalPages && !isLoading) {
+      setTableCurrentPage(page);
     }
   };
 
@@ -38,39 +95,52 @@ const Table = ({ headerList, rowList, fieldWidths, customHeaderComponent, custom
     <View style={styles.tableContainer}>
       {paginationEnabled &&
         <Pagination
-          currentPage={currentPage}
-          totalPages={totalPages}
+          currentPage={tableCurrentPage}
+          totalPages={tableTotalPages}
           handleNextPage={handleNextPage}
           handlePreviousPage={handlePreviousPage}
           handleGoToPage={handleGoToPage}
           rowsPerPage={rowsPerPage}
-          setRowsPerPage={setRowsPerPage}
+          changeRowsPerPage={changeRowsPerPage}
+          isLoading={isLoading}
         />
       }
-      <ScrollView horizontal bounces={false}>
-        <View style={styles.tableContainerView}>
-          <HeaderRow
-            headerList={headerList}
-            customHeaderComponent={customHeaderComponent}
-            fieldWidths={fieldWidths}
-          />
-          <FlatList
-            data={paginationEnabled ? paginatedData : rowList}
-            keyExtractor={(item, index) => index.toString()}
-            renderItem={({ item, index }) => (
-              <DataRow
-                item={item}
-                headerList={headerList}
-                customDataComponent={customDataComponent}
-                dataRowIndex={index}
+      {
+        isLoading ?
+          <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+            <ActivityIndicator size="large" color={theme.primary} />
+          </View>
+          :
+          <ScrollView horizontal>
+            <View style={[styles.tableContainerView, { height: windowHeight - (theme.padding.header + 32), minWidth: windowWidth }]}>
+              <HeaderRow
+                headerList={tableHeaderList}
+                customHeaderComponent={customHeaderComponent}
                 fieldWidths={fieldWidths}
-                selectedRowIndex={selectedRowIndex}
-                setSelectedRowIndex={setSelectedRowIndex}
               />
-            )}
-          />
-        </View>
-      </ScrollView>
+              <FlashList
+                data={tableRowList}
+                keyExtractor={(item, index) => index.toString()}
+                estimatedItemSize={32}
+                renderItem={({ item, index }) => (
+                  <TouchableOpacity
+                    key={index}
+                    style={{ flexDirection: 'row' }}
+                  >
+                    <DataRow
+                      item={item}
+                      headerList={tableHeaderList}
+                      customDataComponent={customDataComponent}
+                      dataRowIndex={index}
+                      fieldWidths={fieldWidths}
+                      backgroundColor={index % 2 === 0 ? theme.background : theme.backgroundAlt}
+                      />
+                  </TouchableOpacity>
+                )}
+              />
+            </View>
+          </ScrollView>
+      }
     </View>
   );
 };

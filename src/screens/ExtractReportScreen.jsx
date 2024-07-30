@@ -1,15 +1,10 @@
-import React, { useState, useEffect } from 'react';
-import { StyleSheet, View, BackHandler, Text, ScrollView, FlatList, TouchableOpacity} from 'react-native';
+import React, { useEffect } from 'react';
+import { StyleSheet, View, BackHandler } from 'react-native';
 import { useTheme } from '../constants/colors';
-
-import axios from 'axios';
-import { useSelector } from 'react-redux';
 
 import CustomHeader from '../components/CustomHeader';
 
 import Table from '../components/tableComponents/Table';
-
-import FontAwesome from 'react-native-vector-icons/FontAwesome';
 
 const ExtractReportScreen = ({ navigation }) => {
 
@@ -17,7 +12,6 @@ const ExtractReportScreen = ({ navigation }) => {
   const styles = getStyles(theme);
 
   useEffect(() => {
-    getHeaders();
     const backAction = () => {
       navigation.goBack();
       return true;
@@ -30,26 +24,6 @@ const ExtractReportScreen = ({ navigation }) => {
 
     return () => backHandler.remove();
   }, []);
-
-  const userToken = useSelector((state) => state.userData.data.token);
-  const baseRequestURL = useSelector((state) => state.baseRequestURL.value);
-
-  const [headerList, setHeaderList] = useState([]);
-  const [rowList, setRowList] = useState([]);
-
-  const getHeaders = async () => {
-    const apiUrl = `${baseRequestURL}/DuyuII/CustomerExtract/GetListPaging`;
-    try {
-      const response = await axios.post(apiUrl, {
-        token: 'RasyoIoToken2021',
-        user_token: userToken,
-      });
-      setHeaderList(response.data[0]);
-      setRowList(response.data[2]);
-    } catch (error) {
-      console.log(error);
-    }
-  };
 
   const fieldWidths = {
     CurrentCode: 120,
@@ -75,9 +49,8 @@ const ExtractReportScreen = ({ navigation }) => {
         navigation={navigation}
       />
       <Table
-        headerList={headerList}
-        rowList={rowList}
         fieldWidths={fieldWidths}
+        requestUrl="DuyuII/CustomerExtract/GetListPaging"
         paginationEnabled
         itemsPerPage={10}
       />
@@ -91,39 +64,6 @@ const getStyles = (theme) => StyleSheet.create({
     height: '100%',
     backgroundColor: theme.background,
     paddingTop: theme.padding.header,
-  },
-  headerCellComponent: {
-    width: '100%',
-    height: '100%',
-    justifyContent: 'center',
-    alignItems: 'center',
-    flexDirection: 'row',
-  },
-  filterButton: {
-    flex: 1,
-    padding: 3,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  sortButton: {
-    flex: 1,
-    padding: 3,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  headerCellText: {
-    color: theme.white,
-    textAlign: 'center',
-    flex: 2,
-  },
-  dataCellComponent: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  dataCellText: {
-    color: theme.text,
-    textAlign: 'center',
   },
 });
 
