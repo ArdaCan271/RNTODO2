@@ -49,6 +49,7 @@ const baseTheme = {
   gray: '#B9B9B9',
   purple: '#8B13B1',
   red: "#EE1B1B",
+  orange: '#FFBF00',
   darkwhite:'#B9B9B9',
   green: "#1da32f",
 };

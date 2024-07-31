@@ -3,23 +3,30 @@ import React from 'react';
 
 import { useTheme } from '../constants/colors';
 
-const FilterRange = ({ field, fieldFilters, setFieldFilters, filterModalInfo, setFilterModalInfo, onClose }) => {
+import FilterRangeDate from './FilterRangeDate';
+
+const FilterRange = ({ fieldFilters, setFieldFilters, filterModalInfo, onClose }) => {
 
   const theme = useTheme();
   const styles = getStyles(theme);
 
   return (
     <View style={styles.container}>
-      <Text style={styles.text}>FilterRange</Text>
+      {filterModalInfo.field.toLowerCase().includes('date') &&
+        <FilterRangeDate
+          fieldFilters={fieldFilters}
+          setFieldFilters={setFieldFilters}
+          filterModalInfo={filterModalInfo}
+          onClose={onClose}
+        />
+      }
     </View>
   );
 }
 
 const getStyles = (theme) => StyleSheet.create({
   container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+    width: '100%',
   },
   text: {
     color: theme.text,

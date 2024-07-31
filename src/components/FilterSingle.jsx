@@ -30,6 +30,8 @@ const FilterSingle = ({ fieldFilters, setFieldFilters, filterModalInfo, onClose 
         onChangeText={setInputValue}
         placeholder={filterModalInfo.title}
         placeholderTextColor={theme.textAlt}
+        autoCapitalize="none"
+        onSubmitEditing={handleAccept}
       />
       <View style={styles.buttonContainer}>
         <TouchableOpacity style={styles.cancelButton} onPress={onClose}>

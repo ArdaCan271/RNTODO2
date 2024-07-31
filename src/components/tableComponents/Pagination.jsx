@@ -87,10 +87,10 @@ const getStyles = (theme) => StyleSheet.create({
     alignItems: 'center',
     width: '100%',
     paddingRight: 20,
-    height: 32,
+    height: 30,
   },
   rowsPerPageButton: {
-    height: 34,
+    height: 32,
     paddingVertical: 6,
     paddingHorizontal: 8,
     backgroundColor: theme.primaryAlt,
@@ -103,7 +103,7 @@ const getStyles = (theme) => StyleSheet.create({
     color: theme.white,
   },
   goToPageInput: {
-    height: 34,
+    height: 32,
     width: 60,
     backgroundColor: theme.backgroundAlt,
     borderColor: theme.text,
@@ -117,7 +117,7 @@ const getStyles = (theme) => StyleSheet.create({
     color: theme.text,
   },
   goToPageButton: {
-    height: 34,
+    height: 32,
     paddingVertical: 6,
     paddingHorizontal: 8,
     backgroundColor: theme.primaryAlt,
@@ -134,7 +134,7 @@ const getStyles = (theme) => StyleSheet.create({
     marginHorizontal: 10,
   },
   changePageButton: {
-    height: 34,
+    height: 32,
     justifyContent: 'center',
     alignItems: 'center',
     paddingVertical: 6,

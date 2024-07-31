@@ -18,7 +18,9 @@ const DefaultHeaderCellComponent = ({ title, item, sortByField, setSortByField, 
 
   const getFilterIconColor = () => {
     if (fieldFilters && fieldFilters[item.Field] && fieldFilters[item.Field].length > 0) {
-      return theme.tableHighlight;
+      return theme.orange;
+    } else if (fieldFilters && (fieldFilters[`${item.Field}End`] || fieldFilters[`${item.Field}Start`]) && (fieldFilters[`${item.Field}Start`].length > 0 || fieldFilters[`${item.Field}End`].length > 0)) {
+      return theme.orange;
     }
     return theme.white;
   }
@@ -47,7 +49,7 @@ const DefaultHeaderCellComponent = ({ title, item, sortByField, setSortByField, 
 
   const getSortIconColor = () => {
     if (item.Field === sortByField && (sortDirection === 'asc' || sortDirection === 'desc')) {
-      return theme.tableHighlight;
+      return theme.orange;
     }
     return theme.white;
   }

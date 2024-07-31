@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from 'react';
-import { ScrollView, View, FlatList, StyleSheet, useWindowDimensions, ActivityIndicator, TouchableOpacity } from 'react-native';
+import { ScrollView, View, FlatList, StyleSheet, useWindowDimensions, ActivityIndicator, TouchableOpacity, StatusBar } from 'react-native';
 import { useTheme } from '../../constants/colors';
 import HeaderRow from './HeaderRow';
 import DataRow from './DataRow';
@@ -8,12 +8,13 @@ import Pagination from './Pagination';
 import axios from 'axios';
 
 import { useSelector } from 'react-redux';
-import FilterModal from '../FilterModal';
 
 const Table = ({ fieldWidths, customHeaderComponent, customDataComponent, requestUrl, paginationEnabled, itemsPerPage = 1, fieldFilters, setFieldFilters }) => {
 
   const userToken = useSelector((state) => state.userData.data.token);
   const baseRequestURL = useSelector((state) => state.baseRequestURL.value);
+
+  const statusBarHeight = StatusBar.currentHeight;
 
   const windowWidth = useWindowDimensions().width;
   const windowHeight = useWindowDimensions().height;
@@ -150,7 +151,7 @@ const Table = ({ fieldWidths, customHeaderComponent, customDataComponent, reques
         </View>
         :
         <ScrollView horizontal keyboardShouldPersistTaps='handled'>
-          <View style={[styles.tableContainerView, { height: windowHeight - (theme.padding.header + 32), minWidth: windowWidth }]}>
+          <View style={[styles.tableContainerView, { height: windowHeight - (theme.padding.header + 30 + (windowWidth > windowHeight ? statusBarHeight : 0)), minWidth: windowWidth }]}>
             <HeaderRow
               headerList={tableHeaderList}
               customHeaderComponent={customHeaderComponent}

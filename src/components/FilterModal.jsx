@@ -31,7 +31,6 @@ const FilterModal = ({ fieldFilters, setFieldFilters, filterModalInfo, setFilter
               fieldFilters={fieldFilters}
               setFieldFilters={setFieldFilters}
               filterModalInfo={filterModalInfo}
-              setFilterModalInfo={setFilterModalInfo}
               onClose={onClose}
             />
           }
@@ -40,7 +39,6 @@ const FilterModal = ({ fieldFilters, setFieldFilters, filterModalInfo, setFilter
               fieldFilters={fieldFilters}
               setFieldFilters={setFieldFilters}
               filterModalInfo={filterModalInfo}
-              setFilterModalInfo={setFilterModalInfo}
               onClose={onClose}
             />
           }
