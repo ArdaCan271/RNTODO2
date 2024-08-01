@@ -7,7 +7,7 @@ import HeaderCell from './HeaderCell';
 
 import FilterModal from '../FilterModal';
 
-const HeaderRow = ({ headerList, customHeaderComponent, fieldWidths, sortByField, setSortByField, sortDirection, setSortDirection, fieldFilters, setFieldFilters, filterModalInfo, setFilterModalInfo }) => {
+const HeaderRow = ({ headerList, customHeaderComponent, fieldWidths, fieldFilters, setFieldFilters, filterModalInfo, setFilterModalInfo, sortInfo, setSortInfo }) => {
 
   const theme = useTheme();
   const styles = getStyles(theme);
@@ -34,12 +34,10 @@ const HeaderRow = ({ headerList, customHeaderComponent, fieldWidths, sortByField
           fieldWidth={fieldWidths && fieldWidths[header.Field] ? fieldWidths[header.Field] : 100}
           customHeaderComponent={customHeaderComponent}
           header={header}
-          sortByField={sortByField}
-          setSortByField={setSortByField}
-          sortDirection={sortDirection}
-          setSortDirection={setSortDirection}
           fieldFilters={fieldFilters}
           setFilterModalInfo={setFilterModalInfo}
+          sortInfo={sortInfo}
+          setSortInfo={setSortInfo}
         />
       ))}
     </View>

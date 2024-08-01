@@ -1,15 +1,18 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { ScrollView, View, FlatList, StyleSheet, useWindowDimensions, ActivityIndicator, TouchableOpacity, StatusBar } from 'react-native';
 import { useTheme } from '../../constants/colors';
+
 import HeaderRow from './HeaderRow';
 import DataRow from './DataRow';
 import Pagination from './Pagination';
 
 import axios from 'axios';
 
+import DetailTableModal from './DetailTableModal';
+
 import { useSelector } from 'react-redux';
 
-const Table = ({ fieldWidths, customHeaderComponent, customDataComponent, requestUrl, paginationEnabled, itemsPerPage = 1, fieldFilters, setFieldFilters }) => {
+const Table = ({ fieldWidths, detailFieldWidths, customHeaderComponent, customDataComponent, requestUrl, detailRequestUrl, paginationEnabled, itemsPerPage = 1, fieldFilters, setFieldFilters, subDocumentConnectionId, navigation }) => {
 
   const userToken = useSelector((state) => state.userData.data.token);
   const baseRequestURL = useSelector((state) => state.baseRequestURL.value);
@@ -35,6 +38,7 @@ const Table = ({ fieldWidths, customHeaderComponent, customDataComponent, reques
 
   const fetchTableData = async (requestPageNumber = 1, requestPageSize = 10) => {
     const apiUrl = `${baseRequestURL}/${requestUrl}`;
+    console.log(requestUrl);
     try {
       setIsLoading(true);
       const response = await axios.post(apiUrl, {
@@ -42,8 +46,9 @@ const Table = ({ fieldWidths, customHeaderComponent, customDataComponent, reques
         user_token: userToken,
         PageSize: requestPageSize,
         PageNumber: requestPageNumber,
-        SortBy: sortByField,
-        SortDirection: sortDirection,
+        SortBy: sortInfo.sortByField,
+        SortDirection: sortInfo.sortDirection,
+        SubDocumentConnectionId: subDocumentConnectionId,
         ...fieldFilters,
       });
       setTableHeaderList(response.data[0]);
@@ -82,12 +87,16 @@ const Table = ({ fieldWidths, customHeaderComponent, customDataComponent, reques
   const lastTap = useRef({ time: 0, index: null });
   const timer = useRef(null);
 
-  const handleRowClick = (index) => {
+  const handleRowClick = (item, index) => {
     const now = Date.now();
     const DOUBLE_PRESS_DELAY = 300;
 
     if (lastTap.current.time && (now - lastTap.current.time) < DOUBLE_PRESS_DELAY && lastTap.current.index === index) {
-      console.log('double clicked');
+      setModalSubDocumentConnectionId(item.SubDocumentConnectionId);
+      setDetailModalVisible(true);
+      // if (navigation) {
+      //   navigation.navigate('DetailTable', { subDocumentConnectionId: item.SubDocumentConnectionId, detailRequestUrl: detailRequestUrl, detailFieldWidths: detailFieldWidths });
+      // }
       clearTimeout(timer.current);
     } else {
       lastTap.current = { time: now, index };
@@ -101,8 +110,10 @@ const Table = ({ fieldWidths, customHeaderComponent, customDataComponent, reques
     }
   };
 
-  const [sortByField, setSortByField] = useState(null);
-  const [sortDirection, setSortDirection] = useState(null);
+  const [sortInfo, setSortInfo] = useState({
+    sortByField: null,
+    sortDirection: null,
+  });
 
   useEffect(() => {
     if (tableCurrentPage !== 1) {
@@ -111,7 +122,7 @@ const Table = ({ fieldWidths, customHeaderComponent, customDataComponent, reques
       fetchTableData(1, rowsPerPage);
       setSelectedRowIndex(null);
     }
-  }, [rowsPerPage, sortByField, sortDirection, fieldFilters])
+  }, [rowsPerPage, sortInfo.sortByField, sortInfo.sortDirection, fieldFilters])
 
   useEffect(() => {
     if (!isLoading) {
@@ -121,8 +132,11 @@ const Table = ({ fieldWidths, customHeaderComponent, customDataComponent, reques
   }, [tableCurrentPage]);
 
   useEffect(() => {
-    console.log(fieldFilters);
-  }, [fieldFilters]);
+    setSortInfo({
+      sortByField: sortInfo.sortByField,
+      sortDirection: 'asc',
+    });
+  }, [sortInfo.sortByField]);
 
   const [filterModalInfo, setFilterModalInfo] = useState({
     visible: false,
@@ -131,8 +145,18 @@ const Table = ({ fieldWidths, customHeaderComponent, customDataComponent, reques
     title: null,
   });
 
+  const [detailModalVisible, setDetailModalVisible] = useState(false);
+  const [modalSubDocumentConnectionId, setModalSubDocumentConnectionId] = useState(subDocumentConnectionId);
+
   return (
     <View style={styles.tableContainer}>
+      <DetailTableModal
+        visible={detailModalVisible}
+        requestUrl={detailRequestUrl}
+        subDocumentConnectionId={modalSubDocumentConnectionId}
+        onClose={() => setDetailModalVisible(false)}
+
+      />
       {paginationEnabled &&
         <Pagination
           currentPage={tableCurrentPage}
@@ -156,20 +180,18 @@ const Table = ({ fieldWidths, customHeaderComponent, customDataComponent, reques
               headerList={tableHeaderList}
               customHeaderComponent={customHeaderComponent}
               fieldWidths={fieldWidths}
-              sortByField={sortByField}
-              setSortByField={setSortByField}
-              sortDirection={sortDirection}
-              setSortDirection={setSortDirection}
               fieldFilters={fieldFilters}
               setFieldFilters={setFieldFilters}
               filterModalInfo={filterModalInfo}
               setFilterModalInfo={setFilterModalInfo}
+              sortInfo={sortInfo}
+              setSortInfo={setSortInfo}
             />
             <FlatList
               data={tableRowList}
               keyExtractor={(item, index) => index.toString()}
               renderItem={({ item, index }) => (
-                <TouchableOpacity key={index} style={{ flexDirection: 'row' }} onPress={() => handleRowClick(index)}>
+                <TouchableOpacity key={index} style={{ flexDirection: 'row' }} onPress={() => handleRowClick(item, index)}>
                   <DataRow
                     item={item}
                     headerList={tableHeaderList}

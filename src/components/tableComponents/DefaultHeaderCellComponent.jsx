@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import { useTheme } from '../../constants/colors';
 
-const DefaultHeaderCellComponent = ({ title, item, sortByField, setSortByField, sortDirection, setSortDirection, fieldFilters, setFilterModalInfo }) => {
+const DefaultHeaderCellComponent = ({ title, item, fieldFilters, setFilterModalInfo, sortInfo, setSortInfo }) => {
   const theme = useTheme();
   const styles = getStyles(theme);
 
@@ -26,21 +26,17 @@ const DefaultHeaderCellComponent = ({ title, item, sortByField, setSortByField, 
   }
 
   const handleSortPress = () => {
-    setSortByField(item.Field);
-    if (sortDirection === 'asc') {
-      setSortDirection('desc');
-    } else if (sortDirection === 'desc') {
-      setSortDirection(null);
-    } else {
-      setSortDirection('asc');
-    }
+    setSortInfo({
+      sortByField: item.Field,
+      sortDirection: sortInfo.sortByField !== item.Field ? 'asc' : (sortInfo.sortDirection === 'asc' ? 'desc' : (sortInfo.sortDirection === 'desc' ? null : 'asc')),
+    });
   };
 
   const getSortIcon = () => {
-    if (item.Field === sortByField) {
-      if (sortDirection === 'asc') {
+    if (item.Field === sortInfo.sortByField) {
+      if (sortInfo.sortDirection === 'asc') {
         return 'sort-asc';
-      } else if (sortDirection === 'desc') {
+      } else if (sortInfo.sortDirection === 'desc') {
         return 'sort-desc';
       }
     }
@@ -48,7 +44,7 @@ const DefaultHeaderCellComponent = ({ title, item, sortByField, setSortByField, 
   }
 
   const getSortIconColor = () => {
-    if (item.Field === sortByField && (sortDirection === 'asc' || sortDirection === 'desc')) {
+    if (item.Field === sortInfo.sortByField && (sortInfo.sortDirection === 'asc' || sortInfo.sortDirection === 'desc')) {
       return theme.orange;
     }
     return theme.white;

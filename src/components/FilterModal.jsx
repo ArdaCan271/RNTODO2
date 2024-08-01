@@ -56,7 +56,7 @@ const getStyles = (theme) => StyleSheet.create({
     alignItems: 'center',
   },
   modalContainer: {
-    backgroundColor: theme.background,
+    backgroundColor: theme.backgroundAlt,
     borderRadius: 10,
     width: '70%',
   },

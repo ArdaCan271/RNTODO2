@@ -42,6 +42,9 @@ const ExtractReportScreen = ({ navigation }) => {
     SubDocumentConnectionId: 0,
   };
 
+  const detailTableFieldWidths = {
+  };
+
   const [fieldFilters, setFieldFilters] = useState({
     DateStart: '',
     DateEnd: '',
@@ -62,11 +65,14 @@ const ExtractReportScreen = ({ navigation }) => {
       />
       <Table
         fieldWidths={fieldWidths}
+        detailFieldWidths={detailTableFieldWidths}
         requestUrl="DuyuII/CustomerExtract/GetListPaging"
+        detailRequestUrl="DuyuII/CustomerExtractDetails/GetList"
         paginationEnabled
         itemsPerPage={10}
         fieldFilters={fieldFilters}
         setFieldFilters={setFieldFilters}
+        navigation={navigation}
       />
     </View>
   );

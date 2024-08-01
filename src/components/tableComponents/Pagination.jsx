@@ -58,7 +58,10 @@ const Pagination = ({currentPage, totalPages, handleNextPage, handlePreviousPage
         onSubmitEditing={() => handleGoToPage(parseInt(goToInput, 10))}
       />
       <TouchableOpacity
-        onPress={() => handleGoToPage(parseInt(goToInput, 10))}
+        onPress={() => {
+          handleGoToPage(parseInt(goToInput, 10));
+          Keyboard.dismiss();
+        }}
         style={styles.goToPageButton}
       >
         <FontAwesome name="external-link-square" size={20} color={theme.white} />

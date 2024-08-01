@@ -11,6 +11,7 @@ import MenuChildrenScreen from '../screens/MenuChildrenScreen';
 import SettingsScreen from '../screens/SettingsScreen';
 import UploadDataScreen from '../screens/UploadDataScreen';
 import ExtractReportScreen from '../screens/ExtractReportScreen';
+import DetailTableScreen from '../screens/DetailTableScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -65,6 +66,14 @@ const StackNavigator = ({ drawerNavigator }) => {
       <Stack.Screen
         name="ExtractReport"
         component={ExtractReportScreen}
+        options={{
+          headerShown: false,
+          animation: 'ios',
+        }}
+      />
+      <Stack.Screen
+        name="DetailTable"
+        component={DetailTableScreen}
         options={{
           headerShown: false,
           animation: 'ios',
