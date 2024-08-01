@@ -41,7 +41,7 @@ const getStyles = (theme) => StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: theme.background,
-    paddingTop: 50,
+    paddingTop: theme.padding.header,
   },
   text: {
     fontSize: 18,

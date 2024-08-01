@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, TouchableOpacity, TextInput, Pressable, Keyboard } from 'react-native';
+import { StyleSheet, Text, View, TouchableOpacity, TextInput, Pressable, Keyboard, useWindowDimensions } from 'react-native';
 import React, { useState } from 'react';
 
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
@@ -7,10 +7,13 @@ import { useTheme } from '../../constants/colors';
 
 import PickerModal from '../PickerModal';
 
-const Pagination = ({currentPage, totalPages, handleNextPage, handlePreviousPage, handleGoToPage, rowsPerPage, changeRowsPerPage}) => {
+const Pagination = ({currentPage, totalPages, handleNextPage, handlePreviousPage, handleGoToPage, rowsPerPage, changeRowsPerPage, clearAllFilters}) => {
 
   const theme = useTheme();
   const styles = getStyles(theme);
+
+  const windowWidth = useWindowDimensions().width;
+  const windowHeight = useWindowDimensions().height;
 
   const [goToInput, setGoToInput] = useState('');
   
@@ -36,7 +39,7 @@ const Pagination = ({currentPage, totalPages, handleNextPage, handlePreviousPage
   };
 
   return (
-    <Pressable style={styles.container} android_disableSound onPress={() => Keyboard.dismiss()}>
+    <Pressable style={[styles.container, {paddingRight: windowWidth > windowHeight ? 20 : 0}]} android_disableSound onPress={() => Keyboard.dismiss()}>
       <PickerModal
         visible={isModalVisible}
         options={[10, 30, 60]}
@@ -44,12 +47,15 @@ const Pagination = ({currentPage, totalPages, handleNextPage, handlePreviousPage
         onSelect={handleSelectRowsPerPage}
         onClose={() => setIsModalVisible(false)}
       />
+      <TouchableOpacity onPress={clearAllFilters} style={styles.removeFiltersButton}>
+        <Text style={styles.removeFiltersButtonText}>Filtreleri Kaldır</Text>
+      </TouchableOpacity>
       <TouchableOpacity onPress={() => setIsModalVisible(true)} style={styles.rowsPerPageButton}>
         <Text style={styles.rowsPerPageButtonText}>{`Satır: ${rowsPerPage}`}</Text>
       </TouchableOpacity>
       <TextInput
         style={styles.goToPageInput}
-        placeholder="Sayfa No."
+        placeholder="Sayfa"
         keyboardType="numeric"
         value={goToInput}
         onChangeText={handleInputChange}
@@ -89,13 +95,27 @@ const getStyles = (theme) => StyleSheet.create({
     justifyContent: 'flex-end',
     alignItems: 'center',
     width: '100%',
-    paddingRight: 20,
-    height: 30,
+    height: 24,
+  },
+  removeFiltersButton: {
+    height: 26,
+    paddingHorizontal: 4,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: theme.primaryAlt,
+    borderRadius: 5,
+    borderWidth: 1,
+    borderColor: theme.text,
+    marginRight: 10,
+  },
+  removeFiltersButtonText: {
+    color: theme.white,
   },
   rowsPerPageButton: {
-    height: 32,
-    paddingVertical: 6,
-    paddingHorizontal: 8,
+    height: 26,
+    paddingHorizontal: 4,
+    justifyContent: 'center',
+    alignItems: 'center',
     backgroundColor: theme.primaryAlt,
     borderRadius: 5,
     borderWidth: 1,
@@ -106,8 +126,8 @@ const getStyles = (theme) => StyleSheet.create({
     color: theme.white,
   },
   goToPageInput: {
-    height: 32,
-    width: 60,
+    height: 26,
+    width: 40,
     backgroundColor: theme.backgroundAlt,
     borderColor: theme.text,
     borderWidth: 1,
@@ -120,11 +140,12 @@ const getStyles = (theme) => StyleSheet.create({
     color: theme.text,
   },
   goToPageButton: {
-    height: 32,
-    paddingVertical: 6,
-    paddingHorizontal: 8,
+    height: 26,
+    paddingHorizontal: 4,
     backgroundColor: theme.primaryAlt,
     borderRadius: 5,
+    justifyContent: 'center',
+    alignItems: 'center',
     borderTopLeftRadius: 0,
     borderBottomLeftRadius: 0,
     marginRight: 10,
@@ -137,11 +158,10 @@ const getStyles = (theme) => StyleSheet.create({
     marginHorizontal: 10,
   },
   changePageButton: {
-    height: 32,
+    height: 26,
     justifyContent: 'center',
     alignItems: 'center',
-    paddingVertical: 6,
-    paddingHorizontal: 9,
+    paddingHorizontal: 4,
     backgroundColor: theme.primaryAlt,
     borderRadius: 5,
     borderWidth: 1,

@@ -12,6 +12,7 @@ import SettingsScreen from '../screens/SettingsScreen';
 import UploadDataScreen from '../screens/UploadDataScreen';
 import ExtractReportScreen from '../screens/ExtractReportScreen';
 import DetailTableScreen from '../screens/DetailTableScreen';
+import FastOrderScreen from '../screens/FastOrderScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -58,6 +59,14 @@ const StackNavigator = ({ drawerNavigator }) => {
       <Stack.Screen
         name="MenuChildren"
         component={MenuChildrenScreen}
+        options={{
+          headerShown: false,
+          animation: 'ios',
+        }}
+      />
+      <Stack.Screen
+        name="FastOrder"
+        component={FastOrderScreen}
         options={{
           headerShown: false,
           animation: 'ios',

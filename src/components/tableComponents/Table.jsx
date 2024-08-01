@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from 'react';
-import { ScrollView, View, FlatList, StyleSheet, useWindowDimensions, ActivityIndicator, TouchableOpacity, StatusBar } from 'react-native';
+import { ScrollView, View, FlatList, StyleSheet, useWindowDimensions, ActivityIndicator, TouchableOpacity, StatusBar, Text, Animated } from 'react-native';
 import { useTheme } from '../../constants/colors';
 
 import HeaderRow from './HeaderRow';
@@ -8,9 +8,13 @@ import Pagination from './Pagination';
 
 import axios from 'axios';
 
-import DetailTableModal from './DetailTableModal';
+import { clearAllFilters } from '../../utils/clearAllFieldFilters';
 
 import { useSelector } from 'react-redux';
+
+
+import { SyncedFlatList } from './SyncedFlatList';
+import { SyncedFlatListContext, syncedFlatListState } from '../../contexts/SyncedFlatListContext';
 
 const Table = ({ fieldWidths, detailFieldWidths, customHeaderComponent, customDataComponent, requestUrl, detailRequestUrl, paginationEnabled, itemsPerPage = 1, fieldFilters, setFieldFilters, subDocumentConnectionId, navigation }) => {
 
@@ -32,13 +36,12 @@ const Table = ({ fieldWidths, detailFieldWidths, customHeaderComponent, customDa
 
   const [tableCurrentPage, setTableCurrentPage] = useState(1);
   const [tableTotalPages, setTableTotalPages] = useState(1);
-  
+
 
   const [rowsPerPage, setRowsPerPage] = useState(itemsPerPage);
 
   const fetchTableData = async (requestPageNumber = 1, requestPageSize = 10) => {
     const apiUrl = `${baseRequestURL}/${requestUrl}`;
-    console.log(requestUrl);
     try {
       setIsLoading(true);
       const response = await axios.post(apiUrl, {
@@ -92,11 +95,11 @@ const Table = ({ fieldWidths, detailFieldWidths, customHeaderComponent, customDa
     const DOUBLE_PRESS_DELAY = 300;
 
     if (lastTap.current.time && (now - lastTap.current.time) < DOUBLE_PRESS_DELAY && lastTap.current.index === index) {
-      setModalSubDocumentConnectionId(item.SubDocumentConnectionId);
-      setDetailModalVisible(true);
-      // if (navigation) {
-      //   navigation.navigate('DetailTable', { subDocumentConnectionId: item.SubDocumentConnectionId, detailRequestUrl: detailRequestUrl, detailFieldWidths: detailFieldWidths });
-      // }
+      // setModalSubDocumentConnectionId(item.SubDocumentConnectionId);
+      // setDetailModalVisible(true);
+      if (navigation) {
+        navigation.navigate('DetailTable', { subDocumentConnectionId: item.SubDocumentConnectionId, detailRequestUrl: detailRequestUrl, detailFieldWidths: detailFieldWidths });
+      }
       clearTimeout(timer.current);
     } else {
       lastTap.current = { time: now, index };
@@ -145,19 +148,12 @@ const Table = ({ fieldWidths, detailFieldWidths, customHeaderComponent, customDa
     title: null,
   });
 
-  const [detailModalVisible, setDetailModalVisible] = useState(false);
-  const [modalSubDocumentConnectionId, setModalSubDocumentConnectionId] = useState(subDocumentConnectionId);
+  // const [detailModalVisible, setDetailModalVisible] = useState(false);
+  // const [modalSubDocumentConnectionId, setModalSubDocumentConnectionId] = useState(subDocumentConnectionId);
 
   return (
-    <View style={styles.tableContainer}>
-      <DetailTableModal
-        visible={detailModalVisible}
-        requestUrl={detailRequestUrl}
-        subDocumentConnectionId={modalSubDocumentConnectionId}
-        onClose={() => setDetailModalVisible(false)}
-
-      />
-      {paginationEnabled &&
+    <View style={[styles.tableContainer, { width: windowWidth, height: windowHeight - (theme.padding.header + (windowWidth > windowHeight ? statusBarHeight : 0)) }]}>
+      {paginationEnabled && tableRowList && tableRowList.length > 0 &&
         <Pagination
           currentPage={tableCurrentPage}
           totalPages={tableTotalPages}
@@ -166,6 +162,7 @@ const Table = ({ fieldWidths, detailFieldWidths, customHeaderComponent, customDa
           handleGoToPage={handleGoToPage}
           rowsPerPage={rowsPerPage}
           changeRowsPerPage={changeRowsPerPage}
+          clearAllFilters={() => clearAllFilters(setFieldFilters)}
           isLoading={isLoading}
         />
       }
@@ -174,37 +171,89 @@ const Table = ({ fieldWidths, detailFieldWidths, customHeaderComponent, customDa
           <ActivityIndicator size="large" color={theme.primary} />
         </View>
         :
-        <ScrollView horizontal keyboardShouldPersistTaps='handled'>
-          <View style={[styles.tableContainerView, { height: windowHeight - (theme.padding.header + 30 + (windowWidth > windowHeight ? statusBarHeight : 0)), minWidth: windowWidth }]}>
-            <HeaderRow
-              headerList={tableHeaderList}
-              customHeaderComponent={customHeaderComponent}
-              fieldWidths={fieldWidths}
-              fieldFilters={fieldFilters}
-              setFieldFilters={setFieldFilters}
-              filterModalInfo={filterModalInfo}
-              setFilterModalInfo={setFilterModalInfo}
-              sortInfo={sortInfo}
-              setSortInfo={setSortInfo}
-            />
-            <FlatList
-              data={tableRowList}
-              keyExtractor={(item, index) => index.toString()}
-              renderItem={({ item, index }) => (
-                <TouchableOpacity key={index} style={{ flexDirection: 'row' }} onPress={() => handleRowClick(item, index)}>
-                  <DataRow
-                    item={item}
-                    headerList={tableHeaderList}
-                    customDataComponent={customDataComponent}
-                    dataRowIndex={index}
-                    fieldWidths={fieldWidths}
-                    backgroundColor={index === selectedRowIndex ? theme.tableHighlight : (index % 2 === 0 ? theme.background : theme.backgroundAlt)}
-                  />
-                </TouchableOpacity>
-              )}
-            />
+        (tableRowList && tableRowList.length > 0 ?
+          <SyncedFlatListContext.Provider value={syncedFlatListState}>
+
+            <View style={{ width: windowWidth, flexDirection: 'row' }}>
+              <View
+                style={styles.stickyColumnsContainer}
+              >
+                <ScrollView horizontal keyboardShouldPersistTaps='handled' scrollEnabled={false}>
+                  <View style={[styles.tableContainerView, { height: windowHeight - (theme.padding.header + 24 + (windowWidth > windowHeight ? statusBarHeight : 0)), minWidth: windowWidth }]}>
+                    <HeaderRow
+                      headerList={tableHeaderList}
+                      customHeaderComponent={customHeaderComponent}
+                      fieldWidths={fieldWidths}
+                      fieldFilters={fieldFilters}
+                      setFieldFilters={setFieldFilters}
+                      filterModalInfo={filterModalInfo}
+                      setFilterModalInfo={setFilterModalInfo}
+                      sortInfo={sortInfo}
+                      setSortInfo={setSortInfo}
+                    />
+                    <SyncedFlatList
+                      id={0}
+                      data={tableRowList}
+                      keyExtractor={(item, index) => index.toString()}
+                      renderItem={({ item, index }) => (
+                        <TouchableOpacity key={index} style={{ flexDirection: 'row' }} onPress={() => handleRowClick(item, index)}>
+                          <DataRow
+                            item={item}
+                            headerList={tableHeaderList}
+                            customDataComponent={customDataComponent}
+                            dataRowIndex={index}
+                            fieldWidths={fieldWidths}
+                            backgroundColor={index === selectedRowIndex ? theme.tableHighlight : (index % 2 === 0 ? theme.background : theme.backgroundAlt)}
+                          />
+                        </TouchableOpacity>
+                      )}
+                    />
+                  </View>
+                </ScrollView>
+              </View>
+              <View
+                style={styles.freeColumnsContainer}
+              >
+                <ScrollView horizontal keyboardShouldPersistTaps='handled'>
+                  <View style={[styles.tableContainerView, { height: windowHeight - (theme.padding.header + 24 + (windowWidth > windowHeight ? statusBarHeight : 0)), minWidth: windowWidth }]}>
+                    <HeaderRow
+                      headerList={tableHeaderList}
+                      customHeaderComponent={customHeaderComponent}
+                      fieldWidths={fieldWidths}
+                      fieldFilters={fieldFilters}
+                      setFieldFilters={setFieldFilters}
+                      filterModalInfo={filterModalInfo}
+                      setFilterModalInfo={setFilterModalInfo}
+                      sortInfo={sortInfo}
+                      setSortInfo={setSortInfo}
+                    />
+                    <SyncedFlatList
+                      id={1}
+                      data={tableRowList}
+                      keyExtractor={(item, index) => index.toString()}
+                      renderItem={({ item, index }) => (
+                        <TouchableOpacity key={index} style={{ flexDirection: 'row' }} onPress={() => handleRowClick(item, index)}>
+                          <DataRow
+                            item={item}
+                            headerList={tableHeaderList}
+                            customDataComponent={customDataComponent}
+                            dataRowIndex={index}
+                            fieldWidths={fieldWidths}
+                            backgroundColor={index === selectedRowIndex ? theme.tableHighlight : (index % 2 === 0 ? theme.background : theme.backgroundAlt)}
+                          />
+                        </TouchableOpacity>
+                      )}
+                    />
+                  </View>
+                </ScrollView>
+              </View>
+            </View>
+          </SyncedFlatListContext.Provider>
+          :
+          <View style={styles.noDataFoundContainer}>
+            <Text style={styles.noDataFoundText}>Veri Bulunamadı</Text>
           </View>
-        </ScrollView>
+        )
       }
     </View>
   );
@@ -212,13 +261,33 @@ const Table = ({ fieldWidths, detailFieldWidths, customHeaderComponent, customDa
 
 const getStyles = (theme) => StyleSheet.create({
   tableContainer: {
-    width: '100%',
-    height: '100%',
     backgroundColor: theme.background,
   },
   tableContainerView: {
-    flex: 1,
     flexDirection: 'column',
+  },
+  stickyColumnsContainer: {
+    position: 'absolute',
+    left: 0,
+    zIndex: 1,
+    height: '100%',
+    width: 200,
+    backgroundColor: theme.background,
+    borderRightWidth: 1,
+    borderRightColor: theme.red,
+  },
+  freeColumnsContainer: {
+    height: '100%',
+    backgroundColor: theme.background,
+  },
+  noDataFoundContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  noDataFoundText: {
+    color: theme.text,
+    fontSize: 20,
   },
 });
 

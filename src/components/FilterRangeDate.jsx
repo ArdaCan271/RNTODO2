@@ -31,15 +31,15 @@ const FilterRangeDate = ({ field, fieldFilters, setFieldFilters, filterModalInfo
   const [startDate, setStartDate] = useState(startDateString.length > 0 ? new Date(startYear, startMonth - 1, startDay) : new Date());
   const [endDate, setEndDate] = useState(endDateString.length > 0 ? new Date(endYear, endMonth - 1, endDay) : new Date());
 
-  const [showStartDate, setShowStartDate] = useState(startDateString.length > 0);
-  const [showEndDate, setShowEndDate] = useState(endDateString.length > 0);
+  const [showStartDate, setShowStartDate] = useState(true);
+  const [showEndDate, setShowEndDate] = useState(true);
 
   const [openStart, setOpenStart] = useState(false);
   const [openEnd, setOpenEnd] = useState(false);
 
   return (
     <View style={styles.container}>
-      <DatePicker
+      {/* <DatePicker
         modal
         open={openStart}
         date={startDate}
@@ -74,10 +74,10 @@ const FilterRangeDate = ({ field, fieldFilters, setFieldFilters, filterModalInfo
         confirmText='Onayla'
         cancelText='İptal'
         minimumDate={showStartDate ? startDate : null}
-      />
+      /> */}
       <View style={styles.dateButtonsContainer}>
         <View style={styles.startDateContainer}>
-          <TouchableOpacity style={styles.dateButton} onPress={() => setOpenStart(true)}>
+          {/* <TouchableOpacity style={styles.dateButton} onPress={() => setOpenStart(true)}>
             <Text style={styles.dateButtonText}>Başlangıç {filterModalInfo.title} Seç</Text>
           </TouchableOpacity>
           {showStartDate &&
@@ -85,10 +85,27 @@ const FilterRangeDate = ({ field, fieldFilters, setFieldFilters, filterModalInfo
               <Text style={styles.dateTitle}>Başlangıç {filterModalInfo.title}:</Text>
               <Text style={styles.dateText}>{convertDateToTRFormat(startDate)}</Text>
             </View>
-          }
+          } */}
+          <Text style={styles.dateTitle}>Başlangıç {filterModalInfo.title}:</Text>
+          <DatePicker
+            date={startDate}
+            mode='date'
+            maximumDate={showEndDate ? endDate : null}
+            theme={theme.type === 'light' ? 'light' : 'dark'}
+            onDateChange={setStartDate}
+          />
         </View>
         <View style={styles.endDateContainer}>
-          <TouchableOpacity style={styles.dateButton} onPress={() => setOpenEnd(true)}>
+          <Text style={styles.dateTitle}>Bitiş {filterModalInfo.title}:</Text>
+          <DatePicker
+            date={endDate}
+            mode='date'
+            minimumDate={showStartDate ? startDate : null}
+            theme={theme.type === 'light' ? 'light' : 'dark'}
+            onDateChange={setEndDate}
+            
+          />
+          {/* <TouchableOpacity style={styles.dateButton} onPress={() => setOpenEnd(true)}>
             <Text style={styles.dateButtonText}>Bitiş {filterModalInfo.title} Seç</Text>
           </TouchableOpacity>
           {showEndDate &&
@@ -96,7 +113,7 @@ const FilterRangeDate = ({ field, fieldFilters, setFieldFilters, filterModalInfo
               <Text style={styles.dateTitle}>Bitiş {filterModalInfo.title}:</Text>
               <Text style={styles.dateText}>{convertDateToTRFormat(endDate)}</Text>
             </View>
-          }
+          } */}
         </View>
       </View>
       <View style={styles.buttonContainer}>
@@ -114,6 +131,8 @@ const FilterRangeDate = ({ field, fieldFilters, setFieldFilters, filterModalInfo
           <Text style={styles.clearButtonText}>Kaldır</Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.acceptButton} onPress={() => {
+          setShowStartDate(true);
+          setShowEndDate(true);
           setFieldFilters({
             ...fieldFilters,
             [`${filterModalInfo.field}Start`]: convertDateToTRFormat(startDate),
@@ -131,6 +150,8 @@ const FilterRangeDate = ({ field, fieldFilters, setFieldFilters, filterModalInfo
 const getStyles = (theme) => StyleSheet.create({
   container: {
     width: '100%',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   dateTextContainer: {
     width: '100%',
@@ -139,7 +160,7 @@ const getStyles = (theme) => StyleSheet.create({
   },
   dateTitle: {
     color: theme.text,
-    textAlign: 'center',
+    width: '80%',
     marginTop: 4,
     fontSize: 16,
   },

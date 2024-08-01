@@ -23,7 +23,7 @@ const FilterModal = ({ fieldFilters, setFieldFilters, filterModalInfo, setFilter
         onPress={onClose}
       >
         <Pressable 
-          style={styles.modalContainer}
+          style={[styles.modalContainer, { width: filterModalInfo.type === 'Single' ? '70%' : '85%' }]}
           android_disableSound
         >
           {filterModalInfo.type === 'Single' && 

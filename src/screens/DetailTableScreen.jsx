@@ -28,13 +28,14 @@ const DetailTableScreen = ({ navigation, route }) => {
   return (
     <View style={styles.container}>
       <CustomHeader
-        title="Detay Tablosu"
+        title={route.params.subDocumentConnectionId}
         navigation={navigation}
       />
       <Table
         requestUrl={route.params.detailRequestUrl}
         subDocumentConnectionId={route.params.subDocumentConnectionId}
         fieldWidths={route.params.detailFieldWidths}
+        paginationEnabled
         itemsPerPage={10}
       />
     </View>
