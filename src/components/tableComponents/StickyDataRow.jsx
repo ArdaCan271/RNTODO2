@@ -5,12 +5,12 @@ import { useTheme } from '../../constants/colors';
 
 import { FlashList } from '@shopify/flash-list';
 
-const DataRow = ({ item, headerList, customDataComponent, fieldWidths, backgroundColor, selectedHeaderFields }) => {
+const StickyDataRow = ({ item, headerList, customDataComponent, fieldWidths, backgroundColor, selectedHeaderFields }) => {
   const theme = useTheme();
   const styles = getStyles(theme);
 
   const renderDataCell = ({ item: header, index }) => (
-    header.Visibility && !selectedHeaderFields.includes(header.Field) && (
+    header.Visibility && selectedHeaderFields.includes(header.Field) && (
       <DataCell
         key={index}
         fieldWidth={fieldWidths && fieldWidths[header.Field] ? fieldWidths[header.Field] : 100}
@@ -43,4 +43,4 @@ const getStyles = (theme) => StyleSheet.create({
   },
 });
 
-export default DataRow;
+export default StickyDataRow;

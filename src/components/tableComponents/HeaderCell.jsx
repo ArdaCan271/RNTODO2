@@ -5,7 +5,7 @@ import { useTheme } from '../../constants/colors';
 
 import DefaultHeaderCellComponent from './DefaultHeaderCellComponent';
 
-const HeaderCell = ({fieldWidth, customHeaderComponent, header, fieldFilters, setFilterModalInfo, sortInfo, setSortInfo}) => {
+const HeaderCell = ({fieldWidth, customHeaderComponent, header, fieldFilters, setFilterModalInfo, sortInfo, setSortInfo, selectedHeaderFields, setSelectedHeaderFields}) => {
 
   const theme = useTheme();
   const styles = getStyles(theme);
@@ -22,6 +22,8 @@ const HeaderCell = ({fieldWidth, customHeaderComponent, header, fieldFilters, se
           setFilterModalInfo={setFilterModalInfo}
           sortInfo={sortInfo}
           setSortInfo={setSortInfo}
+          selectedHeaderFields={selectedHeaderFields}
+          setSelectedHeaderFields={setSelectedHeaderFields}
         />
       }
     </View>

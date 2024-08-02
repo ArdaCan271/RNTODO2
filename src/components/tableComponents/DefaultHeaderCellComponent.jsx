@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import { useTheme } from '../../constants/colors';
 
-const DefaultHeaderCellComponent = ({ title, item, fieldFilters, setFilterModalInfo, sortInfo, setSortInfo }) => {
+const DefaultHeaderCellComponent = ({ title, item, fieldFilters, setFilterModalInfo, sortInfo, setSortInfo, selectedHeaderFields, setSelectedHeaderFields }) => {
   const theme = useTheme();
   const styles = getStyles(theme);
 
@@ -50,6 +50,14 @@ const DefaultHeaderCellComponent = ({ title, item, fieldFilters, setFilterModalI
     return theme.white;
   }
 
+  const handleTitlePress = () => {
+    if (selectedHeaderFields.includes(item.Field)) {
+      setSelectedHeaderFields(selectedHeaderFields.filter(field => field !== item.Field));
+    } else {
+      setSelectedHeaderFields([...selectedHeaderFields, item.Field]);
+    }
+  }
+
   return (
     <View style={styles.headerCellComponent}>
       {item.IsFilter &&
@@ -64,9 +72,14 @@ const DefaultHeaderCellComponent = ({ title, item, fieldFilters, setFilterModalI
           />
         </TouchableOpacity>
       }
-      <Text style={styles.headerCellText} numberOfLines={2}>
-        {title}
-      </Text>
+      <TouchableOpacity
+        onPress={handleTitlePress}
+        style={styles.headerCellTextWrapper}
+      >
+        <Text style={styles.headerCellText} numberOfLines={2}>
+          {title}
+        </Text>
+      </TouchableOpacity>
       {item.Sortable &&
         <TouchableOpacity
           onPress={handleSortPress}
@@ -103,12 +116,17 @@ const getStyles = (theme) => StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
+  headerCellTextWrapper: {
+    flex: 2,
+    height: '100%',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
   headerCellText: {
     color: theme.white,
     textAlign: 'center',
     fontSize: 12,
     marginHorizontal: 5,
-    flex: 2,
   },
 });
 

@@ -4,6 +4,9 @@ import { useTheme } from '../constants/colors';
 
 import CustomHeader from '../components/CustomHeader';
 
+import { SyncedScrollView } from '../components/tableComponents/SyncedScrollView';
+import { SyncedScrollViewContext, syncedScrollViewState } from '../contexts/SyncedScrollViewContext';
+
 const FastOrderScreen = ({ navigation }) => {
   const theme = useTheme();
   const styles = getStyles(theme);
@@ -28,44 +31,85 @@ const FastOrderScreen = ({ navigation }) => {
         title={'Hızlı Sipariş'}
         navigation={navigation}
       />
-      <ScrollView stickyHeaderIndices={[0, 2, 4]} contentContainerStyle={styles.scrollViewContent}>
-        <View style={styles.stickyHeader}>
-          <Text style={styles.headerText}>Sticky Header 1</Text>
-        </View>
-        <View style={styles.section}>
-          <Text style={styles.sectionText}>Content under Header 1</Text>
-        </View>
-        <View style={styles.stickyHeader}>
-          <Text style={styles.headerText}>Sticky Header 2</Text>
-        </View>
-        <View style={styles.section}>
-          <Text style={styles.sectionText}>Content under Header 2</Text>
-        </View>
-        <View style={styles.stickyHeader}>
-          <Text style={styles.headerText}>Sticky Header 3</Text>
-        </View>
-        <View style={styles.section}>
-          <Text style={styles.sectionText}>Content under Header 3</Text>
-        </View>
-        <View style={styles.section}>
-          <Text style={styles.sectionText}>Content under Header 3</Text>
-        </View>
-        <View style={styles.section}>
-          <Text style={styles.sectionText}>Content under Header 3</Text>
-        </View>
-        <View style={styles.section}>
-          <Text style={styles.sectionText}>Content under Header 3</Text>
-        </View>
-        <View style={styles.section}>
-          <Text style={styles.sectionText}>Content under Header 3</Text>
-        </View>
-        <View style={styles.section}>
-          <Text style={styles.sectionText}>Content under Header 3</Text>
-        </View>
-        <View style={styles.section}>
-          <Text style={styles.sectionText}>Content under Header 3</Text>
-        </View>
-      </ScrollView>
+      <View
+        style={{
+          width: "100%",
+          height: "100%",
+          backgroundColor: "lightgreen",
+        }}
+      >
+        <SyncedScrollViewContext.Provider value={syncedScrollViewState}>
+          <View style={{ width: 100, height: 32, backgroundColor: 'red', zIndex: 1, borderWidth: 1, borderColor: 'black', position: 'absolute', top: 0, left: 0 }} />
+          <View style={{ width: '100%', height: 32 }}>
+            <SyncedScrollView
+              id={0}
+              horizontal
+              showsHorizontalScrollIndicator={false}
+            >
+              <View style={{ width: 100, height: 32, backgroundColor: 'lightblue', borderWidth: 1, borderColor: 'black' }} />
+              <View style={{ width: 100, height: 32, backgroundColor: 'lightblue', borderWidth: 1, borderColor: 'black' }} />
+              <View style={{ width: 100, height: 32, backgroundColor: 'lightblue', borderWidth: 1, borderColor: 'black' }} />
+              <View style={{ width: 100, height: 32, backgroundColor: 'lightblue', borderWidth: 1, borderColor: 'black' }} />
+              <View style={{ width: 100, height: 32, backgroundColor: 'lightblue', borderWidth: 1, borderColor: 'black' }} />
+              <View style={{ width: 100, height: 32, backgroundColor: 'lightblue', borderWidth: 1, borderColor: 'black' }} />
+            </SyncedScrollView>
+          </View>
+          <ScrollView>
+            <View style={{ width: '100%', height: '100%', backgroundColor: 'yellow', flexDirection: 'row' }}>
+
+              <View style={{ backgroundColor: 'dodgerblue', width: 100 }}>
+                <View style={{ width: 100, height: 32, backgroundColor: 'dodgerblue', borderWidth: 1, borderColor: 'black' }} />
+                <View style={{ width: 100, height: 32, backgroundColor: 'dodgerblue', borderWidth: 1, borderColor: 'black' }} />
+                <View style={{ width: 100, height: 32, backgroundColor: 'dodgerblue', borderWidth: 1, borderColor: 'black' }} />
+                <View style={{ width: 100, height: 32, backgroundColor: 'dodgerblue', borderWidth: 1, borderColor: 'black' }} />
+                <View style={{ width: 100, height: 32, backgroundColor: 'dodgerblue', borderWidth: 1, borderColor: 'black' }} />
+                <View style={{ width: 100, height: 32, backgroundColor: 'dodgerblue', borderWidth: 1, borderColor: 'black' }} />
+                <View style={{ width: 100, height: 32, backgroundColor: 'dodgerblue', borderWidth: 1, borderColor: 'black' }} />
+                <View style={{ width: 100, height: 32, backgroundColor: 'dodgerblue', borderWidth: 1, borderColor: 'black' }} />
+                <View style={{ width: 100, height: 32, backgroundColor: 'dodgerblue', borderWidth: 1, borderColor: 'black' }} />
+                <View style={{ width: 100, height: 32, backgroundColor: 'dodgerblue', borderWidth: 1, borderColor: 'black' }} />
+                <View style={{ width: 100, height: 32, backgroundColor: 'dodgerblue', borderWidth: 1, borderColor: 'black' }} />
+                <View style={{ width: 100, height: 32, backgroundColor: 'dodgerblue', borderWidth: 1, borderColor: 'black' }} />
+                <View style={{ width: 100, height: 32, backgroundColor: 'dodgerblue', borderWidth: 1, borderColor: 'black' }} />
+                <View style={{ width: 100, height: 32, backgroundColor: 'dodgerblue', borderWidth: 1, borderColor: 'black' }} />
+                <View style={{ width: 100, height: 32, backgroundColor: 'dodgerblue', borderWidth: 1, borderColor: 'black' }} />
+                <View style={{ width: 100, height: 32, backgroundColor: 'dodgerblue', borderWidth: 1, borderColor: 'black' }} />
+                <View style={{ width: 100, height: 32, backgroundColor: 'dodgerblue', borderWidth: 1, borderColor: 'black' }} />
+                <View style={{ width: 100, height: 32, backgroundColor: 'dodgerblue', borderWidth: 1, borderColor: 'black' }} />
+                <View style={{ width: 100, height: 32, backgroundColor: 'dodgerblue', borderWidth: 1, borderColor: 'black' }} />
+                <View style={{ width: 100, height: 32, backgroundColor: 'dodgerblue', borderWidth: 1, borderColor: 'black' }} />
+                <View style={{ width: 100, height: 32, backgroundColor: 'dodgerblue', borderWidth: 1, borderColor: 'black' }} />
+                <View style={{ width: 100, height: 32, backgroundColor: 'dodgerblue', borderWidth: 1, borderColor: 'black' }} />
+                <View style={{ width: 100, height: 32, backgroundColor: 'dodgerblue', borderWidth: 1, borderColor: 'black' }} />
+                <View style={{ width: 100, height: 32, backgroundColor: 'dodgerblue', borderWidth: 1, borderColor: 'black' }} />
+                <View style={{ width: 100, height: 32, backgroundColor: 'dodgerblue', borderWidth: 1, borderColor: 'black' }} />
+                <View style={{ width: 100, height: 32, backgroundColor: 'dodgerblue', borderWidth: 1, borderColor: 'black' }} />
+                <View style={{ width: 100, height: 32, backgroundColor: 'dodgerblue', borderWidth: 1, borderColor: 'black' }} />
+                <View style={{ width: 100, height: 32, backgroundColor: 'dodgerblue', borderWidth: 1, borderColor: 'black' }} />
+                <View style={{ width: 100, height: 32, backgroundColor: 'dodgerblue', borderWidth: 1, borderColor: 'black' }} />
+                <View style={{ width: 100, height: 32, backgroundColor: 'dodgerblue', borderWidth: 1, borderColor: 'black' }} />
+                <View style={{ width: 100, height: 32, backgroundColor: 'dodgerblue', borderWidth: 1, borderColor: 'black' }} />
+              </View>
+              <View>
+                <SyncedScrollView id={1} horizontal>
+                  <View style={{ backgroundColor: 'lime', borderWidth: 1, borderColor: 'black' }}>
+                    <View style={{ width: 600, height: 32, backgroundColor: 'lime', borderRightWidth: 1, borderBottomWidth: 1, borderColor: 'black' }}>
+                      <Text style={styles.text}>Hızlı SiparişHızlı SiparişHızlı SiparişHızlı SiparişHızlı SiparişHızlı Sipariş</Text>
+                    </View>
+                    <View style={{ width: 600, height: 32, backgroundColor: 'lime', borderRightWidth: 1, borderBottomWidth: 1, borderColor: 'black' }} />
+                    <View style={{ width: 600, height: 32, backgroundColor: 'lime', borderRightWidth: 1, borderBottomWidth: 1, borderColor: 'black' }} />
+                    <View style={{ width: 600, height: 32, backgroundColor: 'lime', borderRightWidth: 1, borderBottomWidth: 1, borderColor: 'black' }} />
+                    <View style={{ width: 600, height: 32, backgroundColor: 'lime', borderRightWidth: 1, borderBottomWidth: 1, borderColor: 'black' }} />
+                    <View style={{ width: 600, height: 32, backgroundColor: 'lime', borderRightWidth: 1, borderBottomWidth: 1, borderColor: 'black' }} />
+                    <View style={{ width: 600, height: 32, backgroundColor: 'lime', borderRightWidth: 1, borderBottomWidth: 1, borderColor: 'black' }} />
+                    <View style={{ width: 600, height: 32, backgroundColor: 'lime', borderRightWidth: 1, borderBottomWidth: 1, borderColor: 'black' }} />
+                  </View>
+                </SyncedScrollView>
+              </View>
+            </View>
+          </ScrollView>
+        </SyncedScrollViewContext.Provider>
+      </View>
     </View>
   );
 };
@@ -76,30 +120,7 @@ const getStyles = (theme) => StyleSheet.create({
     backgroundColor: theme.background,
     paddingTop: theme.padding.header,
   },
-  scrollViewContent: {
-    paddingHorizontal: 20,
-  },
-  stickyHeader: {
-    height: 50,
-    backgroundColor: theme.primary,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  headerText: {
-    fontSize: 18,
-    color: theme.textOnPrimary,
-  },
-  section: {
-    height: 150,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: theme.secondary,
-    marginVertical: 10,
-  },
-  sectionText: {
-    fontSize: 16,
-    color: theme.text,
-  },
+
   text: {
     fontSize: 18,
     color: theme.text,

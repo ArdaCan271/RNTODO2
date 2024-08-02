@@ -15,6 +15,14 @@ import { useSelector } from 'react-redux';
 
 import { SyncedFlatList } from './SyncedFlatList';
 import { SyncedFlatListContext, syncedFlatListState } from '../../contexts/SyncedFlatListContext';
+import { SyncedScrollViewContext, syncedScrollViewState } from '../../contexts/SyncedScrollViewContext';
+import { SyncedScrollView } from './SyncedScrollView';
+
+import DefaultDataCellComponent from './DefaultDataCellComponent';
+import DataCell from './DataCell';
+import StickyDataRow from './StickyDataRow';
+import HeaderCell from './HeaderCell';
+import StickyHeaderRow from './StickyHeaderRow';
 
 const Table = ({ fieldWidths, detailFieldWidths, customHeaderComponent, customDataComponent, requestUrl, detailRequestUrl, paginationEnabled, itemsPerPage = 1, fieldFilters, setFieldFilters, subDocumentConnectionId, navigation }) => {
 
@@ -151,6 +159,22 @@ const Table = ({ fieldWidths, detailFieldWidths, customHeaderComponent, customDa
   // const [detailModalVisible, setDetailModalVisible] = useState(false);
   // const [modalSubDocumentConnectionId, setModalSubDocumentConnectionId] = useState(subDocumentConnectionId);
 
+  const [selectedHeaderFields, setSelectedHeaderFields] = useState([]);
+  const [selectedHeaderFieldsTotalWidth, setSelectedHeaderFieldsTotalWidth] = useState(0);
+
+  const handleHeaderFieldClick = (field) => {
+    if (selectedHeaderFields.includes(field)) {
+      setSelectedHeaderFields(selectedHeaderFields.filter((item) => item !== field));
+    } else {
+      setSelectedHeaderFields([...selectedHeaderFields, field]);
+    }
+  };
+
+  useEffect(() => {
+    console.log(selectedHeaderFields);
+    setSelectedHeaderFieldsTotalWidth(selectedHeaderFields.reduce((acc, item) => acc + (fieldWidths[item] ? fieldWidths[item] : 100), 0));
+  }, [selectedHeaderFields]);
+
   return (
     <View style={[styles.tableContainer, { width: windowWidth, height: windowHeight - (theme.padding.header + (windowWidth > windowHeight ? statusBarHeight : 0)) }]}>
       {paginationEnabled && tableRowList && tableRowList.length > 0 &&
@@ -172,83 +196,197 @@ const Table = ({ fieldWidths, detailFieldWidths, customHeaderComponent, customDa
         </View>
         :
         (tableRowList && tableRowList.length > 0 ?
-          <SyncedFlatListContext.Provider value={syncedFlatListState}>
+          <View
+            style={{
+              width: "100%",
+              height: "100%",
+            }}
+          >
+            <SyncedScrollViewContext.Provider value={syncedScrollViewState}>
+              <View style={{ zIndex: 1, position: 'absolute', top: 0, left: 0, flexDirection: 'row' }}>
+                <StickyHeaderRow
+                  headerList={tableHeaderList}
+                  fieldWidths={fieldWidths}
+                  fieldFilters={fieldFilters}
+                  setFieldFilters={setFieldFilters}
+                  filterModalInfo={filterModalInfo}
+                  setFilterModalInfo={setFilterModalInfo}
+                  sortInfo={sortInfo}
+                  setSortInfo={setSortInfo}
+                  selectedHeaderFields={selectedHeaderFields}
+                  setSelectedHeaderFields={setSelectedHeaderFields}
+                />
+              </View>
+              <View style={{ width: '100%', marginLeft: selectedHeaderFieldsTotalWidth }}>
+                <SyncedScrollView
+                  id={0}
+                  horizontal
+                  showsHorizontalScrollIndicator={false}
+                >
+                  <HeaderRow
+                    headerList={tableHeaderList}
+                    fieldWidths={fieldWidths}
+                    fieldFilters={fieldFilters}
+                    setFieldFilters={setFieldFilters}
+                    filterModalInfo={filterModalInfo}
+                    setFilterModalInfo={setFilterModalInfo}
+                    sortInfo={sortInfo}
+                    setSortInfo={setSortInfo}
+                    selectedHeaderFields={selectedHeaderFields}
+                    setSelectedHeaderFields={setSelectedHeaderFields}
+                  />
+                </SyncedScrollView>
+              </View>
+              <ScrollView>
+                <View style={{ width: '100%', height: '100%', flexDirection: 'row' }}>
 
-            <View style={{ width: windowWidth, flexDirection: 'row' }}>
-              <View
-                style={styles.stickyColumnsContainer}
-              >
-                <ScrollView horizontal keyboardShouldPersistTaps='handled' scrollEnabled={false}>
-                  <View style={[styles.tableContainerView, { height: windowHeight - (theme.padding.header + 24 + (windowWidth > windowHeight ? statusBarHeight : 0)), minWidth: windowWidth }]}>
-                    <HeaderRow
-                      headerList={tableHeaderList}
-                      customHeaderComponent={customHeaderComponent}
-                      fieldWidths={fieldWidths}
-                      fieldFilters={fieldFilters}
-                      setFieldFilters={setFieldFilters}
-                      filterModalInfo={filterModalInfo}
-                      setFilterModalInfo={setFilterModalInfo}
-                      sortInfo={sortInfo}
-                      setSortInfo={setSortInfo}
-                    />
-                    <SyncedFlatList
-                      id={0}
-                      data={tableRowList}
-                      keyExtractor={(item, index) => index.toString()}
-                      renderItem={({ item, index }) => (
+                  <View style={{ width: selectedHeaderFieldsTotalWidth }}>
+                    {/* {
+                      tableRowList.map((item, index) => (
                         <TouchableOpacity key={index} style={{ flexDirection: 'row' }} onPress={() => handleRowClick(item, index)}>
-                          <DataRow
+                          <StickyDataRow
+                            key={index}
                             item={item}
                             headerList={tableHeaderList}
-                            customDataComponent={customDataComponent}
-                            dataRowIndex={index}
                             fieldWidths={fieldWidths}
                             backgroundColor={index === selectedRowIndex ? theme.tableHighlight : (index % 2 === 0 ? theme.background : theme.backgroundAlt)}
+                            selectedHeaderFields={selectedHeaderFields}
+                          />
+                        </TouchableOpacity>
+                      ))
+                    } */}
+                    <FlatList
+                      data={tableRowList}
+                      keyExtractor={(item, index) => index.toString()}
+                      scrollEnabled={false}
+                      renderItem={({ item, index }) => (
+                        <TouchableOpacity key={index} style={{ flexDirection: 'row' }} onPress={() => handleRowClick(item, index)}>
+                          <StickyDataRow
+                            item={item}
+                            headerList={tableHeaderList}
+                            fieldWidths={fieldWidths}
+                            backgroundColor={index === selectedRowIndex ? theme.tableHighlight : (index % 2 === 0 ? theme.background : theme.backgroundAlt)}
+                            selectedHeaderFields={selectedHeaderFields}
                           />
                         </TouchableOpacity>
                       )}
                     />
                   </View>
-                </ScrollView>
-              </View>
-              <View
-                style={styles.freeColumnsContainer}
-              >
-                <ScrollView horizontal keyboardShouldPersistTaps='handled'>
-                  <View style={[styles.tableContainerView, { height: windowHeight - (theme.padding.header + 24 + (windowWidth > windowHeight ? statusBarHeight : 0)), minWidth: windowWidth }]}>
-                    <HeaderRow
-                      headerList={tableHeaderList}
-                      customHeaderComponent={customHeaderComponent}
-                      fieldWidths={fieldWidths}
-                      fieldFilters={fieldFilters}
-                      setFieldFilters={setFieldFilters}
-                      filterModalInfo={filterModalInfo}
-                      setFilterModalInfo={setFilterModalInfo}
-                      sortInfo={sortInfo}
-                      setSortInfo={setSortInfo}
-                    />
-                    <SyncedFlatList
-                      id={1}
-                      data={tableRowList}
-                      keyExtractor={(item, index) => index.toString()}
-                      renderItem={({ item, index }) => (
-                        <TouchableOpacity key={index} style={{ flexDirection: 'row' }} onPress={() => handleRowClick(item, index)}>
-                          <DataRow
-                            item={item}
-                            headerList={tableHeaderList}
-                            customDataComponent={customDataComponent}
-                            dataRowIndex={index}
-                            fieldWidths={fieldWidths}
-                            backgroundColor={index === selectedRowIndex ? theme.tableHighlight : (index % 2 === 0 ? theme.background : theme.backgroundAlt)}
-                          />
-                        </TouchableOpacity>
-                      )}
-                    />
+                  <View>
+                    <SyncedScrollView id={1} horizontal>
+                      <View>
+                        {/* {
+                          tableRowList.map((item, index) => (
+                            <TouchableOpacity key={index} style={{ flexDirection: 'row' }} onPress={() => handleRowClick(item, index)}>
+                              <DataRow
+                                item={item}
+                                headerList={tableHeaderList}
+                                fieldWidths={fieldWidths}
+                                backgroundColor={index === selectedRowIndex ? theme.tableHighlight : (index % 2 === 0 ? theme.background : theme.backgroundAlt)}
+                                selectedHeaderFields={selectedHeaderFields}
+                              />
+                            </TouchableOpacity>
+                          ))
+                        } */}
+                        <FlatList
+                          data={tableRowList}
+                          keyExtractor={(item, index) => index.toString()}
+                          scrollEnabled={false}
+                          renderItem={({ item, index }) => (
+                            <TouchableOpacity key={index} style={{ flexDirection: 'row' }} onPress={() => handleRowClick(item, index)}>
+                              <DataRow
+                                item={item}
+                                headerList={tableHeaderList}
+                                fieldWidths={fieldWidths}
+                                backgroundColor={index === selectedRowIndex ? theme.tableHighlight : (index % 2 === 0 ? theme.background : theme.backgroundAlt)}
+                                selectedHeaderFields={selectedHeaderFields}
+                              />
+                            </TouchableOpacity>
+                          )}
+                        />
+                      </View>
+                    </SyncedScrollView>
                   </View>
-                </ScrollView>
-              </View>
-            </View>
-          </SyncedFlatListContext.Provider>
+                </View>
+              </ScrollView>
+            </SyncedScrollViewContext.Provider>
+          </View>
+
+
+          // <View style={{ width: windowWidth, flexDirection: 'row' }}>
+          //   <View
+          //     style={styles.stickyColumnsContainer}
+          //   >
+          //     <ScrollView horizontal keyboardShouldPersistTaps='handled' scrollEnabled={false}>
+          //       <View style={[styles.tableContainerView, { height: windowHeight - (theme.padding.header + 24 + (windowWidth > windowHeight ? statusBarHeight : 0)), minWidth: windowWidth }]}>
+          //         <HeaderRow
+          //           headerList={tableHeaderList}
+          //           customHeaderComponent={customHeaderComponent}
+          //           fieldWidths={fieldWidths}
+          //           fieldFilters={fieldFilters}
+          //           setFieldFilters={setFieldFilters}
+          //           filterModalInfo={filterModalInfo}
+          //           setFilterModalInfo={setFilterModalInfo}
+          //           sortInfo={sortInfo}
+          //           setSortInfo={setSortInfo}
+          //           selectedHeaderFields={selectedHeaderFields}
+          //           setSelectedHeaderFields={setSelectedHeaderFields}
+          //         />
+          //         <ScrollView scrollEnabled={false}>
+          //           {tableRowList.map((item, index) => (
+          //             <TouchableOpacity key={index} style={{ flexDirection: 'row' }} onPress={() => handleRowClick(item, index)}>
+          //               <DataRow
+          //                 item={item}
+          //                 headerList={tableHeaderList}
+          //                 customDataComponent={customDataComponent}
+          //                 dataRowIndex={index}
+          //                 fieldWidths={fieldWidths}
+          //                 backgroundColor={index === selectedRowIndex ? theme.tableHighlight : (index % 2 === 0 ? theme.background : theme.backgroundAlt)}
+          //               />
+          //             </TouchableOpacity>
+          //           ))
+          //           }
+          //         </ScrollView>
+          //       </View>
+          //     </ScrollView>
+          //   </View>
+          //   <View
+          //     style={styles.freeColumnsContainer}
+          //   >
+          //     <ScrollView horizontal keyboardShouldPersistTaps='handled'>
+          //       <View style={[styles.tableContainerView, { height: windowHeight - (theme.padding.header + 24 + (windowWidth > windowHeight ? statusBarHeight : 0)), minWidth: windowWidth }]}>
+          //         <HeaderRow
+          //           headerList={tableHeaderList}
+          //           customHeaderComponent={customHeaderComponent}
+          //           fieldWidths={fieldWidths}
+          //           fieldFilters={fieldFilters}
+          //           setFieldFilters={setFieldFilters}
+          //           filterModalInfo={filterModalInfo}
+          //           setFilterModalInfo={setFilterModalInfo}
+          //           sortInfo={sortInfo}
+          //           setSortInfo={setSortInfo}
+          //           selectedHeaderFields={selectedHeaderFields}
+          //           setSelectedHeaderFields={setSelectedHeaderFields}
+          //         />
+          //         <ScrollView>
+          //           {tableRowList.map((item, index) => (
+          //             <TouchableOpacity key={index} style={{ flexDirection: 'row' }} onPress={() => handleRowClick(item, index)}>
+          //               <DataRow
+          //                 item={item}
+          //                 headerList={tableHeaderList}
+          //                 customDataComponent={customDataComponent}
+          //                 dataRowIndex={index}
+          //                 fieldWidths={fieldWidths}
+          //                 backgroundColor={index === selectedRowIndex ? theme.tableHighlight : (index % 2 === 0 ? theme.background : theme.backgroundAlt)}
+          //               />
+          //             </TouchableOpacity>
+          //           ))
+          //           }
+          //         </ScrollView>
+          //       </View>
+          //     </ScrollView>
+          //   </View>
+          // </View>
           :
           <View style={styles.noDataFoundContainer}>
             <Text style={styles.noDataFoundText}>Veri Bulunamadı</Text>

@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, StyleSheet, TouchableOpacity, FlatList } from 'react-native';
 
 import { useTheme } from '../../constants/colors';
 
@@ -7,7 +7,7 @@ import HeaderCell from './HeaderCell';
 
 import FilterModal from '../FilterModal';
 
-const HeaderRow = ({ headerList, customHeaderComponent, fieldWidths, fieldFilters, setFieldFilters, filterModalInfo, setFilterModalInfo, sortInfo, setSortInfo }) => {
+const HeaderRow = ({ headerList, customHeaderComponent, fieldWidths, fieldFilters, setFieldFilters, filterModalInfo, setFilterModalInfo, sortInfo, setSortInfo, selectedHeaderFields, setSelectedHeaderFields }) => {
 
   const theme = useTheme();
   const styles = getStyles(theme);
@@ -27,8 +27,8 @@ const HeaderRow = ({ headerList, customHeaderComponent, fieldWidths, fieldFilter
           }
         )}
       />
-      {headerList.map((header, index) => (
-        header.Visibility &&
+      {/* {headerList.map((header, index) => (
+        header.Visibility && !selectedHeaderFields.includes(header.Field) && 
         <HeaderCell 
           key={index}
           fieldWidth={fieldWidths && fieldWidths[header.Field] ? fieldWidths[header.Field] : 100}
@@ -38,8 +38,31 @@ const HeaderRow = ({ headerList, customHeaderComponent, fieldWidths, fieldFilter
           setFilterModalInfo={setFilterModalInfo}
           sortInfo={sortInfo}
           setSortInfo={setSortInfo}
+          selectedHeaderFields={selectedHeaderFields}
+          setSelectedHeaderFields={setSelectedHeaderFields}
         />
-      ))}
+      ))} */}
+      <FlatList
+        data={headerList}
+        horizontal
+        scrollEnabled={false}
+        renderItem={({ item, index }) => (
+          item.Visibility && !selectedHeaderFields.includes(item.Field) && 
+          <HeaderCell 
+            key={index}
+            fieldWidth={fieldWidths && fieldWidths[item.Field] ? fieldWidths[item.Field] : 100}
+            customHeaderComponent={customHeaderComponent}
+            header={item}
+            fieldFilters={fieldFilters}
+            setFilterModalInfo={setFilterModalInfo}
+            sortInfo={sortInfo}
+            setSortInfo={setSortInfo}
+            selectedHeaderFields={selectedHeaderFields}
+            setSelectedHeaderFields={setSelectedHeaderFields}
+          />
+        )}
+        keyExtractor={(item, index) => index.toString()}
+      />
     </View>
   );
 };
