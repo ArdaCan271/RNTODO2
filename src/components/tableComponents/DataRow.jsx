@@ -1,5 +1,5 @@
 import React, { useRef } from 'react';
-import { StyleSheet, FlatList, View } from 'react-native';
+import { StyleSheet, FlatList, View, ScrollView } from 'react-native';
 import DataCell from './DataCell';
 import { useTheme } from '../../constants/colors';
 
@@ -23,16 +23,26 @@ const DataRow = ({ item, headerList, customDataComponent, fieldWidths, backgroun
   );
 
   return (
-    <View
-      style={[styles.rowContainer, { backgroundColor: backgroundColor }]}
-    >
-      <FlatList
+    <View style={[styles.rowContainer, { backgroundColor: backgroundColor }]}>
+      {/* <FlatList
         data={headerList}
         horizontal
         scrollEnabled={false}
         renderItem={renderDataCell}
         keyExtractor={(header, index) => index.toString()}
-      />
+      /> */}
+      {headerList.map((header, index) => (
+        header.Visibility && !selectedHeaderFields.includes(header.Field) && (
+          <DataCell
+            key={index}
+            fieldWidth={fieldWidths && fieldWidths[header.Field] ? fieldWidths[header.Field] : 100}
+            customDataComponent={customDataComponent}
+            data={item[header.Field]}
+            itemHeader={header}
+            item={item}
+          />
+        )
+      ))}
     </View>
   );
 };

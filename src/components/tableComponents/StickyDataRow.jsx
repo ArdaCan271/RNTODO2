@@ -26,13 +26,25 @@ const StickyDataRow = ({ item, headerList, customDataComponent, fieldWidths, bac
     <View
       style={[styles.rowContainer, { backgroundColor: backgroundColor }]}
     >
-      <FlatList
+      {/* <FlatList
         data={headerList}
         horizontal
         scrollEnabled={false}
         renderItem={renderDataCell}
         keyExtractor={(header, index) => index.toString()}
-      />
+      /> */}
+      {headerList.map((header, index) => (
+        header.Visibility && selectedHeaderFields.includes(header.Field) && (
+          <DataCell
+            key={index}
+            fieldWidth={fieldWidths && fieldWidths[header.Field] ? fieldWidths[header.Field] : 100}
+            customDataComponent={customDataComponent}
+            data={item[header.Field]}
+            itemHeader={header}
+            item={item}
+          />
+        )
+      ))}
     </View>
   );
 };

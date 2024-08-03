@@ -1,14 +1,12 @@
-import React, { useState, useMemo } from 'react';
-import { StyleSheet, Text, View, Pressable, TouchableOpacity } from 'react-native';
+import React, { useMemo } from 'react';
+import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
 import { useTheme } from '../constants/colors';
 
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import DrawerMenu from './DrawerMenu';
 
 const CustomHeader = ({ navigation, title, hasDrawer }) => {
   const theme = useTheme();
   const styles = useMemo(() => getStyles(theme), [theme]);
-
 
   const handleButtonPress = () => {
     if (hasDrawer) {
@@ -16,19 +14,15 @@ const CustomHeader = ({ navigation, title, hasDrawer }) => {
     } else {
       navigation.goBack();
     }
-  }
+  };
 
   return (
     <View style={styles.container}>
-      <TouchableOpacity
-        style={styles.button}
-        onPress={handleButtonPress}
-      >
+      <TouchableOpacity style={styles.button} onPress={handleButtonPress}>
         <Ionicons name={hasDrawer ? 'menu' : 'caret-back'} size={30} color={theme.primary} />
       </TouchableOpacity>
-
       <Text style={styles.title}>{title}</Text>
-      <View style={styles.emptyRightButton}/>
+      <View style={styles.emptyRightButton} />
     </View>
   );
 };
@@ -36,7 +30,6 @@ const CustomHeader = ({ navigation, title, hasDrawer }) => {
 const getStyles = (theme) => StyleSheet.create({
   container: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
     alignItems: 'center',
     paddingHorizontal: 12,
     backgroundColor: theme.backgroundAlt,
@@ -50,16 +43,18 @@ const getStyles = (theme) => StyleSheet.create({
     fontSize: 18,
     fontWeight: 'bold',
     color: theme.primary,
-    width: '70%',
-    textAlign: 'center',
+    paddingLeft: 10,
+    width: '80%',
   },
   button: {
     padding: 6,
+    height: '100%',
+    width: 45,
   },
   emptyRightButton: {
-    width: 42,
-    height: 42,
-  }
+    height: '100%',
+    width: 45,
+  },
 });
 
 export default CustomHeader;

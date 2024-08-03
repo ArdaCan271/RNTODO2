@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, StyleSheet, TouchableOpacity, FlatList } from 'react-native';
+import { View, StyleSheet, TouchableOpacity, FlatList, ScrollView } from 'react-native';
 
 import { useTheme } from '../../constants/colors';
 
@@ -27,7 +27,7 @@ const HeaderRow = ({ headerList, customHeaderComponent, fieldWidths, fieldFilter
           }
         )}
       />
-      {/* {headerList.map((header, index) => (
+      {headerList.map((header, index) => (
         header.Visibility && !selectedHeaderFields.includes(header.Field) && 
         <HeaderCell 
           key={index}
@@ -41,28 +41,7 @@ const HeaderRow = ({ headerList, customHeaderComponent, fieldWidths, fieldFilter
           selectedHeaderFields={selectedHeaderFields}
           setSelectedHeaderFields={setSelectedHeaderFields}
         />
-      ))} */}
-      <FlatList
-        data={headerList}
-        horizontal
-        scrollEnabled={false}
-        renderItem={({ item, index }) => (
-          item.Visibility && !selectedHeaderFields.includes(item.Field) && 
-          <HeaderCell 
-            key={index}
-            fieldWidth={fieldWidths && fieldWidths[item.Field] ? fieldWidths[item.Field] : 100}
-            customHeaderComponent={customHeaderComponent}
-            header={item}
-            fieldFilters={fieldFilters}
-            setFilterModalInfo={setFilterModalInfo}
-            sortInfo={sortInfo}
-            setSortInfo={setSortInfo}
-            selectedHeaderFields={selectedHeaderFields}
-            setSelectedHeaderFields={setSelectedHeaderFields}
-          />
-        )}
-        keyExtractor={(item, index) => index.toString()}
-      />
+      ))}
     </View>
   );
 };

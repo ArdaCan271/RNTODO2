@@ -1,85 +1,90 @@
-import { useContext, useEffect, useRef, useState } from "react"
-import { Animated, ScrollView, ScrollViewProps } from "react-native"
+import React, { useContext, useEffect, useRef, useState } from "react";
+import { Animated } from "react-native";
 import { SyncedScrollViewContext } from "../../contexts/SyncedScrollViewContext";
-
-// ----------------------------------------------------------------------------
+import { useFocusEffect } from '@react-navigation/native';
 
 export const SyncedScrollView = (props) => {
   const { id, ...rest } = props;
-  const { activeScrollView, offsetPercent } = useContext(SyncedScrollViewContext)
+  const { activeScrollView, offsetPercent, scrollPositions } = useContext(SyncedScrollViewContext);
 
-  // Get relevant ScrollView Dimensions --------------------------------------------------
+  const [scrollViewLength, setScrollViewLength] = useState(0);
+  const [contentLength, setContentLength] = useState(0);
+  const [scrollableLength, setScrollableLength] = useState(0);
 
-  const [scrollViewLength, setScrollViewLength] = useState(0)
-  const [contentLength, setContentLength] = useState(0)
-
-  const [scrollableLength, setScrollableLength] = useState(0)
-
-  // Calculate the scrollable Length everytime the contentLength or scrollViewLength changes
   useEffect(() => {
-    // The scrollable length is the difference between the content length and the scrollview length
-    setScrollableLength(contentLength - scrollViewLength)
-  }, [scrollViewLength, contentLength])
+    setScrollableLength(contentLength - scrollViewLength);
+  }, [scrollViewLength, contentLength]);
 
   const handleLayout = ({ nativeEvent: { layout: { width, height } } }) => {
-    // The length of the scrollView depends on the orientation we scroll in
-    setScrollViewLength(props.horizontal ? width : height)
-  }
+    setScrollViewLength(props.horizontal ? width : height);
+  };
 
   const handleContentSizeChange = (width, height) => {
-    // The length of the content inside the scrollView depends on the orientation we scroll in
-    setContentLength(props.horizontal ? width : height)
-  }
+    setContentLength(props.horizontal ? width : height);
+  };
 
-  // handle yPercent change ----------------------------------------------------
+  const scrollViewRef = useRef(null);
+  const savedScrollPosition = useRef(0);
 
-  const scrollViewRef = useRef(null)
+  useEffect(() => {
+    const listener = offsetPercent?.addListener(({ value }) => {
+      if (id !== activeScrollView._value && scrollableLength > 0) {
+        savedScrollPosition.current = value * scrollableLength;
+        scrollViewRef.current?.scrollTo({ [props.horizontal ? 'x' : 'y']: savedScrollPosition.current, animated: false });
+      }
+    });
 
-  offsetPercent?.addListener(({ value }) => {
-    // Only respond to changes of the offsetPercent if this scrollView is NOT the activeScrollView
-    // --> The active ScrollView responding to its own changes would cause an infinite loop
-    // @ts-ignore
-    if (id !== activeScrollView._value && scrollableLength > 0) {
-      // Depending on the orientation we scroll in, we need to use different properties
-      scrollViewRef.current?.scrollTo({ [props.horizontal ? 'x' : 'y']: value * scrollableLength, animated: false })
+    return () => {
+      offsetPercent?.removeListener(listener);
+    };
+  }, [activeScrollView, scrollableLength, id, props.horizontal, offsetPercent]);
+
+  useFocusEffect(
+    React.useCallback(() => {
+      if (scrollViewRef.current) {
+        const position = scrollPositions[id] || 0;
+        scrollViewRef.current.scrollTo({ [props.horizontal ? 'x' : 'y']: position, animated: false });
+      }
+    }, [id, scrollPositions])
+  );
+
+  useEffect(() => {
+    if (scrollViewRef.current) {
+      scrollViewRef.current.scrollTo({ [props.horizontal ? 'x' : 'y']: savedScrollPosition.current, animated: false });
     }
-  })
+  }, []);
 
-  // handleScroll ---------------------------------------------------------------
+  const offset = new Animated.Value(0);
 
-  const offset = new Animated.Value(0)
+  useEffect(() => {
+    const listener = offset.addListener(({ value }) => {
+      if (id === activeScrollView._value && scrollableLength > 0) {
+        offsetPercent.setValue(value / scrollableLength);
+        scrollPositions[id] = value;
+      }
+    });
 
-  const handleScroll = Animated.event(
-    // Depending on the orientation we scroll in, we need to use different properties
-    [{ nativeEvent: { contentOffset: { [props.horizontal ? 'x' : 'y']: offset } } }],
-    { useNativeDriver: true }
-  )
+    return () => {
+      offset.removeListener(listener);
+    };
+  }, [activeScrollView, scrollableLength, id, offset, offsetPercent, scrollPositions]);
 
-  offset.addListener(({ value }) => {
-    // Only change the offsetPercent if the scrollView IS the activeScrollView
-    // --> The inactive ScrollViews changing the offsetPercent would cause an infinite loop
-    // @ts-ignore
-    if (id === activeScrollView._value && scrollableLength > 0) {
-      offsetPercent.setValue(value / scrollableLength)
-    }
-  })
-
-  // onTouch ----------------------------------------------------------------------------
-
-  // Change this ScrollView to the active ScrollView when it is touched
   const handleTouchStart = () => {
-    activeScrollView.setValue(id)
-  }
+    activeScrollView.setValue(id);
+  };
 
   return (
     <Animated.ScrollView
       {...rest}
       ref={scrollViewRef}
-      onScroll={handleScroll}
+      onScroll={Animated.event(
+        [{ nativeEvent: { contentOffset: { [props.horizontal ? 'x' : 'y']: offset } } }],
+        { useNativeDriver: true }
+      )}
       scrollEventThrottle={16}
       onTouchStart={handleTouchStart}
       onLayout={handleLayout}
       onContentSizeChange={handleContentSizeChange}
     />
-  )
-}
+  );
+};
