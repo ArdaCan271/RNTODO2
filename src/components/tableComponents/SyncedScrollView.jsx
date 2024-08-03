@@ -24,25 +24,12 @@ export const SyncedScrollView = (props) => {
   };
 
   const scrollViewRef = useRef(null);
-  const savedScrollPosition = useRef(0);
-
-  useEffect(() => {
-    const listener = offsetPercent?.addListener(({ value }) => {
-      if (id !== activeScrollView._value && scrollableLength > 0) {
-        savedScrollPosition.current = value * scrollableLength;
-        scrollViewRef.current?.scrollTo({ [props.horizontal ? 'x' : 'y']: savedScrollPosition.current, animated: false });
-      }
-    });
-
-    return () => {
-      offsetPercent?.removeListener(listener);
-    };
-  }, [activeScrollView, scrollableLength, id, props.horizontal, offsetPercent]);
-
+  const savedScrollPosition = useRef(0.1);
+  
   useFocusEffect(
     React.useCallback(() => {
       if (scrollViewRef.current) {
-        const position = scrollPositions[id] || 0;
+        const position = 0;
         scrollViewRef.current.scrollTo({ [props.horizontal ? 'x' : 'y']: position, animated: false });
       }
     }, [id, scrollPositions])
@@ -56,9 +43,25 @@ export const SyncedScrollView = (props) => {
 
   const offset = new Animated.Value(0);
 
+  
+  useEffect(() => {
+    const listener = offsetPercent?.addListener(({ value }) => {
+      if (id !== activeScrollView._value && scrollableLength > 0 && value !== 0) {
+        savedScrollPosition.current = value * scrollableLength;
+        scrollViewRef.current?.scrollTo({ ['x']: savedScrollPosition.current, animated: false });
+      
+      }
+    });
+
+
+    return () => {
+      offsetPercent?.removeListener(listener);
+    };
+  }, [activeScrollView, scrollableLength, id, props.horizontal, offsetPercent]);
+
   useEffect(() => {
     const listener = offset.addListener(({ value }) => {
-      if (id === activeScrollView._value && scrollableLength > 0) {
+      if (id === activeScrollView._value && scrollableLength > 0 && value !== 0) {
         offsetPercent.setValue(value / scrollableLength);
         scrollPositions[id] = value;
       }

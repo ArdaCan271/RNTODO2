@@ -152,12 +152,11 @@ const Table = ({ fieldWidths, detailFieldWidths, customHeaderComponent, customDa
   const [selectedHeaderFieldsTotalWidth, setSelectedHeaderFieldsTotalWidth] = useState(0);
 
   useEffect(() => {
-    console.log(selectedHeaderFields);
     setSelectedHeaderFieldsTotalWidth(selectedHeaderFields.reduce((acc, item) => acc + (fieldWidths[item] ? fieldWidths[item] : 100), 0));
   }, [selectedHeaderFields]);
 
   return (
-    <View style={[styles.tableContainer, { width: windowWidth, height: windowHeight - (theme.padding.header + (windowWidth > windowHeight ? statusBarHeight : 0)) }]}>
+    <View style={[styles.tableContainer, { width: windowWidth, height: windowHeight - (theme.padding.header + (windowWidth > windowHeight ? statusBarHeight + 20 : statusBarHeight - 1)) }]}>
       {paginationEnabled && tableRowList && tableRowList.length > 0 &&
         <Pagination
           currentPage={tableCurrentPage}
@@ -177,7 +176,10 @@ const Table = ({ fieldWidths, detailFieldWidths, customHeaderComponent, customDa
         </View>
         :
         (tableRowList && tableRowList.length > 0 ?
-          <View style={{ width: "100%", height: "100%" }}>
+          <View style={{ 
+              width: "100%", 
+              height: "100%",
+            }}>
             <SyncedScrollViewContext.Provider value={syncedScrollViewState}>
               <View style={{ zIndex: 1, position: 'absolute', top: 0, left: 0, flexDirection: 'row' }}>
                 <StickyHeaderRow
@@ -194,7 +196,7 @@ const Table = ({ fieldWidths, detailFieldWidths, customHeaderComponent, customDa
                 />
               </View>
               <View style={{ width: windowWidth - selectedHeaderFieldsTotalWidth, marginLeft: selectedHeaderFieldsTotalWidth }}>
-                <SyncedScrollView id={0} horizontal showsHorizontalScrollIndicator={false}>
+                <SyncedScrollView isLoading={isLoading} selectedHeaderFields={selectedHeaderFields} selectedRowIndex={selectedRowIndex} id={0} horizontal showsHorizontalScrollIndicator={false}>
                   <HeaderRow
                     headerList={tableHeaderList}
                     fieldWidths={fieldWidths}
