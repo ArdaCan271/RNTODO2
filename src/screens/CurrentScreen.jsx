@@ -131,6 +131,7 @@ const CurrentScreen = ({ navigation, route }) => {
         contentContainerStyle={[styles.listContainer, { width: windowWidth}]}
         ItemSeparatorComponent={<View style={{height: 1, backgroundColor: theme.separator }} />}
         keyboardShouldPersistTaps='handled'
+        
       />
     </View>
   );

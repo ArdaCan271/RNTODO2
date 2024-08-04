@@ -1,24 +1,27 @@
-import { Button, Pressable, StyleSheet, Text, View, TouchableOpacity } from 'react-native';
+import { Button, Pressable, StyleSheet, Text, View, TouchableOpacity, useWindowDimensions } from 'react-native';
 import React, { useState } from 'react';
 
 import { useTheme } from '../constants/colors';
 
 import DatePicker from 'react-native-date-picker';
 
+const convertDateToTRFormat = (date) => {
+  const dateObject = new Date(date);
+
+  const day = String(dateObject.getDate()).padStart(2, '0');
+  const month = String(dateObject.getMonth() + 1).padStart(2, '0'); // Months are zero-indexed
+  const year = dateObject.getFullYear();
+
+  return `${day}.${month}.${year}`;
+};
+
 const FilterRangeDate = ({ field, fieldFilters, setFieldFilters, filterModalInfo, onClose }) => {
 
   const theme = useTheme();
   const styles = getStyles(theme);
 
-  const convertDateToTRFormat = (date) => {
-    const dateObject = new Date(date);
-
-    const day = String(dateObject.getDate()).padStart(2, '0');
-    const month = String(dateObject.getMonth() + 1).padStart(2, '0'); // Months are zero-indexed
-    const year = dateObject.getFullYear();
-
-    return `${day}.${month}.${year}`;
-  };
+  const windowWidth = useWindowDimensions().width;
+  const windowHeight = useWindowDimensions().height;
 
 
   const startDateString = fieldFilters[`${filterModalInfo.field}Start`];
@@ -75,7 +78,7 @@ const FilterRangeDate = ({ field, fieldFilters, setFieldFilters, filterModalInfo
         cancelText='İptal'
         minimumDate={showStartDate ? startDate : null}
       /> */}
-      <View style={styles.dateButtonsContainer}>
+      <View style={[styles.datePickersContainer, {flexDirection: windowWidth > windowHeight ? 'row' : 'column'}]}>
         <View style={styles.startDateContainer}>
           {/* <TouchableOpacity style={styles.dateButton} onPress={() => setOpenStart(true)}>
             <Text style={styles.dateButtonText}>Başlangıç {filterModalInfo.title} Seç</Text>
@@ -160,8 +163,6 @@ const getStyles = (theme) => StyleSheet.create({
   },
   dateTitle: {
     color: theme.text,
-    width: '80%',
-    marginTop: 4,
     fontSize: 16,
   },
   dateText: {
@@ -170,7 +171,7 @@ const getStyles = (theme) => StyleSheet.create({
     fontSize: 18,
     fontWeight: 'bold',
   },
-  dateButtonsContainer: {
+  datePickersContainer: {
     width: '100%',
     justifyContent: 'space-around',
     paddingVertical: 20,
