@@ -26,13 +26,6 @@ const FastOrderScreen = ({ navigation, route }) => {
   const [filteredProductList, setFilteredProductList] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [loading, setLoading] = useState(true);
-
-  const cartProductList = useSelector((state) => state.fastOrderCart.productList);
-
-  useEffect(() => {
-    console.log('button pressed, cartProductList:', cartProductList);
-  }, [cartProductList]);
-    
   
   useEffect(() => {
     getProductList();

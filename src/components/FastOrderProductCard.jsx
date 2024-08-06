@@ -33,15 +33,12 @@ const FastOrderProductCard = ({ productName, productBarcode, productStockCode, p
   }
 
   handleAddProduct = () => {
-    console.log(productStockCode);
-    console.log(product);
-    
     dispatch(addOneOfProduct({ stockCode: productStockCode, stockPrice: productStockPrice }));
   }  
 
   return (
     <View style={[styles.container, {borderColor: dynamicColors.accent, backgroundColor: dynamicColors.backgroundColor}]}>
-      <View style={styles.productInfoSection}>
+      <View style={[styles.productInfoSection, {borderColor: dynamicColors.accent}]}>
         <View style={styles.productCodeInfoContainer}>
           <View style={styles.productBarcodeContainer}>
             <FontAwesome name="barcode" size={15} color={theme.textAlt} style={{ marginLeft: 8 }} />
@@ -80,15 +77,15 @@ const FastOrderProductCard = ({ productName, productBarcode, productStockCode, p
           />
         </View>
         <View style={styles.productButtonsContainer}>
-          <TouchableOpacity style={styles.removeProductButton} onPress={handleRemoveProduct}>
+          <TouchableOpacity style={[styles.removeProductButton, {backgroundColor: dynamicColors.accent}]} onPress={handleRemoveProduct}>
             <FontAwesome name="minus" size={24} color={theme.white} />
           </TouchableOpacity>
-          <TouchableOpacity style={styles.addProductButton} onPress={handleAddProduct}>
+          <TouchableOpacity style={[styles.addProductButton, {backgroundColor: dynamicColors.accent}]} onPress={handleAddProduct}>
             <FontAwesome name="plus" size={24} color={theme.white} />
           </TouchableOpacity>
         </View>
         <View style={styles.productTotalCartPriceContainer}>
-          <Text style={styles.productTotalCartPriceText}>₺{formattedCurrency(productStockPrice * productCartQuantity)}</Text>
+          <Text style={[styles.productTotalCartPriceText, {color: productCartQuantity > 0 ? theme.text : theme.separator}]}>₺{formattedCurrency(productStockPrice * productCartQuantity)}</Text>
         </View>
       </View>
     </View>
@@ -99,8 +96,6 @@ const getStyles = (theme) => StyleSheet.create({
   container: {
     height: 110,
     borderLeftWidth: 15,
-    borderRightWidth: 1,
-    borderColor: theme.primary,
     flexDirection: 'row',
   },
   productInfoSection: {
@@ -204,7 +199,7 @@ const getStyles = (theme) => StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     borderLeftWidth: 1,
-    borderColor: theme.white,
+    borderColor: theme.separator,
     backgroundColor: theme.primary
   },
   productTotalCartPriceContainer: {
