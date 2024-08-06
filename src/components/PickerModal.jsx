@@ -1,10 +1,10 @@
-import React from 'react';
+import React, {useMemo} from 'react';
 import { Modal, View, Text, TouchableOpacity, StyleSheet, Pressable } from 'react-native';
 import { useTheme } from '../constants/colors';
 
 const PickerModal = ({ visible, options, selectedOption, onSelect, onClose }) => {
   const theme = useTheme();
-  const styles = getStyles(theme);
+  const styles = useMemo(() => getStyles(theme), [theme]);
 
   return (
     <Modal

@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useState, useMemo} from 'react';
 import { StyleSheet, View, Text, Pressable, Touchable, TouchableOpacity, Dimensions, useWindowDimensions } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import FeatherIcon from 'react-native-vector-icons/Feather';
@@ -15,7 +15,7 @@ const CustomBottomTab = ({ navigation }) => {
   const windowWidth = useWindowDimensions().width;
 
   const theme = useTheme();
-  const styles = getStyles(theme);
+  const styles = useMemo(() => getStyles(theme), [theme]);
 
   const dispatch = useDispatch();
   const currentTheme = useSelector((state) => state.themeData.value);

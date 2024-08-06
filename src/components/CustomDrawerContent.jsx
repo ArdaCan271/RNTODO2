@@ -1,5 +1,5 @@
 import { Pressable, StyleSheet, Text, View } from 'react-native';
-import React from 'react';
+import React, { useMemo } from 'react';
 import { useTheme } from '../constants/colors';
 
 import Icon from 'react-native-vector-icons/Ionicons';
@@ -24,7 +24,7 @@ const CustomDrawerContent = (props) => {
   }
 
   const theme = useTheme();
-  const styles = getStyles(theme);
+  const styles = useMemo(() => getStyles(theme), [theme]);
 
   return (
     <View style={styles.container}>

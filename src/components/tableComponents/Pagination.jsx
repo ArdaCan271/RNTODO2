@@ -1,5 +1,5 @@
 import { StyleSheet, Text, View, TouchableOpacity, TextInput, Pressable, Keyboard, useWindowDimensions } from 'react-native';
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 
@@ -10,7 +10,7 @@ import PickerModal from '../PickerModal';
 const Pagination = ({currentPage, totalPages, handleNextPage, handlePreviousPage, handleGoToPage, rowsPerPage, changeRowsPerPage, clearAllFilters}) => {
 
   const theme = useTheme();
-  const styles = getStyles(theme);
+  const styles = useMemo(() => getStyles(theme), [theme]);
 
   const windowWidth = useWindowDimensions().width;
   const windowHeight = useWindowDimensions().height;

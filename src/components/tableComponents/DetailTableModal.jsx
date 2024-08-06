@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useMemo} from 'react';
 import { Modal, View, StyleSheet, Pressable } from 'react-native';
 import { useTheme } from '../../constants/colors';
 
@@ -6,7 +6,7 @@ import Table from './Table';
 
 const DetailTableModal = ({ visible, requestUrl, subDocumentConnectionId, paginationEnabled = false, itemsPerPage = 10, onClose }) => {
   const theme = useTheme();
-  const styles = getStyles(theme);
+  const styles = useMemo(() => getStyles(theme), [theme]);
 
   return (
     <Modal

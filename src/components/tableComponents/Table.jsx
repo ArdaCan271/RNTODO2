@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState, useRef, useMemo } from 'react';
 import { ScrollView, View, StyleSheet, useWindowDimensions, ActivityIndicator, TouchableOpacity, StatusBar, Text } from 'react-native';
 import { useTheme } from '../../constants/colors';
 
@@ -29,7 +29,7 @@ const Table = ({ fieldWidths, detailFieldWidths, customHeaderComponent, customDa
   const windowHeight = useWindowDimensions().height;
 
   const theme = useTheme();
-  const styles = getStyles(theme);
+  const styles = useMemo(() => getStyles(theme), [theme]);
 
   const [isLoading, setIsLoading] = useState(true);
 

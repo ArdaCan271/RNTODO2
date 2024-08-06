@@ -21,7 +21,7 @@ const CurrentScreen = ({ navigation, route }) => {
   const [customerList, setCustomerList] = useState([]);
   const [filteredCustomerList, setFilteredCustomerList] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
-  const [loading, setLoading] = useState(true); // Add loading state
+  const [loading, setLoading] = useState(true);
 
   const searchTimeout = useRef(null);
   const searchInputRef = useRef(null);

@@ -1,5 +1,5 @@
 import { StyleSheet, Text, View } from 'react-native';
-import React from 'react';
+import React, {useMemo} from 'react';
 
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 
@@ -8,7 +8,7 @@ import { useTheme } from '../../constants/colors';
 const DefaultDataCellComponent = ({ data, itemHeader, formatData, item }) => {
 
   const theme = useTheme();
-  const styles = getStyles(theme);
+  const styles = useMemo(() => getStyles(theme), [theme]);
 
   return (
     <View style={styles.dataCellComponent}>

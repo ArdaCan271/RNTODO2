@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useMemo} from 'react';
 import { View, StyleSheet, TouchableOpacity, FlatList, ScrollView } from 'react-native';
 
 import { useTheme } from '../../constants/colors';
@@ -10,8 +10,8 @@ import FilterModal from '../FilterModal';
 const HeaderRow = ({ headerList, customHeaderComponent, fieldWidths, fieldFilters, setFieldFilters, filterModalInfo, setFilterModalInfo, sortInfo, setSortInfo, selectedHeaderFields, setSelectedHeaderFields }) => {
 
   const theme = useTheme();
-  const styles = getStyles(theme);
-
+  const styles = useMemo(() => getStyles(theme), [theme]);
+  
   return (
     <View style={styles.headerContainer}>
       <FilterModal

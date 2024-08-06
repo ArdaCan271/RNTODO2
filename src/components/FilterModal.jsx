@@ -1,5 +1,5 @@
 import { StyleSheet, Text, View, Pressable, Modal } from 'react-native';
-import React from 'react';
+import React, {useMemo} from 'react';
 
 import { useTheme } from '../constants/colors';
 
@@ -9,7 +9,7 @@ import FilterRange from './FilterRange';
 const FilterModal = ({ fieldFilters, setFieldFilters, filterModalInfo, setFilterModalInfo, onClose }) => {
 
   const theme = useTheme();
-  const styles = getStyles(theme);
+  const styles = useMemo(() => getStyles(theme), [theme]);
 
   return (
     <Modal

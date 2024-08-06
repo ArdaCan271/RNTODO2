@@ -1,10 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { StyleSheet, Text, TextInput, View, Button, ScrollView, Pressable, TouchableOpacity } from 'react-native';
 import { useTheme } from '../constants/colors';
 
 const FilterSingle = ({ fieldFilters, setFieldFilters, filterModalInfo, onClose }) => {
   const theme = useTheme();
-  const styles = getStyles(theme);
+  const styles = useMemo(() => getStyles(theme), [theme]);
 
   const [inputValue, setInputValue] = useState(fieldFilters[filterModalInfo.field] || '');
 

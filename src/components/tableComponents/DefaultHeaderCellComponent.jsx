@@ -1,11 +1,11 @@
 import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import { useTheme } from '../../constants/colors';
 
 const DefaultHeaderCellComponent = ({ title, item, fieldFilters, setFilterModalInfo, sortInfo, setSortInfo, selectedHeaderFields, setSelectedHeaderFields }) => {
   const theme = useTheme();
-  const styles = getStyles(theme);
+  const styles = useMemo(() => getStyles(theme), [theme]);
 
   const handleFilterPress = () => {
     setFilterModalInfo({

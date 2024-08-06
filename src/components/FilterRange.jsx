@@ -1,5 +1,5 @@
 import { StyleSheet, Text, View } from 'react-native';
-import React from 'react';
+import React, {useMemo} from 'react';
 
 import { useTheme } from '../constants/colors';
 
@@ -8,7 +8,7 @@ import FilterRangeDate from './FilterRangeDate';
 const FilterRange = ({ fieldFilters, setFieldFilters, filterModalInfo, onClose }) => {
 
   const theme = useTheme();
-  const styles = getStyles(theme);
+  const styles = useMemo(() => getStyles(theme), [theme]);
 
   return (
     <View style={styles.container}>

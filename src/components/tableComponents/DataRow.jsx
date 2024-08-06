@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React, { useRef, useMemo } from 'react';
 import { StyleSheet, FlatList, View, ScrollView } from 'react-native';
 import DataCell from './DataCell';
 import { useTheme } from '../../constants/colors';
@@ -7,7 +7,7 @@ import { FlashList } from '@shopify/flash-list';
 
 const DataRow = ({ item, headerList, customDataComponent, fieldWidths, backgroundColor, selectedHeaderFields }) => {
   const theme = useTheme();
-  const styles = getStyles(theme);
+  const styles = useMemo(() => getStyles(theme), [theme]);
 
   const renderDataCell = ({ item: header, index }) => (
     header.Visibility && !selectedHeaderFields.includes(header.Field) && (

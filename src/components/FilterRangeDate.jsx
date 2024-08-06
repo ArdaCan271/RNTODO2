@@ -1,5 +1,5 @@
 import { Button, Pressable, StyleSheet, Text, View, TouchableOpacity, useWindowDimensions } from 'react-native';
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 
 import { useTheme } from '../constants/colors';
 
@@ -18,7 +18,7 @@ const convertDateToTRFormat = (date) => {
 const FilterRangeDate = ({ field, fieldFilters, setFieldFilters, filterModalInfo, onClose }) => {
 
   const theme = useTheme();
-  const styles = getStyles(theme);
+  const styles = useMemo(() => getStyles(theme), [theme]);
 
   const windowWidth = useWindowDimensions().width;
   const windowHeight = useWindowDimensions().height;

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useMemo} from 'react';
 import { View, StyleSheet } from 'react-native';
 
 import { useTheme } from '../../constants/colors';
@@ -9,7 +9,7 @@ import DefaultDataCellComponent from './DefaultDataCellComponent';
 const DataCell = ({fieldWidth, customDataComponent, data, itemHeader, item}) => {
 
   const theme = useTheme();
-  const styles = getStyles(theme);
+  const styles = useMemo(() => getStyles(theme), [theme]);
 
   return (
     <View style={[styles.cellStyle, {width: fieldWidth}]}>

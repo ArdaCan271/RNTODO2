@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useMemo} from 'react';
 import { View, StyleSheet } from 'react-native';
 
 import { useTheme } from '../../constants/colors';
@@ -8,7 +8,7 @@ import DefaultHeaderCellComponent from './DefaultHeaderCellComponent';
 const HeaderCell = ({fieldWidth, customHeaderComponent, header, fieldFilters, setFilterModalInfo, sortInfo, setSortInfo, selectedHeaderFields, setSelectedHeaderFields}) => {
 
   const theme = useTheme();
-  const styles = getStyles(theme);
+  const styles = useMemo(() => getStyles(theme), [theme]);
 
   return (
     <View style={[styles.cellStyle, {width: fieldWidth, backgroundColor: selectedHeaderFields.includes(header.Field) ? theme.primaryAlt : theme.primary}]}>
