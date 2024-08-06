@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useMemo } from 'react';
 import { View, Text, TextInput, Button, StyleSheet, Pressable, Keyboard, TouchableOpacity } from 'react-native';
 
 
@@ -14,7 +14,7 @@ import Icon from 'react-native-vector-icons/Ionicons';
 
 const LoginScreen = ({ navigation }) => {
   const theme = useTheme();
-  const styles = getStyles(theme);
+  const styles = useMemo(() => getStyles(theme), [theme]);
 
   const [inputEmail, setInputEmail] = useState('');
   const [inputPassword, setInputPassword] = useState('');

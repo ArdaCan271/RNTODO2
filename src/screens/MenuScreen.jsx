@@ -1,5 +1,5 @@
 import { StyleSheet, View, FlatList, BackHandler, useWindowDimensions } from 'react-native';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useMemo } from 'react';
 import { useSelector } from 'react-redux';
 
 import MenuItem from '../components/MenuItem';
@@ -12,7 +12,7 @@ import { useIsFocused } from '@react-navigation/native';
 
 const MenuScreen = ({ navigation, route }) => {
   const theme = useTheme();
-  const styles = getStyles(theme);
+  const styles = useMemo(() => getStyles(theme), [theme]);
 
   const windowWidth = useWindowDimensions().width;
   const windowHeight = useWindowDimensions().height;

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useMemo } from 'react';
 import { StyleSheet, View, BackHandler } from 'react-native';
 import { useTheme } from '../constants/colors';
 
@@ -9,7 +9,7 @@ import Table from '../components/tableComponents/Table';
 const ExtractReportScreen = ({ navigation, route }) => {
 
   const theme = useTheme();
-  const styles = getStyles(theme);
+  const styles = useMemo(() => getStyles(theme), [theme]);
 
   useEffect(() => {
     const backAction = () => {

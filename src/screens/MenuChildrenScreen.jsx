@@ -1,5 +1,5 @@
 import { StyleSheet, View, FlatList, BackHandler } from 'react-native';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useMemo } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 
 import MenuItem from '../components/MenuItem';
@@ -10,7 +10,7 @@ import { useNavigationState } from '@react-navigation/native';
 
 const MenuChildrenScreen = ({ navigation, route }) => {
   const theme = useTheme();
-  const styles = getStyles(theme);
+  const styles = useMemo(() => getStyles(theme), [theme]);
 
   const routeNames = useNavigationState((state) => state.routeNames);
 

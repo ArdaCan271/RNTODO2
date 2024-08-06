@@ -1,12 +1,12 @@
 import { StyleSheet, Text, View, BackHandler } from 'react-native';
-import React, { useEffect } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import { useTheme } from '../constants/colors'; // Import useTheme for theme integration
 
 import CustomHeader from '../components/CustomHeader';
 
 const PageNotFoundScreen = ({ navigation, route }) => {
   const theme = useTheme();
-  const styles = getStyles(theme);
+  const styles = useMemo(() => getStyles(theme), [theme]);
 
   useEffect(() => {
     const backAction = () => {

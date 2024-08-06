@@ -1,5 +1,5 @@
 import { StyleSheet, Text, View, BackHandler, ScrollView } from 'react-native';
-import React, { useEffect } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import { useTheme } from '../constants/colors';
 
 import { useSelector } from 'react-redux';
@@ -12,7 +12,7 @@ import FastOrderProductCard from '../components/FastOrderProductCard';
 
 const FastOrderScreen = ({ navigation, route }) => {
   const theme = useTheme();
-  const styles = getStyles(theme);
+  const styles = useMemo(() => getStyles(theme), [theme]);
 
   const userToken = useSelector((state) => state.userData.data.token);
   const baseRequestURL = useSelector((state) => state.baseRequestURL.value);
