@@ -11,7 +11,7 @@ const HeaderCell = ({fieldWidth, customHeaderComponent, header, fieldFilters, se
   const styles = getStyles(theme);
 
   return (
-    <View style={[styles.cellStyle, {width: fieldWidth}]}>
+    <View style={[styles.cellStyle, {width: fieldWidth, backgroundColor: selectedHeaderFields.includes(header.Field) ? theme.primaryAlt : theme.primary}]}>
       {customHeaderComponent ?
         customHeaderComponent(header.Title, header)
         :

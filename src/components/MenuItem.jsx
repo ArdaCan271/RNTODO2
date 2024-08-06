@@ -19,11 +19,11 @@ const MenuItem = ({ item, level = 0, onPress, navigation, style, props = '', rou
           style={[styles.menuButton, {backgroundColor: theme.background}, style]} 
           onPress={() => {
             if(routeNames.includes(item.mobile)) {
-              navigation.navigate(item.mobile, { childrenOfMenuItem: item.children, props: props });
+              navigation.navigate(item.mobile, { childrenOfMenuItem: item.children, props: props, title: item.id });
             } else if (hasChildren) {
               navigation.navigate('MenuChildren', { parent: item });
             } else {
-              navigation.navigate('PageNotFound', { routeName: item.id });
+              navigation.navigate('PageNotFound', { title: item.id });
               console.log('No route found for ' + item.mobile);
             }
           }}

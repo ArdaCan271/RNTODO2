@@ -6,7 +6,7 @@ import CustomHeader from '../components/CustomHeader';
 
 import Table from '../components/tableComponents/Table';
 
-const ExtractReportScreen = ({ navigation }) => {
+const ExtractReportScreen = ({ navigation, route }) => {
 
   const theme = useTheme();
   const styles = getStyles(theme);
@@ -60,7 +60,7 @@ const ExtractReportScreen = ({ navigation }) => {
   return (
     <View style={styles.container}>
       <CustomHeader
-        title="Genel Ekstre Raporu"
+        title={route.params.title}
         navigation={navigation}
       />
       <Table

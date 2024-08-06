@@ -5,6 +5,7 @@ import userMenuBJSONReducer from '../features/userMenuBJSON/userMenuBJSONSlice';
 import userDataReducer from '../features/userData/userDataSlice';
 import themeDataReducer from '../features/themeData/themeSlice';
 import baseRequestURLReducer from '../features/baseRequestURL/baseRequestURLSlice';
+import fastOrderCartReducer from '../features/fastOrderCart/fastOrderCartSlice';
 
 import {
   persistReducer,
@@ -30,6 +31,7 @@ export const store = configureStore({
     userData: persistReducer(persistConfig('userData'), userDataReducer),
     themeData: persistReducer(persistConfig('themeData'), themeDataReducer),
     baseRequestURL: persistReducer(persistConfig('baseRequestURL'), baseRequestURLReducer),
+    fastOrderCart: persistReducer(persistConfig('fastOrderCart'), fastOrderCartReducer),
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({

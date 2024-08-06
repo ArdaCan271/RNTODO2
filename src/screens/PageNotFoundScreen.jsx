@@ -22,7 +22,7 @@ const PageNotFoundScreen = ({ navigation, route }) => {
     return () => backHandler.remove();
   }, [navigation]);
 
-  const routeName = route.params.routeName;
+  const routeName = route.params.title;
 
   return (
     <View style={styles.container}>

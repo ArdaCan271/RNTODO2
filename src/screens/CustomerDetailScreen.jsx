@@ -49,22 +49,10 @@ const CustomerDetailScreen = ({ navigation, route }) => {
 
   return (
     <View style={styles.container}>
-      <CustomHeader navigation={navigation} title="Müşteri Detayı" />
+      <CustomHeader navigation={navigation} title={route.params.title} />
       <View style={styles.customerNameWrapper}>
         <Text style={styles.customerName}>{route.params.customer.Isim}</Text>
       </View>
-      {/* <View style={styles.summariesWrapper}>
-        {sampleSummaryData.map((summaryData, index) => (
-          <CustomerDetailSummary
-            key={index}
-            topCircleColor={summaryData.topCircleColor}
-            topTitle={summaryData.topTitle}
-            topValue={summaryData.topValue}
-            listElements={summaryData.listElements}
-            style={{ borderTopWidth: index === 0 ? 2 : 0, borderTopColor: theme.primaryAlt }}
-          />
-        ))}
-      </View> */}
       <FlatList
         data={menuItems}
         keyExtractor={(item) => item.mobile}

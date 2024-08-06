@@ -111,7 +111,7 @@ const CurrentScreen = ({ navigation, route }) => {
 
   return (
     <View style={styles.container}>
-      <CustomHeader navigation={navigation} title="Cari" />
+      <CustomHeader navigation={navigation} title={route.params.title} />
       <View style={styles.searchInputWrapper}>
         <TextInput
           style={styles.searchInput}
