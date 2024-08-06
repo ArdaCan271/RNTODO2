@@ -1,80 +1,94 @@
 import { StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { useTheme } from '../constants/colors';
 
 import { useSelector, useDispatch } from 'react-redux';
 import { addOneOfProduct, removeOneOfProduct, setAmountOfProduct } from '../features/fastOrderCart/fastOrderCartSlice';
 
+import { formattedCurrency } from '../utils/formatData';
+
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 
-const FastOrderProductCard = ({ productName, productBarcode, productStockCode, productStockAmount, productStockPrice }) => {
+const FastOrderProductCard = ({ productName, productBarcode, productStockCode, productStockAmount, productStockPrice, dynamicColors }) => {
 
   const theme = useTheme();
   const styles = useMemo(() => getStyles(theme), [theme]);
 
-  const productList = useSelector((state) => state.fastOrderCart.productList);
-  const productAmount = productList.filter((product) => product.stockCode === productStockCode).quantity;
+  const dispatch = useDispatch();
 
-  const [inputValue, setInputValue] = useState(productAmount || 0);
+  const productList = useSelector((state) => state.fastOrderCart.productList);
+  const product = productList.find((product) => product.stockCode === productStockCode);
+  const productCartQuantity = product ? product.quantity : 0;
+
   
   const handleInputChange = (value) => {
     if (value === '') {
       value = 0;
     };
-    setInputValue(parseInt(value));
+    dispatch(setAmountOfProduct({ stockCode: productStockCode, stockPrice: productStockPrice, quantity: parseInt(value) }));
   };
 
+  handleRemoveProduct = () => {
+    dispatch(removeOneOfProduct({ stockCode: productStockCode, stockPrice: productStockPrice }));
+  }
+
+  handleAddProduct = () => {
+    console.log(productStockCode);
+    console.log(product);
+    
+    dispatch(addOneOfProduct({ stockCode: productStockCode, stockPrice: productStockPrice }));
+  }  
+
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, {borderColor: dynamicColors.accent, backgroundColor: dynamicColors.backgroundColor}]}>
       <View style={styles.productInfoSection}>
         <View style={styles.productCodeInfoContainer}>
           <View style={styles.productBarcodeContainer}>
-            <FontAwesome name="barcode" size={20} color={theme.textAlt} style={{ marginLeft: 8 }} />
-            <Text style={styles.productBarcodeText}>1231231231231</Text>
+            <FontAwesome name="barcode" size={15} color={theme.textAlt} style={{ marginLeft: 8 }} />
+            <Text style={styles.productBarcodeText}>{productBarcode}</Text>
           </View>
           <View style={styles.productStockCodeContainer}>
-            <FontAwesome name="archive" size={20} color={theme.textAlt} style={{ marginRight: 8 }} />
-            <Text style={styles.productStockCodeText}>12312312312312</Text>
+            <FontAwesome name="archive" size={15} color={theme.textAlt} style={{ marginRight: 8 }} />
+            <Text style={styles.productStockCodeText}>{productStockCode}</Text>
           </View>
         </View>
         <View style={styles.productNameInfoContainer}>
-          <Text style={styles.productNameText} numberOfLines={2}>CB 2 LI ARMURLU HAVLU SETI SHINY MERCAN 50X90*2</Text>
+          <Text style={styles.productNameText} numberOfLines={2}>{productName}</Text>
         </View>
         <View style={styles.productStockInfoContainer}>
           <View style={styles.productStockAmountContainer}>
-            <FontAwesome name="cube" size={20} color={theme.textAlt} style={{ marginLeft: 8 }} />
+            <FontAwesome name="cube" size={15} color={theme.textAlt} style={{ marginLeft: 8 }} />
             <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-              <Text style={{ color: theme.textAlt, fontSize: 14, marginLeft: 10 }}>12</Text>
-              <Text style={{ color: theme.textAlt, fontSize: 14, marginLeft: 6, marginRight: 8 }}>AD</Text>
+              <Text style={{ color: theme.textAlt, fontSize: 11, marginLeft: 8 }}>{productStockAmount}</Text>
+              <Text style={{ color: theme.textAlt, fontSize: 11, marginLeft: 6, marginRight: 8 }}>AD</Text>
             </View>
           </View>
           <View style={styles.productStockPriceContainer}>
-            <FontAwesome name="tag" size={20} color={theme.textAlt} style={{ marginLeft: 8 }} />
-            <Text style={styles.productStockPriceText}>₺1150,32</Text>
+            <FontAwesome name="tag" size={15} color={theme.textAlt} style={{ marginLeft: 8 }} />
+            <Text style={styles.productStockPriceText}>₺{formattedCurrency(productStockPrice)}</Text>
           </View>
         </View>
       </View>
       <View style={styles.productCartAmountSection}>
-        <View style={{ flex: 3 }}>
-          <View style={{ flex: 2 }}>
-            <TextInput
-              style={styles.amountTextInput}
-              onChangeText={handleInputChange}
-              value={String(inputValue)}
-              keyboardType="numeric"
-            />
-          </View>
-          <View style={{ flex: 3, flexDirection: 'row', justifyContent: 'space-between' }}>
-            <TouchableOpacity style={styles.removeProductButton}>
-              <FontAwesome name="minus" size={24} color={theme.white} />
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.addProductButton}>
-              <FontAwesome name="plus" size={24} color={theme.white} />
-            </TouchableOpacity>
-          </View>
+        <View style={styles.amountTextInputContainer}>
+          <Text style={styles.amountTextTitle}>Adet:</Text>
+          <TextInput
+            style={styles.amountTextInput}
+            onChangeText={handleInputChange}
+            value={String(productCartQuantity)}
+            keyboardType="numeric"
+          />
+        </View>
+        <View style={styles.productButtonsContainer}>
+          <TouchableOpacity style={styles.removeProductButton} onPress={handleRemoveProduct}>
+            <FontAwesome name="minus" size={24} color={theme.white} />
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.addProductButton} onPress={handleAddProduct}>
+            <FontAwesome name="plus" size={24} color={theme.white} />
+          </TouchableOpacity>
         </View>
         <View style={styles.productTotalCartPriceContainer}>
-          <Text style={styles.productTotalCartPriceText}>₺1150,32</Text>
+          <Text style={styles.productTotalCartPriceText}>₺{formattedCurrency(productStockPrice * productCartQuantity)}</Text>
         </View>
       </View>
     </View>
@@ -83,8 +97,6 @@ const FastOrderProductCard = ({ productName, productBarcode, productStockCode, p
 
 const getStyles = (theme) => StyleSheet.create({
   container: {
-    marginTop: 50,
-    backgroundColor: theme.backgroundAlt,
     height: 110,
     borderLeftWidth: 15,
     borderRightWidth: 1,
@@ -94,7 +106,8 @@ const getStyles = (theme) => StyleSheet.create({
   productInfoSection: {
     flex: 5,
     borderRightWidth: 1,
-    borderRightColor: theme.primary
+    borderRightColor: theme.primary,
+    paddingVertical: 4,
   },
   productCodeInfoContainer: {
     flex: 1,
@@ -107,7 +120,7 @@ const getStyles = (theme) => StyleSheet.create({
   },
   productBarcodeText: {
     color: theme.textAlt,
-    fontSize: 12,
+    fontSize: 11,
     marginBottom: 2,
     marginLeft: 8
   },
@@ -119,7 +132,7 @@ const getStyles = (theme) => StyleSheet.create({
   },
   productStockCodeText: {
     color: theme.textAlt,
-    fontSize: 12,
+    fontSize: 11,
     marginRight: 6
   },
   productNameInfoContainer: {
@@ -128,7 +141,7 @@ const getStyles = (theme) => StyleSheet.create({
   },
   productNameText: {
     color: theme.text,
-    fontSize: 18,
+    fontSize: 15,
     fontWeight: 'bold',
     marginLeft: 8,
     marginRight: 8,
@@ -140,41 +153,43 @@ const getStyles = (theme) => StyleSheet.create({
   productStockAmountContainer: {
     flex: 3,
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    justifyContent: 'flex-start',
     alignItems: 'center',
-    borderTopWidth: 1,
-    borderRightWidth: 1,
-    borderColor: theme.primary,
   },
   productStockPriceContainer: {
     flex: 4,
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    justifyContent: 'flex-end',
     alignItems: 'center',
-    borderTopWidth: 1,
-    borderColor: theme.primary,
   },
   productStockPriceText: {
     color: theme.textAlt,
-    fontSize: 14,
-    marginRight: 8
+    fontSize: 11,
+    marginRight: 8,
+    marginLeft: 8
   },
   productCartAmountSection: {
     flex: 2,
   },
-  amountTextInput: {
+  amountTextInputContainer: {
     flex: 1,
+    flexDirection: 'row',
+    paddingHorizontal: 4,
+    alignItems: 'center',
+  },
+  amountTextTitle: {
+    color: theme.textAlt,
+    fontSize: 12,
+    flex: 2,
+  },
+  amountTextInput: {
     padding: 0,
-    borderColor: theme.primary,
-    borderTopWidth: 1,
-    borderBottomWidth: 1,
-    textAlign: 'center',
+    flex: 3,
     color: theme.text,
-    fontSize: 18,
-    backgroundColor: theme.backgroundAlt,
+    fontSize: 14,
   },
   productButtonsContainer: {
-    flex: 3,
+    flex: 2,
     flexDirection: 'row',
     justifyContent: 'space-between'
   },
@@ -183,8 +198,6 @@ const getStyles = (theme) => StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: theme.primary,
-    borderLeftWidth: 1,
-    borderColor: theme.primary
   },
   addProductButton: {
     flex: 1,
@@ -196,14 +209,12 @@ const getStyles = (theme) => StyleSheet.create({
   },
   productTotalCartPriceContainer: {
     flex: 1,
-    borderBottomWidth: 1,
-    borderColor: theme.primary,
     justifyContent: 'center',
     alignItems: 'center',
   },
   productTotalCartPriceText: {
     color: theme.text,
-    fontSize: 18,
+    fontSize: 14,
     textAlign: 'center'
   }
 });

@@ -1,7 +1,5 @@
 import { StyleSheet, Text, View, BackHandler } from 'react-native';
-import React, { useEffect, useMemo, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { changeTheme } from '../features/themeData/themeSlice';
+import React, { useEffect, useMemo } from 'react';
 import CustomHeader from '../components/CustomHeader';
 import { useTheme } from '../constants/colors';
 
