@@ -4,7 +4,7 @@ import { useTheme } from '../constants/colors';
 
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
-const CustomHeader = ({ navigation, title, hasDrawer }) => {
+const CustomHeader = ({ navigation, title, hasDrawer, rightButtonOnPress, rightButtonIcon }) => {
   const theme = useTheme();
   const styles = useMemo(() => getStyles(theme), [theme]);
 
@@ -22,7 +22,11 @@ const CustomHeader = ({ navigation, title, hasDrawer }) => {
         <Ionicons name={hasDrawer ? 'menu' : 'caret-back'} size={30} color={theme.primary} />
       </TouchableOpacity>
       <Text style={styles.title}>{title}</Text>
-      <View style={styles.emptyRightButton} />
+      {rightButtonOnPress &&
+        <TouchableOpacity style={styles.rightButtonContainer} onPress={rightButtonOnPress}>
+          <Ionicons name={rightButtonIcon} size={30} color={theme.primary} />
+        </TouchableOpacity>
+      }
     </View>
   );
 };
@@ -47,13 +51,16 @@ const getStyles = (theme) => StyleSheet.create({
     width: '80%',
   },
   button: {
-    padding: 6,
-    height: '100%',
-    width: 45,
+    padding: 3,
   },
-  emptyRightButton: {
-    height: '100%',
-    width: 45,
+  rightButtonContainer: {
+    padding: 3,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 5,
+    borderWidth: 1,
+    borderColor: theme.primary,
+    backgroundColor: theme.background,
   },
 });
 

@@ -38,9 +38,12 @@ export const fastOrderCartSlice = createSlice({
         state.productList.push({ ...action.payload });
       }
     },
+    clearCart: (state) => {
+      state.productList = [];
+    },
   },
 });
 
-export const { addOneOfProduct, removeOneOfProduct, setAmountOfProduct } = fastOrderCartSlice.actions;
+export const { addOneOfProduct, removeOneOfProduct, setAmountOfProduct, clearCart } = fastOrderCartSlice.actions;
 
 export default fastOrderCartSlice.reducer;

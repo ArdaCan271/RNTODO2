@@ -11,8 +11,10 @@ import MenuChildrenScreen from '../screens/MenuChildrenScreen';
 import SettingsScreen from '../screens/SettingsScreen';
 import UploadDataScreen from '../screens/UploadDataScreen';
 import ExtractReportScreen from '../screens/ExtractReportScreen';
+import WarehouseStockReportScreen from '../screens/WarehouseStockReportScreen';
 import DetailTableScreen from '../screens/DetailTableScreen';
 import FastOrderScreen from '../screens/FastOrderScreen';
+import FastOrderCartScreen from '../screens/FastOrderCartScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -36,6 +38,13 @@ const StackNavigator = ({ drawerNavigator }) => {
       <Stack.Screen
         name="Menu"
         component={drawerNavigator}
+        options={{
+          headerShown: false,
+        }}
+      />
+      <Stack.Screen
+        name="FastOrderCart"
+        component={FastOrderCartScreen}
         options={{
           headerShown: false,
         }}
@@ -75,6 +84,14 @@ const StackNavigator = ({ drawerNavigator }) => {
       <Stack.Screen
         name="ExtractReport"
         component={ExtractReportScreen}
+        options={{
+          headerShown: false,
+          animation: 'ios',
+        }}
+      />
+      <Stack.Screen
+        name="WarehouseStockReport"
+        component={WarehouseStockReportScreen}
         options={{
           headerShown: false,
           animation: 'ios',

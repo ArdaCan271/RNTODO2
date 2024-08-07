@@ -1,4 +1,4 @@
-import { StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { StyleSheet, Text, TextInput, TouchableOpacity, View, useWindowDimensions } from 'react-native';
 import React, { useState, useMemo, useEffect } from 'react';
 import { useTheme } from '../constants/colors';
 
@@ -7,19 +7,21 @@ import { addOneOfProduct, removeOneOfProduct, setAmountOfProduct } from '../feat
 
 import { formattedCurrency } from '../utils/formatData';
 
+import FastOrderProductDetailModal from './FastOrderProductDetailModal';
+
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 
-const FastOrderProductCard = ({ productName, productBarcode, productStockCode, productStockAmount, productStockPrice, dynamicColors }) => {
+const FastOrderProductCard = ({ productName, productBarcode, productStockCode, productStockAmount, productStockAmountUnit, productStockPrice, dynamicColors }) => {
 
   const theme = useTheme();
   const styles = useMemo(() => getStyles(theme), [theme]);
+  const windowWidth = useWindowDimensions().width;
 
   const dispatch = useDispatch();
 
   const productList = useSelector((state) => state.fastOrderCart.productList);
   const product = productList.find((product) => product.stockCode === productStockCode);
   const productCartQuantity = product ? product.quantity : 0;
-
   
   const handleInputChange = (value) => {
     if (value === '') {
@@ -28,17 +30,27 @@ const FastOrderProductCard = ({ productName, productBarcode, productStockCode, p
     dispatch(setAmountOfProduct({ stockCode: productStockCode, stockPrice: productStockPrice, quantity: parseInt(value) }));
   };
 
-  handleRemoveProduct = () => {
+  const handleRemoveProduct = () => {
     dispatch(removeOneOfProduct({ stockCode: productStockCode, stockPrice: productStockPrice }));
-  }
+  };
 
-  handleAddProduct = () => {
+  const handleAddProduct = () => {
     dispatch(addOneOfProduct({ stockCode: productStockCode, stockPrice: productStockPrice }));
-  }  
+  };
+
+  const [modalVisible, setModalVisible] = useState(false);
 
   return (
     <View style={[styles.container, {borderColor: dynamicColors.accent, backgroundColor: dynamicColors.backgroundColor}]}>
-      <View style={[styles.productInfoSection, {borderColor: dynamicColors.accent}]}>
+      <FastOrderProductDetailModal
+        modalVisible={modalVisible}
+        setModalVisible={setModalVisible}
+        stockCode={productStockCode}
+      />
+      <TouchableOpacity 
+        style={[styles.productInfoSection, {borderColor: dynamicColors.accent}]}
+        onPress={() => setModalVisible(true)}
+      >
         <View style={styles.productCodeInfoContainer}>
           <View style={styles.productBarcodeContainer}>
             <FontAwesome name="barcode" size={15} color={theme.textAlt} style={{ marginLeft: 8 }} />
@@ -56,8 +68,8 @@ const FastOrderProductCard = ({ productName, productBarcode, productStockCode, p
           <View style={styles.productStockAmountContainer}>
             <FontAwesome name="cube" size={15} color={theme.textAlt} style={{ marginLeft: 8 }} />
             <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-              <Text style={{ color: theme.textAlt, fontSize: 11, marginLeft: 8 }}>{productStockAmount}</Text>
-              <Text style={{ color: theme.textAlt, fontSize: 11, marginLeft: 6, marginRight: 8 }}>AD</Text>
+              <Text style={styles.productStockAmountText}>{productStockAmount}</Text>
+              <Text style={styles.productStockAmountUnitText}>{productStockAmountUnit}</Text>
             </View>
           </View>
           <View style={styles.productStockPriceContainer}>
@@ -65,7 +77,7 @@ const FastOrderProductCard = ({ productName, productBarcode, productStockCode, p
             <Text style={styles.productStockPriceText}>₺{formattedCurrency(productStockPrice)}</Text>
           </View>
         </View>
-      </View>
+      </TouchableOpacity>
       <View style={styles.productCartAmountSection}>
         <View style={styles.amountTextInputContainer}>
           <Text style={styles.amountTextTitle}>Adet:</Text>
@@ -94,7 +106,7 @@ const FastOrderProductCard = ({ productName, productBarcode, productStockCode, p
 
 const getStyles = (theme) => StyleSheet.create({
   container: {
-    height: 110,
+    height: 120,
     borderLeftWidth: 15,
     flexDirection: 'row',
   },
@@ -115,7 +127,7 @@ const getStyles = (theme) => StyleSheet.create({
   },
   productBarcodeText: {
     color: theme.textAlt,
-    fontSize: 11,
+    fontSize: 12,
     marginBottom: 2,
     marginLeft: 8
   },
@@ -127,7 +139,7 @@ const getStyles = (theme) => StyleSheet.create({
   },
   productStockCodeText: {
     color: theme.textAlt,
-    fontSize: 11,
+    fontSize: 12,
     marginRight: 6
   },
   productNameInfoContainer: {
@@ -151,6 +163,17 @@ const getStyles = (theme) => StyleSheet.create({
     justifyContent: 'flex-start',
     alignItems: 'center',
   },
+  productStockAmountText: {
+    color: theme.textAlt,
+    fontSize: 12,
+    marginLeft: 8
+  },
+  productStockAmountUnitText: {
+    color: theme.textAlt,
+    fontSize: 12,
+    marginLeft: 6,
+    marginRight: 8
+  },
   productStockPriceContainer: {
     flex: 4,
     flexDirection: 'row',
@@ -159,7 +182,7 @@ const getStyles = (theme) => StyleSheet.create({
   },
   productStockPriceText: {
     color: theme.textAlt,
-    fontSize: 11,
+    fontSize: 12,
     marginRight: 8,
     marginLeft: 8
   },
