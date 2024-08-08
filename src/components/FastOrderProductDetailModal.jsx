@@ -1,9 +1,9 @@
-import { StyleSheet, Text, View, Modal, Pressable, FlatList, ScrollView, ActivityIndicator, useWindowDimensions } from 'react-native';
+import { StyleSheet, Text, View, Modal, ScrollView, ActivityIndicator, useWindowDimensions, Pressable } from 'react-native';
 import React, { useState, useMemo, useEffect } from 'react';
 import { useTheme } from '../constants/colors';
 import { useSelector } from 'react-redux';
 import axios from 'axios';
-import { FlashList } from '@shopify/flash-list';
+
 
 const FastOrderProductDetailModal = ({ modalVisible, setModalVisible, stockCode }) => {
   const theme = useTheme();
@@ -28,7 +28,7 @@ const FastOrderProductDetailModal = ({ modalVisible, setModalVisible, stockCode 
         productId: stockCode,
       });
       setProductDetail(response.data[0]);
-      
+
     } catch (error) {
       console.log(error);
     } finally {
@@ -36,16 +36,19 @@ const FastOrderProductDetailModal = ({ modalVisible, setModalVisible, stockCode 
     }
   };
 
-  useEffect(() => {
-    if (modalVisible) {
-      getProductDetail();
-    }
-  }, [modalVisible]);
-
   const renderItem = ({ item, index }) => (
-    <View style={styles.itemContainer} key={index}>
-      <Text style={styles.itemLabel}>{item.label}</Text>
-      <Text style={styles.itemValue}>{item.value}</Text>
+    <View key={index}>
+      <View style={styles.itemContainer}>
+        <Text style={styles.itemLabel}>{item.label}</Text>
+        <Text style={styles.itemValue}>{item.value}</Text>
+      </View>
+      <View
+        style={{
+          borderBottomColor: theme.text,
+          borderBottomWidth: 1,
+          opacity: 0.2,
+        }}
+      />
     </View>
   );
 
@@ -57,28 +60,34 @@ const FastOrderProductDetailModal = ({ modalVisible, setModalVisible, stockCode 
     }));
   }, [productDetail]);
 
+  useEffect(() => {
+    if (modalVisible) {
+      getProductDetail();
+    }
+  }, [modalVisible]);
+
   return (
     <Modal
-      animationType="slide"
+      animationType="none"
       transparent={true}
       visible={modalVisible}
       onRequestClose={() => setModalVisible(false)}
     >
       <View style={styles.overlay}>
         <Pressable style={{ flex: 1 }} onPress={() => setModalVisible(false)} />
-        <View style={[styles.modalContainer, {width: windowWidth}]}>
-          <Text style={{ color: theme.primary, fontSize: 20, fontWeight: 'bold' }}>Stok Detayları</Text>
-            {productDetailsList.length > 0 ?
-              <ScrollView>
-                {
-                  isLoading ? 
+        <View style={[styles.modalContainer, { width: windowWidth }]}>
+          <Text style={{ color: theme.primary, fontSize: 20, fontWeight: 'bold', marginLeft: 20 }}>Stok Detayları</Text>
+          {productDetailsList.length > 0 ?
+            <ScrollView contentContainerStyle={{ paddingHorizontal: 20 }}>
+              {
+                isLoading ?
                   <ActivityIndicator size="large" color={theme.primary} /> :
                   productDetailsList.map((item, index) => (renderItem({ item, index })))
-                }
-              </ScrollView>
-              :
-              <ActivityIndicator size="large" color={theme.primary} />
-            }
+              }
+            </ScrollView>
+            :
+            <ActivityIndicator size="large" color={theme.primary} />
+          }
         </View>
       </View>
     </Modal>
@@ -92,7 +101,7 @@ const getStyles = (theme) => StyleSheet.create({
   },
   modalContainer: {
     backgroundColor: theme.backgroundAlt,
-    padding: 20,
+    paddingVertical: 20,
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
     height: '80%',
@@ -113,6 +122,16 @@ const getStyles = (theme) => StyleSheet.create({
   },
   itemValue: {
     color: theme.text,
+  },
+  container: {
+    flex: 1,
+    padding: 24,
+    justifyContent: 'center',
+    backgroundColor: 'grey',
+  },
+  contentContainer: {
+    flex: 1,
+    alignItems: 'center',
   },
 });
 

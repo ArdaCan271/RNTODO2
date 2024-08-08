@@ -35,7 +35,6 @@ const getStyles = (theme) => StyleSheet.create({
     borderTopColor: theme.primary,
     borderLeftWidth: 15,
     borderLeftColor: theme.primary,
-    overflow: 'hidden',
   },
 });
 

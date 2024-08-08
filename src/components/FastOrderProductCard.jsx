@@ -1,5 +1,5 @@
-import { StyleSheet, Text, TextInput, TouchableOpacity, View, useWindowDimensions } from 'react-native';
-import React, { useState, useMemo, useEffect } from 'react';
+import { Pressable, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import React, { useState, useMemo } from 'react';
 import { useTheme } from '../constants/colors';
 
 import { useSelector, useDispatch } from 'react-redux';
@@ -11,11 +11,10 @@ import FastOrderProductDetailModal from './FastOrderProductDetailModal';
 
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 
-const FastOrderProductCard = ({ productName, productBarcode, productStockCode, productStockAmount, productStockAmountUnit, productStockPrice, dynamicColors }) => {
+const FastOrderProductCard = ({ setSelectedProduct, productName, productBarcode, productStockCode, productStockAmount, productStockAmountUnit, productStockPrice, dynamicColors }) => {
 
   const theme = useTheme();
   const styles = useMemo(() => getStyles(theme), [theme]);
-  const windowWidth = useWindowDimensions().width;
 
   const dispatch = useDispatch();
 
@@ -42,14 +41,11 @@ const FastOrderProductCard = ({ productName, productBarcode, productStockCode, p
 
   return (
     <View style={[styles.container, {borderColor: dynamicColors.accent, backgroundColor: dynamicColors.backgroundColor}]}>
-      <FastOrderProductDetailModal
-        modalVisible={modalVisible}
-        setModalVisible={setModalVisible}
-        stockCode={productStockCode}
-      />
-      <TouchableOpacity 
+      <Pressable 
         style={[styles.productInfoSection, {borderColor: dynamicColors.accent}]}
-        onPress={() => setModalVisible(true)}
+        onPress={() => setSelectedProduct(productStockCode)}
+        android_ripple={{ color: theme.primary }}
+        unstable_pressDelay={20}
       >
         <View style={styles.productCodeInfoContainer}>
           <View style={styles.productBarcodeContainer}>
@@ -77,7 +73,7 @@ const FastOrderProductCard = ({ productName, productBarcode, productStockCode, p
             <Text style={styles.productStockPriceText}>₺{formattedCurrency(productStockPrice)}</Text>
           </View>
         </View>
-      </TouchableOpacity>
+      </Pressable>
       <View style={styles.productCartAmountSection}>
         <View style={styles.amountTextInputContainer}>
           <Text style={styles.amountTextTitle}>Adet:</Text>

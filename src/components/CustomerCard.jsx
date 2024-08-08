@@ -36,43 +36,43 @@ const CustomerCard = ({ cariKod, isim, alacak, il, onPress, dynamicColors }) => 
   const initials = getInitials(isim);
 
   return (
-    <TouchableHighlight 
+    <Pressable
       style={[styles.cardWrapper, { width: windowWidth, borderLeftColor: dynamicColors.borderMain, backgroundColor: dynamicColors.backgroundColor }]}
       onPress={onPress}
-      underlayColor={theme.gray}
-      activeOpacity={0.7}
+      android_ripple={{ color: theme.primary }}
+      unstable_pressDelay={20}
+      // underlayColor={theme.gray}
+      // activeOpacity={0.7}
     >
-      <View
-        style={styles.cardPressable}
-      >
-          <View style={styles.topLeft}>
-            <View style={[styles.initialsWrapper, { backgroundColor: dynamicColors.initialsWrapper }]}>
-              <Text style={styles.initials}>
-                {initials}
-              </Text>
-            </View>
-            <View style={styles.textWrapper}>
-              <Text style={styles.cariKod}>{cariKod}</Text>
-              <Text style={styles.isim}>{isim}</Text>
-            </View>
-          </View>
-          {il !== '' &&
-            <View style={styles.bottomLeft}>
-              <View style={styles.locationIconWrapper}>
-                <Ionicons name="location-outline" size={18} color={theme.primary} />
-              </View>
-              <Text style={styles.il}>{il}</Text>
-            </View>
-          }
-          <View style={styles.bottomRight}>
-            <Text style={styles.alacakWhole}>
-              ₺{lira}
-              <Text style={styles.alacakDecimal}>,{kurus}</Text>
+      <View style={styles.cardPressable}>
+        <View style={styles.topLeft}>
+          <View style={[styles.initialsWrapper, { backgroundColor: dynamicColors.initialsWrapper }]}>
+            <Text style={styles.initials}>
+              {initials}
             </Text>
           </View>
-          <Ionicons name="chevron-forward" size={24} color={theme.primary} style={styles.chevron} />
+          <View style={styles.textWrapper}>
+            <Text style={styles.cariKod}>{cariKod}</Text>
+            <Text style={styles.isim}>{isim}</Text>
+          </View>
+        </View>
+        {il !== '' &&
+          <View style={styles.bottomLeft}>
+            <View style={styles.locationIconWrapper}>
+              <Ionicons name="location-outline" size={18} color={theme.primary} />
+            </View>
+            <Text style={styles.il}>{il}</Text>
+          </View>
+        }
+        <View style={styles.bottomRight}>
+          <Text style={styles.alacakWhole}>
+            ₺{lira}
+            <Text style={styles.alacakDecimal}>,{kurus}</Text>
+          </Text>
+        </View>
+        <Ionicons name="chevron-forward" size={24} color={theme.primary} style={styles.chevron} />
       </View>
-    </TouchableHighlight>
+    </Pressable>
   );
 };
 
@@ -81,7 +81,6 @@ const getStyles = (theme) => StyleSheet.create({
     backgroundColor: theme.background,
     height: 100,
     borderLeftWidth: 15,
-    overflow: 'hidden',
   },
   cardPressable: {
     width: '100%',

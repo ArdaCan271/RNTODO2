@@ -8,6 +8,7 @@ import { useTheme } from '../constants/colors';
 import CustomHeader from '../components/CustomHeader';
 import CustomerCard from '../components/CustomerCard';
 import CustomerCardSkeleton from '../components/CustomerCardSkeleton';
+import { FlashList } from '@shopify/flash-list';
 
 const CurrentScreen = ({ navigation, route }) => {
   const { childrenOfMenuItem } = route.params;
@@ -27,6 +28,7 @@ const CurrentScreen = ({ navigation, route }) => {
   const searchInputRef = useRef(null);
 
   const windowWidth = useWindowDimensions().width;
+  const windowHeight = useWindowDimensions().height;
 
   useEffect(() => {
     getCustomerList();
@@ -78,8 +80,6 @@ const CurrentScreen = ({ navigation, route }) => {
       dynamicColors={{
         backgroundColor: index % 2 === 0 ? theme.background : theme.backgroundAlt,
         borderMain: index % 2 === 0 ? theme.primary : theme.primaryAlt,
-        borderExtension1: index % 2 === 0 ? theme.primary_100 : theme.primaryAlt_100,
-        borderExtension2: index % 2 === 0 ? theme.primary_200 : theme.primaryAlt_200,
         initialsWrapper: index % 2 === 0 ? theme.primary : theme.primaryAlt,
       }}
     />
@@ -110,7 +110,7 @@ const CurrentScreen = ({ navigation, route }) => {
   };
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, {width: windowWidth}]}>
       <CustomHeader navigation={navigation} title={route.params.title} />
       <View style={styles.searchInputWrapper}>
         <TextInput
@@ -124,14 +124,11 @@ const CurrentScreen = ({ navigation, route }) => {
           autoCapitalize='none'
         />
       </View>
-      <FlatList
-        data={loading ? Array(10).fill({}) : filteredCustomerList} // Show skeleton loaders if loading
+      <FlashList
+        data={loading ? Array(10).fill({}) : filteredCustomerList}
         renderItem={loading ? renderSkeletonItem : renderItem}
         keyExtractor={(item, index) => (loading ? index.toString() : item.CariKod)}
-        contentContainerStyle={[styles.listContainer, { width: windowWidth}]}
-        ItemSeparatorComponent={<View style={{height: 1, backgroundColor: theme.separator }} />}
-        keyboardShouldPersistTaps='handled'
-        
+        estimatedItemSize={100}
       />
     </View>
   );
@@ -139,18 +136,11 @@ const CurrentScreen = ({ navigation, route }) => {
 
 const getStyles = (theme) => StyleSheet.create({
   container: {
-    width: '100%',
-    height: '100%',
-    justifyContent: 'flex-start',
-    alignItems: 'center',
+    flex: 1,
     backgroundColor: theme.background,
     paddingTop: theme.padding.header,
   },
-  listContainer: {
-    alignItems: 'center',
-  },
   searchInputWrapper: {
-    width: '100%',
     justifyContent: 'center',
     alignItems: 'center',
     paddingVertical: 10,

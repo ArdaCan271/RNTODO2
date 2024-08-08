@@ -1,11 +1,13 @@
 import { StyleSheet, Text, View, BackHandler, FlatList, useWindowDimensions, TextInput, ActivityIndicator } from 'react-native';
-import React, { useEffect, useState, useMemo, useCallback } from 'react';
+import React, { useEffect, useState, useMemo, useCallback, useRef } from 'react';
 import { useTheme } from '../constants/colors';
 import { useSelector } from 'react-redux';
 import axios from 'axios';
 import CustomHeader from '../components/CustomHeader';
 import FastOrderProductCard from '../components/FastOrderProductCard';
 import { FlashList } from '@shopify/flash-list';
+
+import CustomBottomSheet from '../components/CustomBottomSheet';
 
 const FastOrderScreen = ({ navigation, route }) => {
   const theme = useTheme();
@@ -78,6 +80,7 @@ const FastOrderScreen = ({ navigation, route }) => {
 
   const MemoizedProductCard = React.memo(({ product, index, theme }) => (
     <FastOrderProductCard
+      setSelectedProduct={setSelectedProduct}
       productName={product.StockName}
       productBarcode={product.StockBarcode}
       productStockCode={product.StockCode}
@@ -90,6 +93,21 @@ const FastOrderScreen = ({ navigation, route }) => {
       }}
     />
   ));
+
+  const bottomSheetRef = useRef(null);
+  
+  const [selectedProduct, setSelectedProduct] = useState(null);
+
+  const handleOpenBottomSheet = () => {
+    bottomSheetRef.current?.expand();
+  };
+
+  useEffect(() => {
+    if (selectedProduct) {
+      console.log(selectedProduct);
+      handleOpenBottomSheet();
+    }
+  }, [selectedProduct]);
 
 
   return (
@@ -127,6 +145,10 @@ const FastOrderScreen = ({ navigation, route }) => {
           estimatedItemSize={120}
         />
       }
+      <CustomBottomSheet
+        title={'Stok Detaylar'}
+        ref={bottomSheetRef}
+      />
     </View>
   );
 };

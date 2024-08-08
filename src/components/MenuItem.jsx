@@ -4,7 +4,7 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import colors from '../constants/colors';
 import { useTheme } from '../constants/colors';
 
-const MenuItem = ({ item, level = 0, onPress, navigation, style, props = '', routeNames }) => {
+const MenuItem = ({ item, level = 0, onPress, navigation, style, props = '', routeNames, borderBottom }) => {
 
   const theme = useTheme();
   const styles = useMemo(() => getStyles(theme), [theme]);
@@ -12,7 +12,7 @@ const MenuItem = ({ item, level = 0, onPress, navigation, style, props = '', rou
   const hasChildren = !!item.children && item.children.length > 0;
 
   return (
-    <View style={styles.menuItem}>
+    <View style={[styles.menuItem, {borderBottomWidth: borderBottom}]}>
       <View style={{ flexDirection: 'row', alignItems: 'center' }}>
         <View style={{ width: `${level * 5}%` }} />
         <TouchableOpacity 
@@ -48,9 +48,10 @@ const MenuItem = ({ item, level = 0, onPress, navigation, style, props = '', rou
 
 const getStyles = (theme) => StyleSheet.create({
   menuItem: {
-    marginVertical: 0,
     borderLeftWidth: 10,
     borderLeftColor: theme.primary,
+    borderBottomWidth: 1,
+    borderBottomColor: theme.separator,
   },
   menuButton: {
     flexDirection: 'row',
