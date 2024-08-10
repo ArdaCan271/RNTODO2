@@ -128,6 +128,7 @@ const CurrentScreen = ({ navigation, route }) => {
         renderItem={loading ? renderSkeletonItem : renderItem}
         keyExtractor={(item, index) => (loading ? index.toString() : item.CariKod)}
         estimatedItemSize={100}
+        keyboardShouldPersistTaps='handled'
       />
     </View>
   );

@@ -169,6 +169,7 @@ const FastOrderScreen = ({ navigation, route }) => {
             </View>
           }
           estimatedItemSize={120}
+          keyboardShouldPersistTaps='handled'
         />
         :
         <View

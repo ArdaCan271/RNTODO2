@@ -1,14 +1,16 @@
-import { StyleSheet, Text, View, Modal, Pressable } from 'react-native';
+import { StyleSheet, Text, View, Modal, Pressable, useWindowDimensions, Keyboard } from 'react-native';
 import React, { useState, useMemo } from 'react';
 
 import { useTheme } from '../constants/colors';
 
 import { useSelector } from 'react-redux';
 
-const FastOrderProductEditCartModal = ({ modalVisible, setModalVisible, }) => {
-
+const FastOrderProductEditCartModal = ({ modalVisible, setModalVisible }) => {
   const theme = useTheme();
   const styles = useMemo(() => getStyles(theme), [theme]);
+
+  const windowWidth = useWindowDimensions().width;
+  const windowHeight = useWindowDimensions().height;
 
   return (
     <Modal
@@ -19,8 +21,20 @@ const FastOrderProductEditCartModal = ({ modalVisible, setModalVisible, }) => {
         setModalVisible(!modalVisible);
       }}
     >
-      <Pressable style={styles.overlay} onPress={() => setModalVisible(!modalVisible)}>
-        <Pressable style={styles.modalContainer} android_disableSound>
+      <Pressable style={styles.overlay} onPress={() => {
+        setModalVisible(!modalVisible);
+        Keyboard.dismiss();
+      }}>
+        <Pressable 
+          style={[
+            styles.modalContainer,
+            {
+              width: windowWidth > windowHeight ? '50%' : '80%',
+              height: windowWidth > windowHeight ? '60%' : '30%',
+            }
+          ]} 
+          android_disableSound
+        >
           <View>
 
           </View>
@@ -38,9 +52,11 @@ const getStyles = (theme) => StyleSheet.create({
     alignItems: 'center',
   },
   modalContainer: {
-    backgroundColor: theme.backgroundAlt,
+    backgroundColor: theme.background,
     borderRadius: 10,
     padding: 20,
+    elevation: 5,
+    shadowColor: 'black',
   },
 });
 
