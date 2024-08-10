@@ -1,23 +1,12 @@
-import { StyleSheet, Text, View, BackHandler, Pressable } from 'react-native';
-import React, { useEffect, useMemo, useRef } from 'react';
-import { useTheme } from '../constants/colors'; // Import useTheme for theme integration
+import { StyleSheet, Text, View, BackHandler } from 'react-native';
+import React, { useEffect, useMemo } from 'react';
+import { useTheme } from '../constants/colors';
 
 import CustomHeader from '../components/CustomHeader';
-import CustomBottomSheet from '../components/CustomBottomSheet';
 
 const PageNotFoundScreen = ({ navigation, route }) => {
   const theme = useTheme();
   const styles = useMemo(() => getStyles(theme), [theme]);
-
-  const bottomSheetRef = useRef(null);
-
-  const handleOpenPress = () => {
-    bottomSheetRef.current?.expand();
-  };
-
-  const handleClosePress = () => {
-    bottomSheetRef.current?.close();
-  };
 
   useEffect(() => {
     const backAction = () => {
@@ -41,22 +30,7 @@ const PageNotFoundScreen = ({ navigation, route }) => {
         title={routeName}
         navigation={navigation}
       />
-      <Pressable
-        style={{ padding: 10, backgroundColor: theme.primary, borderRadius: 5 }}
-        onPress={handleOpenPress}
-      >
-        <Text style={styles.text}>Open Bottom Sheet</Text>
-      </Pressable>
-      <Pressable
-        style={{ padding: 10, backgroundColor: theme.primary, borderRadius: 5, marginTop: 10 }}
-        onPress={handleClosePress}
-      >
-        <Text style={styles.text}>Close Bottom Sheet</Text>
-      </Pressable>
-      <CustomBottomSheet
-        title={'So Cool Bottom Sheet'}
-        ref={bottomSheetRef}
-      />
+      <Text style={styles.text}>Sayfa Bulunamadı</Text>
     </View>
   );
 };

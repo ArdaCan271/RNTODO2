@@ -28,7 +28,6 @@ const CurrentScreen = ({ navigation, route }) => {
   const searchInputRef = useRef(null);
 
   const windowWidth = useWindowDimensions().width;
-  const windowHeight = useWindowDimensions().height;
 
   useEffect(() => {
     getCustomerList();

@@ -10,8 +10,9 @@ import { formattedCurrency } from '../utils/formatData';
 import FastOrderProductDetailModal from './FastOrderProductDetailModal';
 
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
+import FastOrderProductEditCartModal from './FastOrderProductEditCartModal';
 
-const FastOrderProductCard = ({ setSelectedProduct, productName, productBarcode, productStockCode, productStockAmount, productStockAmountUnit, productStockPrice, dynamicColors }) => {
+const FastOrderProductCard = ({ handleOpenBottomSheet, setSelectedProduct, productName, productBarcode, productStockCode, productStockAmount, productStockAmountUnit, productStockPrice, dynamicColors }) => {
 
   const theme = useTheme();
   const styles = useMemo(() => getStyles(theme), [theme]);
@@ -36,14 +37,25 @@ const FastOrderProductCard = ({ setSelectedProduct, productName, productBarcode,
   const handleAddProduct = () => {
     dispatch(addOneOfProduct({ stockCode: productStockCode, stockPrice: productStockPrice }));
   };
-
+  
   const [modalVisible, setModalVisible] = useState(false);
+
+  const handleCartEditPress = () => {
+    setModalVisible(!modalVisible);
+  };
 
   return (
     <View style={[styles.container, {borderColor: dynamicColors.accent, backgroundColor: dynamicColors.backgroundColor}]}>
+      <FastOrderProductEditCartModal
+        modalVisible={modalVisible}
+        setModalVisible={setModalVisible}
+      />
       <Pressable 
         style={[styles.productInfoSection, {borderColor: dynamicColors.accent}]}
-        onPress={() => setSelectedProduct(productStockCode)}
+        onPress={() => {
+          setSelectedProduct(productStockCode);
+          handleOpenBottomSheet();
+        }}
         android_ripple={{ color: theme.primary }}
         unstable_pressDelay={20}
       >
@@ -75,7 +87,22 @@ const FastOrderProductCard = ({ setSelectedProduct, productName, productBarcode,
         </View>
       </Pressable>
       <View style={styles.productCartAmountSection}>
-        <View style={styles.amountTextInputContainer}>
+        <View style={{flex: 1, flexDirection: 'row', justifyContent: 'center', alignItems: 'center', columnGap: 6, paddingTop: 4}}>
+          <FontAwesome name="shopping-cart" size={15} color={theme.textAlt} style={{marginLeft: 4}}/>
+          <Text numberOfLines={1} style={{color: theme.textAlt, maxWidth: '80%'}}>{productCartQuantity}</Text>
+        </View>
+        <View style={{flex: 2, justifyContent: 'center', alignItems: 'center'}}>
+          <TouchableOpacity
+            style={{backgroundColor: dynamicColors.backgroundColor, padding: 8, borderRadius: 5, borderWidth: 1, borderColor: dynamicColors.accent}}
+            onPress={handleCartEditPress}
+          >
+            <FontAwesome name="cart-plus" size={24} color={theme.primary} />
+          </TouchableOpacity>
+        </View>
+        <View style={{flex: 1, flexDirection: 'row', justifyContent: 'center', alignItems: 'center', columnGap: 6, paddingBottom: 4}}>
+          <Text numberOfLines={1} style={{color: productCartQuantity > 0 ? theme.text : theme.separator, maxWidth: '80%'}}>₺{formattedCurrency(productStockPrice * productCartQuantity)}</Text>
+        </View>
+        {/* <View style={styles.amountTextInputContainer}>
           <Text style={styles.amountTextTitle}>Adet:</Text>
           <TextInput
             style={styles.amountTextInput}
@@ -94,7 +121,7 @@ const FastOrderProductCard = ({ setSelectedProduct, productName, productBarcode,
         </View>
         <View style={styles.productTotalCartPriceContainer}>
           <Text style={[styles.productTotalCartPriceText, {color: productCartQuantity > 0 ? theme.text : theme.separator}]}>₺{formattedCurrency(productStockPrice * productCartQuantity)}</Text>
-        </View>
+        </View> */}
       </View>
     </View>
   );
@@ -183,54 +210,54 @@ const getStyles = (theme) => StyleSheet.create({
     marginLeft: 8
   },
   productCartAmountSection: {
-    flex: 2,
+    flex: 1.6,
   },
-  amountTextInputContainer: {
-    flex: 1,
-    flexDirection: 'row',
-    paddingHorizontal: 4,
-    alignItems: 'center',
-  },
-  amountTextTitle: {
-    color: theme.textAlt,
-    fontSize: 12,
-    flex: 2,
-  },
-  amountTextInput: {
-    padding: 0,
-    flex: 3,
-    color: theme.text,
-    fontSize: 14,
-  },
-  productButtonsContainer: {
-    flex: 2,
-    flexDirection: 'row',
-    justifyContent: 'space-between'
-  },
-  removeProductButton: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: theme.primary,
-  },
-  addProductButton: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderLeftWidth: 1,
-    borderColor: theme.separator,
-    backgroundColor: theme.primary
-  },
-  productTotalCartPriceContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  productTotalCartPriceText: {
-    color: theme.text,
-    fontSize: 14,
-    textAlign: 'center'
-  }
+  // amountTextInputContainer: {
+  //   flex: 1,
+  //   flexDirection: 'row',
+  //   paddingHorizontal: 4,
+  //   alignItems: 'center',
+  // },
+  // amountTextTitle: {
+  //   color: theme.textAlt,
+  //   fontSize: 12,
+  //   flex: 2,
+  // },
+  // amountTextInput: {
+  //   padding: 0,
+  //   flex: 3,
+  //   color: theme.text,
+  //   fontSize: 14,
+  // },
+  // productButtonsContainer: {
+  //   flex: 2,
+  //   flexDirection: 'row',
+  //   justifyContent: 'space-between'
+  // },
+  // removeProductButton: {
+  //   flex: 1,
+  //   justifyContent: 'center',
+  //   alignItems: 'center',
+  //   backgroundColor: theme.primary,
+  // },
+  // addProductButton: {
+  //   flex: 1,
+  //   justifyContent: 'center',
+  //   alignItems: 'center',
+  //   borderLeftWidth: 1,
+  //   borderColor: theme.separator,
+  //   backgroundColor: theme.primary
+  // },
+  // productTotalCartPriceContainer: {
+  //   flex: 1,
+  //   justifyContent: 'center',
+  //   alignItems: 'center',
+  // },
+  // productTotalCartPriceText: {
+  //   color: theme.text,
+  //   fontSize: 14,
+  //   textAlign: 'center'
+  // }
 });
 
 export default FastOrderProductCard;

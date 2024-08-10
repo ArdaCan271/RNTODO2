@@ -13,9 +13,6 @@ const FastOrderScreen = ({ navigation, route }) => {
   const theme = useTheme();
   const styles = useMemo(() => getStyles(theme), [theme]);
 
-  const windowWidth = useWindowDimensions().width;
-  const windowHeight = useWindowDimensions().height;
-
   const userToken = useSelector((state) => state.userData.data.token);
   const baseRequestURL = useSelector((state) => state.baseRequestURL.value);
 
@@ -24,7 +21,12 @@ const FastOrderScreen = ({ navigation, route }) => {
   const [pageNumber, setPageNumber] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
 
-  const cartProducts = useSelector((state) => state.fastOrderCart.productList);
+  const [searchFilter, setSearchFilter] = useState('');
+
+  const searchTimeout = useRef(null);
+  const searchInputRef = useRef(null);
+
+
 
   useEffect(() => {
     getProductList();
@@ -40,22 +42,37 @@ const FastOrderScreen = ({ navigation, route }) => {
     );
 
     return () => backHandler.remove();
+  }, []);
+
+  useEffect(() => {
+    searchInputRef.current?.focus();
   }, [navigation]);
+
+  const [infiniteLoaderHidden, setInfiniteLoaderHidden] = useState(true);
 
   const getProductList = async () => {
     setIsLoading(true);
     const apiUrl = `${baseRequestURL}/DuyuII/Stock/GetList`;
+
+    console.log('sending request with page number: ', pageNumber);
+    console.log('search filter: ', searchFilter);
+    
+    
     try {
       const response = await axios.post(apiUrl, {
         token: 'RasyoIoToken2021',
         user_token: userToken,
         pageNumber: pageNumber,
-        pageSize: 10,
+        pageSize: 15,
+        stockName: searchFilter,
       });
 
-      if (response.data && response.data.length > 0) {
+      if (response.data && response.data.length > 0 && response.data[2] && response.data[2].length > 0) {
         setProductList(prevProducts => [...prevProducts, ...response.data[2]]);
         setPageNumber(prevPageNumber => prevPageNumber + 1);
+        setInfiniteLoaderHidden(false);
+      } else if (response.data && response.data.length > 0 && !response.data[2]) {
+        setInfiniteLoaderHidden(true);
       }
     } catch (error) {
       console.log(error);
@@ -81,6 +98,7 @@ const FastOrderScreen = ({ navigation, route }) => {
   const MemoizedProductCard = React.memo(({ product, index, theme }) => (
     <FastOrderProductCard
       setSelectedProduct={setSelectedProduct}
+      handleOpenBottomSheet={handleOpenBottomSheet}
       productName={product.StockName}
       productBarcode={product.StockBarcode}
       productStockCode={product.StockCode}
@@ -103,11 +121,19 @@ const FastOrderScreen = ({ navigation, route }) => {
   };
 
   useEffect(() => {
-    if (selectedProduct) {
-      console.log(selectedProduct);
-      handleOpenBottomSheet();
+    const timeOutId = setTimeout(() => {
+      setPageNumber(1);
+      setSearchFilter(searchQuery);
+      setProductList([]);
+    }, 500);
+    return () => clearTimeout(timeOutId);
+  }, [searchQuery]);
+
+  useEffect(() => {
+    if (searchFilter !== '' && pageNumber === 1) {
+      getProductList();
     }
-  }, [selectedProduct]);
+  }, [searchFilter]);
 
 
   return (
@@ -121,6 +147,7 @@ const FastOrderScreen = ({ navigation, route }) => {
       <View style={styles.searchInputWrapper}>
         <TextInput
           style={styles.searchInput}
+          ref={searchInputRef}
           placeholder="Stok Ara"
           placeholderTextColor={theme.textAlt}
           value={searchQuery}
@@ -128,7 +155,7 @@ const FastOrderScreen = ({ navigation, route }) => {
           autoCapitalize='none'
         />
       </View>
-      {productList.length !== 0 &&
+      {productList.length !== 0 ?
         <FlashList
           data={productList}
           renderItem={renderProduct}
@@ -136,19 +163,32 @@ const FastOrderScreen = ({ navigation, route }) => {
           showsVerticalScrollIndicator={false}
           onEndReached={handleEndReached}
           onEndReachedThreshold={0.1}
-          ListFooterComponent={
-            <View style={{ height: 50, justifyContent: 'center', alignItems: 'center', }} >
-              <View style={{ height: 1, width: '100%', backgroundColor: theme.separator, position: 'absolute', top: 0 }} />
+          ListFooterComponent={!infiniteLoaderHidden && productList.length >= 15 &&
+            <View style={{ height: 50, justifyContent: 'center', alignItems: 'center'}} >
               <ActivityIndicator size="small" color={theme.primary} />
             </View>
           }
           estimatedItemSize={120}
         />
+        :
+        <View
+          style={{
+            flex: 1,
+            justifyContent: 'center',
+            alignItems: 'center',
+          }}
+        >
+          <ActivityIndicator size="large" color={theme.primary} />
+        </View>
       }
-      <CustomBottomSheet
-        title={'Stok Detaylar'}
-        ref={bottomSheetRef}
-      />
+      {selectedProduct &&
+        <CustomBottomSheet
+          title={'Stok Detaylar'}
+          ref={bottomSheetRef}
+          stockCode={selectedProduct}
+          navigation={navigation}
+        />
+      }
     </View>
   );
 };

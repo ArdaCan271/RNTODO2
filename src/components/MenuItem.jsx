@@ -50,7 +50,6 @@ const getStyles = (theme) => StyleSheet.create({
   menuItem: {
     borderLeftWidth: 10,
     borderLeftColor: theme.primary,
-    borderBottomWidth: 1,
     borderBottomColor: theme.separator,
   },
   menuButton: {
