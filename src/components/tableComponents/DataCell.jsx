@@ -28,7 +28,6 @@ const getStyles = (theme) => StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     borderColor: theme.primary,
-    borderBottomWidth: 1,
     borderRightWidth: 1,
   },
 });

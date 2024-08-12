@@ -70,6 +70,7 @@ export const lightTheme = {
   separator: '#c0c0c0',
   redSupport: "rgba(255, 3, 8, 0.15)",
   tableHighlight: '#ffff00',
+  paleRed: '#d9544d',
   type:'light'
 };
 
@@ -89,6 +90,7 @@ export const darkTheme = {
   separator: '#303650',
   redSupport: "rgba(255, 3, 8, 0.15)",
   tableHighlight: '#805500',
+  paleRed: '#b3403e',
   type:'dark'
 };
 

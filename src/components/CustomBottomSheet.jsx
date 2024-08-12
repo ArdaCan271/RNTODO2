@@ -1,9 +1,9 @@
-import { StyleSheet, ActivityIndicator, View, Text, BackHandler, TextInput, TouchableOpacity } from 'react-native';
-import React, { forwardRef, useEffect, useMemo, useState } from 'react';
+import { StyleSheet, ActivityIndicator, View, Text, BackHandler, TextInput, TouchableOpacity, useWindowDimensions } from 'react-native';
+import React, { forwardRef, useCallback, useEffect, useMemo, useState } from 'react';
 
 import { useTheme } from '../constants/colors';
 
-import BottomSheet, { BottomSheetScrollView, BottomSheetTextInput } from '@gorhom/bottom-sheet';
+import BottomSheet, { BottomSheetScrollView, BottomSheetBackdrop } from '@gorhom/bottom-sheet';
 
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 
@@ -14,7 +14,6 @@ import axios from 'axios';
 const CustomBottomSheet = forwardRef((props, ref) => {
 
   const [currentIndex, setCurrentIndex] = useState(-1);
-
 
   const onBackPress = () => {
     if (ref !== null) {
@@ -34,7 +33,10 @@ const CustomBottomSheet = forwardRef((props, ref) => {
   const theme = useTheme();
   const styles = useMemo(() => getStyles(theme), [theme]);
 
-  const snapPoints = useMemo(() => ['65%'], []);
+  const windowWidth = useWindowDimensions().width;
+  const windowHeight = useWindowDimensions().height;
+
+  const snapPoints = useMemo(() => [windowWidth > windowHeight ? '80%' : '65%'], [windowHeight]);
 
   const userToken = useSelector((state) => state.userData.data.token);
   const baseRequestURL = useSelector((state) => state.baseRequestURL.value);
@@ -60,6 +62,15 @@ const CustomBottomSheet = forwardRef((props, ref) => {
     }
   };
 
+  const renderBackdrop = useCallback((props) => (
+    <BottomSheetBackdrop 
+      {...props}
+      opacity={0.5}
+      appearsOnIndex={0}
+      disappearsOnIndex={-1}
+    />
+  ), []);
+
   const renderItem = ({ item, index }) => (
     <View key={index}>
       <View style={styles.itemContainer}>
@@ -67,13 +78,7 @@ const CustomBottomSheet = forwardRef((props, ref) => {
         <Text numberOfLines={2} style={styles.itemValue}>{item.value}</Text>
       </View>
       {index !== productDetailsList.length - 1 &&
-        <View
-        style={{
-          borderBottomColor: theme.text,
-          borderBottomWidth: 1,
-          opacity: 0.2,
-        }}
-        />
+        <View style={{ borderBottomColor: theme.text, borderBottomWidth: 1, opacity: 0.2 }}/>
       }
     </View>
   );
@@ -98,71 +103,25 @@ const CustomBottomSheet = forwardRef((props, ref) => {
       index={0}
       snapPoints={snapPoints}
       ref={ref}
-      backgroundStyle={{
-        backgroundColor: theme.background,
-        elevation: 5,
-        shadowColor: theme.text,
-        shadowOffset: { width: 0, height: 3 },
-        shadowOpacity: 0.25,
-        shadowRadius: 3.84,
-        borderWidth: 2,
-        borderColor: theme.text,
-        borderRadius: 40,
-      }}
-      style={{
-        paddingHorizontal: 5,
-        justifyContent: 'space-between'
-      }}
-      handleIndicatorStyle={{ backgroundColor: theme.text }}
+      backdropComponent={renderBackdrop}
+      backgroundStyle={styles.bottomSheetBackground}
+      style={{ paddingHorizontal: 5 }}
+      handleIndicatorStyle={{ backgroundColor: theme.textAlt }}
       enablePanDownToClose
     >
-      <View 
-        style={{
-          paddingBottom: 10,
-        }}
-      >
-        <Text style={styles.title}>{props.title}</Text>
+      <View style={{ paddingBottom: 10, flexDirection: 'row', justifyContent: 'center', alignItems: 'center', borderBottomWidth: 1, borderColor: theme.separator }}>
+        <Text style={styles.title}>{props.stockName}</Text>
+        <TouchableOpacity style={{padding: 2, position: 'absolute', right: 20, top: 0}} onPress={() => ref.current?.close()}>
+          <FontAwesome name="times" size={26} color={theme.textAlt} style={{ textAlign: 'right' }} />
+        </TouchableOpacity>
       </View>
-      {productDetailsList.length > 0 ?
-        <BottomSheetScrollView contentContainerStyle={{ paddingHorizontal: 15 }}>
-          {
-            isLoading ?
-              <ActivityIndicator size="large" color={theme.primary} /> :
-              productDetailsList.map((item, index) => (renderItem({ item, index })))
-          }
-        </BottomSheetScrollView>
-        :
-        <ActivityIndicator size="large" color={theme.primary} />
-      }
-      <View style={{ flexDirection: 'row', height: 70, borderTopColor: theme.text, borderTopWidth: 1 , justifyContent: 'space-between', alignItems: 'center'}}>
-        <View style={{flex: 1, rowGap: 2}}>
-          <Text style={{color: theme.text, textAlign: 'center', fontWeight: 'bold'}}>Birim Fiyat</Text>
-          <Text style={{color: theme.text, textAlign: 'center'}}>
-            ₺1314,20
-          </Text>
-        </View>
-        <View style={{flex: 1.5, justifyContent: 'center', alignItems: 'center'}}>
-          <View style={{flexDirection: 'row', height: 50, justifyContent: 'center', alignItems: 'center'}}>
-            <TouchableOpacity style={{width: 50, height: 50, backgroundColor: theme.primary, justifyContent: 'center', alignItems: 'center', borderWidth: 1, borderRightWidth: 0, borderColor: theme.text, borderTopLeftRadius: 10, borderBottomLeftRadius: 10}}>
-              <FontAwesome name="minus" size={24} color={theme.white} />
-            </TouchableOpacity>
-            <TextInput
-              style={{width: 50, height: 50, textAlign: 'center', borderWidth: 1, borderColor: theme.text, color: theme.text, fontSize: 16, padding: 0}}
-              value="5"
-              keyboardType="numeric"
-            />
-            <TouchableOpacity style={{width: 50, height: 50, backgroundColor: theme.primary, justifyContent: 'center', alignItems: 'center', borderWidth: 1, borderLeftWidth: 0, borderColor: theme.text, borderTopRightRadius: 10, borderBottomRightRadius: 10}}>
-              <FontAwesome name="plus" size={24} color={theme.white} />
-            </TouchableOpacity>
-          </View>
-        </View>
-        <View style={{flex: 1, rowGap: 2}}>
-          <Text style={{color: theme.text, textAlign: 'center', fontWeight: 'bold'}}>Toplam Fiyat</Text>
-          <Text style={{color: theme.text, textAlign: 'center'}}>
-            ₺6571,00
-          </Text>
-        </View>
-      </View>
+      <BottomSheetScrollView contentContainerStyle={{ paddingHorizontal: 15 }}>
+        {isLoading ?
+          <ActivityIndicator size="large" color={theme.primary} /> 
+          :
+          productDetailsList.map((item, index) => (renderItem({ item, index })))
+        }
+      </BottomSheetScrollView>
     </BottomSheet>
   );
 });
@@ -173,6 +132,16 @@ const getStyles = (theme) => StyleSheet.create({
     fontSize: 20,
     fontWeight: 'bold',
     textAlign: 'center',
+    marginTop: 10,
+  },
+  bottomSheetBackground: {
+    flex: 1,
+    backgroundColor: theme.background,
+    elevation: 5,
+    shadowColor: theme.text,
+    borderWidth: 2,
+    borderColor: theme.textAlt,
+    borderRadius: 40,
   },
   itemContainer: {
     flexDirection: 'row',

@@ -12,11 +12,11 @@ const MenuItem = ({ item, level = 0, onPress, navigation, style, props = '', rou
   const hasChildren = !!item.children && item.children.length > 0;
 
   return (
-    <View style={[styles.menuItem, {borderBottomWidth: borderBottom}]}>
+    <View style={[styles.menuItem]}>
       <View style={{ flexDirection: 'row', alignItems: 'center' }}>
         <View style={{ width: `${level * 5}%` }} />
         <TouchableOpacity 
-          style={[styles.menuButton, {backgroundColor: theme.background}, style]} 
+          style={[styles.menuButton, {backgroundColor: theme.background}]} 
           onPress={() => {
             if(routeNames.includes(item.mobile)) {
               navigation.navigate(item.mobile, { childrenOfMenuItem: item.children, props: props, title: item.id });
@@ -50,7 +50,6 @@ const getStyles = (theme) => StyleSheet.create({
   menuItem: {
     borderLeftWidth: 10,
     borderLeftColor: theme.primary,
-    borderBottomColor: theme.separator,
   },
   menuButton: {
     flexDirection: 'row',
@@ -58,7 +57,9 @@ const getStyles = (theme) => StyleSheet.create({
     alignItems: 'center',
     paddingVertical: 14,
     paddingHorizontal: 12,
-    flex: 1
+    flex: 1,
+    borderBottomWidth: StyleSheet.hairlineWidth,
+    borderBottomColor: theme.separator,
   },
   menuText: {
     marginLeft: 10,

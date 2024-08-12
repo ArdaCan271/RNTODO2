@@ -157,7 +157,7 @@ const Table = ({ fieldWidths, detailFieldWidths, customHeaderComponent, customDa
 
   return (
     <View style={[styles.tableContainer, { width: windowWidth, height: windowHeight - (theme.padding.header + (windowWidth > windowHeight ? statusBarHeight + 20 : statusBarHeight - 1)) }]}>
-      {paginationEnabled && tableRowList && tableRowList.length > 0 &&
+      {paginationEnabled &&
         <Pagination
           currentPage={tableCurrentPage}
           totalPages={tableTotalPages}
@@ -175,14 +175,28 @@ const Table = ({ fieldWidths, detailFieldWidths, customHeaderComponent, customDa
           <ActivityIndicator size="large" color={theme.primary} />
         </View>
         :
-        (tableRowList && tableRowList.length > 0 ?
-          <View style={{ 
-              width: "100%", 
-              height: "100%",
-            }}>
-            <SyncedScrollViewContext.Provider value={syncedScrollViewState}>
-              <View style={{ zIndex: 1, position: 'absolute', top: 0, left: 0, flexDirection: 'row' }}>
-                <StickyHeaderRow
+        <View style={{
+          width: "100%",
+          height: "100%",
+        }}>
+          <SyncedScrollViewContext.Provider value={syncedScrollViewState}>
+            <View style={{ zIndex: 1, position: 'absolute', top: 0, left: 0, flexDirection: 'row' }}>
+              <StickyHeaderRow
+                headerList={tableHeaderList}
+                fieldWidths={fieldWidths}
+                fieldFilters={fieldFilters}
+                setFieldFilters={setFieldFilters}
+                filterModalInfo={filterModalInfo}
+                setFilterModalInfo={setFilterModalInfo}
+                sortInfo={sortInfo}
+                setSortInfo={setSortInfo}
+                selectedHeaderFields={selectedHeaderFields}
+                setSelectedHeaderFields={setSelectedHeaderFields}
+              />
+            </View>
+            <View style={{ width: windowWidth - selectedHeaderFieldsTotalWidth, marginLeft: selectedHeaderFieldsTotalWidth }}>
+              <SyncedScrollView isLoading={isLoading} selectedHeaderFields={selectedHeaderFields} selectedRowIndex={selectedRowIndex} id={0} horizontal showsHorizontalScrollIndicator={false}>
+                <HeaderRow
                   headerList={tableHeaderList}
                   fieldWidths={fieldWidths}
                   fieldFilters={fieldFilters}
@@ -194,23 +208,10 @@ const Table = ({ fieldWidths, detailFieldWidths, customHeaderComponent, customDa
                   selectedHeaderFields={selectedHeaderFields}
                   setSelectedHeaderFields={setSelectedHeaderFields}
                 />
-              </View>
-              <View style={{ width: windowWidth - selectedHeaderFieldsTotalWidth, marginLeft: selectedHeaderFieldsTotalWidth }}>
-                <SyncedScrollView isLoading={isLoading} selectedHeaderFields={selectedHeaderFields} selectedRowIndex={selectedRowIndex} id={0} horizontal showsHorizontalScrollIndicator={false}>
-                  <HeaderRow
-                    headerList={tableHeaderList}
-                    fieldWidths={fieldWidths}
-                    fieldFilters={fieldFilters}
-                    setFieldFilters={setFieldFilters}
-                    filterModalInfo={filterModalInfo}
-                    setFilterModalInfo={setFilterModalInfo}
-                    sortInfo={sortInfo}
-                    setSortInfo={setSortInfo}
-                    selectedHeaderFields={selectedHeaderFields}
-                    setSelectedHeaderFields={setSelectedHeaderFields}
-                  />
-                </SyncedScrollView>
-              </View>
+              </SyncedScrollView>
+            </View>
+            {tableRowList && tableRowList.length > 0 ?
+
               <ScrollView>
                 <View style={{ width: '100%', height: '100%', flexDirection: 'row' }}>
                   <View style={{ width: selectedHeaderFieldsTotalWidth }}>
@@ -228,7 +229,7 @@ const Table = ({ fieldWidths, detailFieldWidths, customHeaderComponent, customDa
                       ))}
                     </View>
                   </View>
-                  <View style={{width: windowWidth - selectedHeaderFieldsTotalWidth}}>
+                  <View style={{ width: windowWidth - selectedHeaderFieldsTotalWidth }}>
                     <SyncedScrollView id={1} horizontal>
                       <View>
                         {tableRowList.map((item, index) => (
@@ -247,13 +248,14 @@ const Table = ({ fieldWidths, detailFieldWidths, customHeaderComponent, customDa
                   </View>
                 </View>
               </ScrollView>
-            </SyncedScrollViewContext.Provider>
-          </View>
-          :
-          <View style={styles.noDataFoundContainer}>
-            <Text style={styles.noDataFoundText}>Veri Bulunamadı</Text>
-          </View>
-        )
+              :
+              <View style={styles.noDataFoundContainer}>
+                <Text style={styles.noDataFoundText}>Veri Bulunamadı</Text>
+              </View>
+            }
+          </SyncedScrollViewContext.Provider>
+        </View>
+
       }
     </View>
   );

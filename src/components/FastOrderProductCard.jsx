@@ -9,13 +9,13 @@ import { formattedCurrency } from '../utils/formatData';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import FastOrderProductEditCartModal from './FastOrderProductEditCartModal';
 
-const FastOrderProductCard = ({ handleOpenBottomSheet, setSelectedProduct, productName, productBarcode, productStockCode, productStockAmount, productStockAmountUnit, productStockPrice, dynamicColors }) => {
+const FastOrderProductCard = ({ handleOpenBottomSheet, setSelectedProduct, productInfo, dynamicColors }) => {
 
   const theme = useTheme();
   const styles = useMemo(() => getStyles(theme), [theme]);
 
   const productList = useSelector((state) => state.fastOrderCart.productList);
-  const product = productList.find((product) => product.stockCode === productStockCode);
+  const product = productList.find((product) => product.stockCode === productInfo.StockCode);
   const productCartQuantity = product ? product.quantity : 0;
   
   const [modalVisible, setModalVisible] = useState(false);
@@ -29,44 +29,52 @@ const FastOrderProductCard = ({ handleOpenBottomSheet, setSelectedProduct, produ
       <FastOrderProductEditCartModal
         modalVisible={modalVisible}
         setModalVisible={setModalVisible}
+        productInfo={productInfo}
       />
-      <Pressable 
-        style={[styles.productInfoSection, {borderColor: dynamicColors.accent}]}
-        onPress={() => {
-          setSelectedProduct(productStockCode);
-          handleOpenBottomSheet();
-          Keyboard.dismiss();
-        }}
-        android_ripple={{ color: theme.primary }}
-        unstable_pressDelay={20}
-      >
+      <View style={[styles.productInfoSection, {borderColor: dynamicColors.accent}]}>
         <View style={styles.productCodeInfoContainer}>
           <View style={styles.productBarcodeContainer}>
             <FontAwesome name="barcode" size={15} color={theme.textAlt} style={{ marginLeft: 8 }} />
-            <Text style={styles.productBarcodeText}>{productBarcode}</Text>
+            <Text style={styles.productBarcodeText}>{productInfo.StockBarcode}</Text>
           </View>
           <View style={styles.productStockCodeContainer}>
             <FontAwesome name="archive" size={15} color={theme.textAlt} style={{ marginRight: 8 }} />
-            <Text style={styles.productStockCodeText}>{productStockCode}</Text>
+            <Text style={styles.productStockCodeText}>{productInfo.StockCode}</Text>
           </View>
         </View>
-        <View style={styles.productNameInfoContainer}>
-          <Text style={styles.productNameText} numberOfLines={2}>{productName}</Text>
-        </View>
+        <TouchableOpacity 
+          style={styles.productNameInfoContainer}
+          onPress={() => {
+            setSelectedProduct(productInfo);
+            handleOpenBottomSheet();
+            Keyboard.dismiss();
+          }}
+        >
+          <Text style={styles.productNameText} numberOfLines={2}>{productInfo.StockName}</Text>
+        </TouchableOpacity>
         <View style={styles.productStockInfoContainer}>
           <View style={styles.productStockAmountContainer}>
-            <FontAwesome name="cube" size={15} color={theme.textAlt} style={{ marginLeft: 8 }} />
+            <FontAwesome name="cube" size={15} color={productInfo.ActualStock > 0 ? theme.textAlt : theme.paleRed} style={{ marginLeft: 8 }} />
             <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-              <Text style={styles.productStockAmountText}>{productStockAmount}</Text>
-              <Text style={styles.productStockAmountUnitText}>{productStockAmountUnit}</Text>
+              <Text style={[styles.productStockAmountText, {color: productInfo.ActualStock > 0 ? theme.textAlt : theme.paleRed}]}>{productInfo.ActualStock}</Text>
+              <Text style={[styles.productStockAmountUnitText, {color: productInfo.ActualStock > 0 ? theme.textAlt : theme.paleRed}]}>{productInfo.StockUnit}</Text>
             </View>
           </View>
           <View style={styles.productStockPriceContainer}>
             <FontAwesome name="tag" size={15} color={theme.textAlt} style={{ marginLeft: 8 }} />
-            <Text style={styles.productStockPriceText}>₺{formattedCurrency(productStockPrice)}</Text>
+            <Text style={styles.productStockPriceText}>₺{formattedCurrency(productInfo.StockPrice)}</Text>
           </View>
         </View>
-      </Pressable>
+      </View>
+      <View style={styles.productCartAmountSection}>
+        <View style={styles.cartAmountContainer}>
+          <FontAwesome name="shopping-cart" size={15} color={productCartQuantity > 0 ? dynamicColors.accent : theme.textAlt} />
+          <Text style={{color: productCartQuantity > 0 ? theme.text : theme.textAlt, textAlign: 'center'}}>{productCartQuantity}</Text>
+        </View>
+        <TouchableOpacity style={[styles.cartEditButton, {borderColor: dynamicColors.accent}]} onPress={handleCartEditPress}>
+          <FontAwesome name="cart-plus" size={24} color={dynamicColors.accent} />
+        </TouchableOpacity>
+      </View>
     </View>
   );
 }
@@ -78,7 +86,7 @@ const getStyles = (theme) => StyleSheet.create({
     flexDirection: 'row',
   },
   productInfoSection: {
-    flex: 1,
+    flex: 5,
     borderRightWidth: 1,
     borderRightColor: theme.primary,
     paddingVertical: 4,
@@ -131,12 +139,10 @@ const getStyles = (theme) => StyleSheet.create({
     alignItems: 'center',
   },
   productStockAmountText: {
-    color: theme.textAlt,
     fontSize: 12,
     marginLeft: 8
   },
   productStockAmountUnitText: {
-    color: theme.textAlt,
     fontSize: 12,
     marginLeft: 6,
     marginRight: 8
@@ -154,14 +160,26 @@ const getStyles = (theme) => StyleSheet.create({
     marginLeft: 8
   },
   productCartAmountSection: {
-    flex: 1.6,
+    flex: 1,
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingVertical: 20,
   },
-  // amountTextInputContainer: {
-  //   flex: 1,
-  //   flexDirection: 'row',
-  //   paddingHorizontal: 4,
-  //   alignItems: 'center',
-  // },
+  cartAmountContainer: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    columnGap: 6,
+  },
+  cartEditButton: {
+    width: 50,
+    height: 50,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 10,
+    borderWidth: 1,
+    borderColor: theme.primary,
+  },
   // amountTextTitle: {
   //   color: theme.textAlt,
   //   fontSize: 12,

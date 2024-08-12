@@ -29,7 +29,10 @@ const FastOrderScreen = ({ navigation, route }) => {
 
 
   useEffect(() => {
-    getProductList();
+    if (productList.length === 0) {
+      console.log('fetching product list');
+      getProductList();
+    }
 
     const backAction = () => {
       navigation.goBack();
@@ -42,7 +45,7 @@ const FastOrderScreen = ({ navigation, route }) => {
     );
 
     return () => backHandler.remove();
-  }, []);
+  }, [productList]);
 
   useEffect(() => {
     searchInputRef.current?.focus();
@@ -53,11 +56,6 @@ const FastOrderScreen = ({ navigation, route }) => {
   const getProductList = async () => {
     setIsLoading(true);
     const apiUrl = `${baseRequestURL}/DuyuII/Stock/GetList`;
-
-    console.log('sending request with page number: ', pageNumber);
-    console.log('search filter: ', searchFilter);
-    
-    
     try {
       const response = await axios.post(apiUrl, {
         token: 'RasyoIoToken2021',
@@ -66,7 +64,6 @@ const FastOrderScreen = ({ navigation, route }) => {
         pageSize: 15,
         stockName: searchFilter,
       });
-
       if (response.data && response.data.length > 0 && response.data[2] && response.data[2].length > 0) {
         setProductList(prevProducts => [...prevProducts, ...response.data[2]]);
         setPageNumber(prevPageNumber => prevPageNumber + 1);
@@ -99,6 +96,7 @@ const FastOrderScreen = ({ navigation, route }) => {
     <FastOrderProductCard
       setSelectedProduct={setSelectedProduct}
       handleOpenBottomSheet={handleOpenBottomSheet}
+      productInfo={product}
       productName={product.StockName}
       productBarcode={product.StockBarcode}
       productStockCode={product.StockCode}
@@ -120,19 +118,19 @@ const FastOrderScreen = ({ navigation, route }) => {
     bottomSheetRef.current?.expand();
   };
 
+  // edge cases to consider: scrolling a few pages down, then writing something in the search bar and deleting it before the timeout
+  // the timeout will trigger setPageNumber(1) and the new page will be fetched with pageNumber 1
+
   useEffect(() => {
     const timeOutId = setTimeout(() => {
-      setPageNumber(1);
       setSearchFilter(searchQuery);
-      setProductList([]);
     }, 500);
     return () => clearTimeout(timeOutId);
   }, [searchQuery]);
 
   useEffect(() => {
-    if (searchFilter !== '' && pageNumber === 1) {
-      getProductList();
-    }
+    setPageNumber(1);
+    setProductList([]);
   }, [searchFilter]);
 
 
@@ -140,9 +138,7 @@ const FastOrderScreen = ({ navigation, route }) => {
     <View style={styles.container}>
       <CustomHeader 
         title={route.params.title} 
-        navigation={navigation} 
-        rightButtonIcon={'cart'}
-        rightButtonOnPress={() => navigation.navigate('FastOrderCart')}
+        navigation={navigation}
       />
       <View style={styles.searchInputWrapper}>
         <TextInput
@@ -159,7 +155,7 @@ const FastOrderScreen = ({ navigation, route }) => {
         <FlashList
           data={productList}
           renderItem={renderProduct}
-          keyExtractor={(item, index) => index.toString()}
+          keyExtractor={(item, index) => index}
           showsVerticalScrollIndicator={false}
           onEndReached={handleEndReached}
           onEndReachedThreshold={0.1}
@@ -172,21 +168,25 @@ const FastOrderScreen = ({ navigation, route }) => {
           keyboardShouldPersistTaps='handled'
         />
         :
+        isLoading ?
         <View
-          style={{
-            flex: 1,
-            justifyContent: 'center',
-            alignItems: 'center',
-          }}
-        >
+          style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
           <ActivityIndicator size="large" color={theme.primary} />
         </View>
+        :
+        <View
+          style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+          <Text style={styles.text}>Sonuç bulunamadı.</Text>
+        </View>
       }
+      <View >
+
+      </View>
       {selectedProduct &&
         <CustomBottomSheet
-          title={'Stok Detaylar'}
           ref={bottomSheetRef}
-          stockCode={selectedProduct}
+          stockCode={selectedProduct.StockCode}
+          stockName={selectedProduct.StockName}
           navigation={navigation}
         />
       }

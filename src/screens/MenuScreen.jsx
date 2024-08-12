@@ -45,7 +45,6 @@ const MenuScreen = ({ navigation, route }) => {
         renderItem={({ item, index }) => (
             <MenuItem
               item={item}
-              borderBottom={index === menuBJSON.length - 1 ? 0 : 1}
               navigation={navigation}
               routeNames={route.params.routeNames}
             />
