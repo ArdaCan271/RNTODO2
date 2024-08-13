@@ -8,6 +8,7 @@ import FastOrderProductCard from '../components/FastOrderProductCard';
 import { FlashList } from '@shopify/flash-list';
 
 import CustomBottomSheet from '../components/CustomBottomSheet';
+import FastOrderProductEditCartModal from '../components/FastOrderProductEditCartModal';
 
 const FastOrderScreen = ({ navigation, route }) => {
   const theme = useTheme();
@@ -23,10 +24,7 @@ const FastOrderScreen = ({ navigation, route }) => {
 
   const [searchFilter, setSearchFilter] = useState('');
 
-  const searchTimeout = useRef(null);
   const searchInputRef = useRef(null);
-
-
 
   useEffect(() => {
     if (productList.length === 0) {
@@ -95,14 +93,9 @@ const FastOrderScreen = ({ navigation, route }) => {
   const MemoizedProductCard = React.memo(({ product, index, theme }) => (
     <FastOrderProductCard
       setSelectedProduct={setSelectedProduct}
+      setEditModalVisible={setEditModalVisible}
       handleOpenBottomSheet={handleOpenBottomSheet}
       productInfo={product}
-      productName={product.StockName}
-      productBarcode={product.StockBarcode}
-      productStockCode={product.StockCode}
-      productStockAmount={product.ActualStock}
-      productStockAmountUnit={product.StockUnit}
-      productStockPrice={product.StockPrice}
       dynamicColors={{
         backgroundColor: index % 2 === 0 ? theme.background : theme.backgroundAlt,
         accent: index % 2 === 0 ? theme.primary : theme.primaryAlt,
@@ -118,9 +111,6 @@ const FastOrderScreen = ({ navigation, route }) => {
     bottomSheetRef.current?.expand();
   };
 
-  // edge cases to consider: scrolling a few pages down, then writing something in the search bar and deleting it before the timeout
-  // the timeout will trigger setPageNumber(1) and the new page will be fetched with pageNumber 1
-
   useEffect(() => {
     const timeOutId = setTimeout(() => {
       setSearchFilter(searchQuery);
@@ -133,6 +123,8 @@ const FastOrderScreen = ({ navigation, route }) => {
     setProductList([]);
   }, [searchFilter]);
 
+  const [editModalVisible, setEditModalVisible] = useState(false);
+
 
   return (
     <View style={styles.container}>
@@ -140,6 +132,13 @@ const FastOrderScreen = ({ navigation, route }) => {
         title={route.params.title} 
         navigation={navigation}
       />
+      {editModalVisible && selectedProduct &&
+        <FastOrderProductEditCartModal
+          modalVisible={editModalVisible}
+          setModalVisible={setEditModalVisible}
+          productInfo={selectedProduct}
+        />
+      }
       <View style={styles.searchInputWrapper}>
         <TextInput
           style={styles.searchInput}

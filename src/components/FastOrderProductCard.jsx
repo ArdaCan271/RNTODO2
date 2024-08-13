@@ -9,7 +9,7 @@ import { formattedCurrency } from '../utils/formatData';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import FastOrderProductEditCartModal from './FastOrderProductEditCartModal';
 
-const FastOrderProductCard = ({ handleOpenBottomSheet, setSelectedProduct, productInfo, dynamicColors }) => {
+const FastOrderProductCard = ({ setEditModalVisible, handleOpenBottomSheet, setSelectedProduct, productInfo, dynamicColors }) => {
 
   const theme = useTheme();
   const styles = useMemo(() => getStyles(theme), [theme]);
@@ -17,20 +17,14 @@ const FastOrderProductCard = ({ handleOpenBottomSheet, setSelectedProduct, produ
   const productList = useSelector((state) => state.fastOrderCart.productList);
   const product = productList.find((product) => product.stockCode === productInfo.StockCode);
   const productCartQuantity = product ? product.quantity : 0;
-  
-  const [modalVisible, setModalVisible] = useState(false);
 
   const handleCartEditPress = () => {
-    setModalVisible(!modalVisible);
+    setSelectedProduct(productInfo);
+    setEditModalVisible(true);
   };
 
   return (
     <View style={[styles.container, {borderColor: dynamicColors.accent, backgroundColor: dynamicColors.backgroundColor}]}>
-      <FastOrderProductEditCartModal
-        modalVisible={modalVisible}
-        setModalVisible={setModalVisible}
-        productInfo={productInfo}
-      />
       <View style={[styles.productInfoSection, {borderColor: dynamicColors.accent}]}>
         <View style={styles.productCodeInfoContainer}>
           <View style={styles.productBarcodeContainer}>

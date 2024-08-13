@@ -23,16 +23,23 @@ const FastOrderProductEditCartModal = ({ modalVisible, setModalVisible, productI
   const product = productList.find((product) => product.stockCode === productInfo.StockCode);
   const productCartQuantity = product ? product.quantity : 0;
 
-  const [stockPriceState, setStockPriceState] = useState(productInfo.StockPrice);
+  const productCartPrice = product ? product.stockPrice : productInfo.StockPrice;
+
+  const [stockPriceState, setStockPriceState] = useState(productCartPrice);
 
   const [stockPriceInputFocused, setStockPriceInputFocused] = useState(false);
 
   const handleStockPriceInputChange = (value) => {
-    if (value === '') {
-      value = 0;
-    }
+    // Update the state as a string to preserve the decimal point
     setStockPriceState(value);
   };
+  
+  const handleStockPriceBlur = () => {
+    // Convert the value to a float when the input loses focus
+    const floatValue = parseFloat(stockPriceState);
+    setStockPriceState(isNaN(floatValue) ? '' : floatValue.toString());
+  };
+  
 
   const handleQuantityInputChange = (value) => {
     if (value === '') {
@@ -48,6 +55,8 @@ const FastOrderProductEditCartModal = ({ modalVisible, setModalVisible, productI
   const handleAddProduct = () => {
     dispatch(addOneOfProduct({ stockCode: productInfo.StockCode, stockPrice: stockPriceState }));
   };
+  
+  
 
   return (
     <Modal
@@ -88,10 +97,10 @@ const FastOrderProductEditCartModal = ({ modalVisible, setModalVisible, productI
               <View style={styles.stockInfoTextWrapper}>
                 <Text style={styles.stockInfoTitle}>Birim Fiyat</Text>
                 <TextInput
-                  style={styles.stockPriceInput}
+                  style={[styles.stockPriceInput, {color: stockPriceState === productInfo.StockPrice ? theme.text : theme.primary}] }
                   value={stockPriceInputFocused ? stockPriceState.toString() : `₺${formattedCurrency(stockPriceState)}`}
                   onFocus={() => setStockPriceInputFocused(true)}
-                  onBlur={() => setStockPriceInputFocused(false)}
+                  onBlur={() => {setStockPriceInputFocused(false); handleStockPriceBlur();}}
                   onEndEditing={() => setStockPriceInputFocused(false)}
                   onChangeText={handleStockPriceInputChange}
                   keyboardType='numeric'
@@ -107,22 +116,18 @@ const FastOrderProductEditCartModal = ({ modalVisible, setModalVisible, productI
                 <Text style={{position: 'absolute', top: 0, left: 0, color: theme.text, fontSize: 14, fontWeight: 'bold'}}>Oranlar:</Text>
                 <View>
                   <View>
-                    <TextInput/>
-                    <Text>Oran 1</Text>
+                    <Text style={{color: theme.text}}>Oran 1</Text>
                   </View>
                   <View>
-                    <TextInput/>
-                    <Text>Oran 2</Text>
+                    <Text style={{color: theme.text}}>Oran 2</Text>
                   </View>
                 </View>
                 <View>
                   <View>
-                    <TextInput/>
-                    <Text>Oran 3</Text>
+                    <Text style={{color: theme.text}}>Oran 3</Text>
                   </View>
                   <View>
-                    <TextInput/>
-                    <Text>Oran 4</Text>
+                    <Text style={{color: theme.text}}>Oran 4</Text>
                   </View>
                 </View>
               </View>
