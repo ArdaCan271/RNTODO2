@@ -38,12 +38,18 @@ export const fastOrderCartSlice = createSlice({
         state.productList.push({ ...action.payload });
       }
     },
+    setPriceOfProduct: (state, action) => {
+      const product = state.productList.find((product) => product.stockCode === action.payload.stockCode);
+      if (product) {
+        product.stockPrice = action.payload.stockPrice;
+      }
+    },
     clearCart: (state) => {
       state.productList = [];
     },
   },
 });
 
-export const { addOneOfProduct, removeOneOfProduct, setAmountOfProduct, clearCart } = fastOrderCartSlice.actions;
+export const { addOneOfProduct, removeOneOfProduct, setAmountOfProduct, setPriceOfProduct, clearCart } = fastOrderCartSlice.actions;
 
 export default fastOrderCartSlice.reducer;

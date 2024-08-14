@@ -9,7 +9,7 @@ import { formattedCurrency } from '../utils/formatData';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import FastOrderProductEditCartModal from './FastOrderProductEditCartModal';
 
-const FastOrderProductCard = ({ setEditModalVisible, handleOpenBottomSheet, setSelectedProduct, productInfo, dynamicColors }) => {
+const FastOrderProductCard = ({ setEditModalVisible, setSelectedEditProduct, handleOpenBottomSheet, setSelectedProduct, productInfo, dynamicColors }) => {
 
   const theme = useTheme();
   const styles = useMemo(() => getStyles(theme), [theme]);
@@ -19,7 +19,7 @@ const FastOrderProductCard = ({ setEditModalVisible, handleOpenBottomSheet, setS
   const productCartQuantity = product ? product.quantity : 0;
 
   const handleCartEditPress = () => {
-    setSelectedProduct(productInfo);
+    setSelectedEditProduct(productInfo);
     setEditModalVisible(true);
   };
 

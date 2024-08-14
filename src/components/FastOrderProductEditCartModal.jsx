@@ -4,7 +4,7 @@ import React, { useState, useMemo } from 'react';
 import { useTheme } from '../constants/colors';
 
 import { useSelector, useDispatch } from 'react-redux';
-import { setAmountOfProduct, addOneOfProduct, removeOneOfProduct } from '../features/fastOrderCart/fastOrderCartSlice';
+import { setAmountOfProduct, addOneOfProduct, removeOneOfProduct, setPriceOfProduct, clearCart } from '../features/fastOrderCart/fastOrderCartSlice';
 
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 
@@ -32,6 +32,7 @@ const FastOrderProductEditCartModal = ({ modalVisible, setModalVisible, productI
   const handleStockPriceInputChange = (value) => {
     // Update the state as a string to preserve the decimal point
     setStockPriceState(value);
+    dispatch(setPriceOfProduct({ stockCode: productInfo.StockCode, stockPrice: value }));
   };
   
   const handleStockPriceBlur = () => {
@@ -69,9 +70,8 @@ const FastOrderProductEditCartModal = ({ modalVisible, setModalVisible, productI
       }}
     >
       <Pressable style={styles.overlay} onPress={() => { setModalVisible(!modalVisible); Keyboard.dismiss(); setStockPriceInputFocused(false); }}>
-          <Text style={styles.modalTitle}>Ürün Ekle</Text>
         <Pressable 
-          style={[styles.modalContainer, { width: windowWidth > windowHeight ? windowWidth * 0.5 : windowWidth * 0.9, height: windowWidth > windowHeight ? windowHeight * 0.55 : windowHeight * 0.4 }]}
+          style={[styles.modalContainer, { width: windowWidth > windowHeight ? windowWidth * 0.7 : windowWidth * 0.9, height: windowWidth > windowHeight ? windowHeight * 0.6 : windowHeight * 0.5 }]}
           android_disableSound
           onPress={() => Keyboard.dismiss()}
         >
@@ -94,10 +94,10 @@ const FastOrderProductEditCartModal = ({ modalVisible, setModalVisible, productI
                 <Text style={styles.stockInfoTitle}>Stok Birim Fiyat</Text>
                 <Text style={styles.stockInfoValue}>₺{formattedCurrency(productInfo.StockPrice)}</Text>
               </View>
-              <View style={styles.stockInfoTextWrapper}>
+              <View style={[styles.stockInfoTextWrapper, {paddingVertical: 2, paddingHorizontal: 5}]}>
                 <Text style={styles.stockInfoTitle}>Birim Fiyat</Text>
                 <TextInput
-                  style={[styles.stockPriceInput, {color: stockPriceState === productInfo.StockPrice ? theme.text : theme.primary}] }
+                  style={styles.stockPriceInput}
                   value={stockPriceInputFocused ? stockPriceState.toString() : `₺${formattedCurrency(stockPriceState)}`}
                   onFocus={() => setStockPriceInputFocused(true)}
                   onBlur={() => {setStockPriceInputFocused(false); handleStockPriceBlur();}}
@@ -112,25 +112,6 @@ const FastOrderProductEditCartModal = ({ modalVisible, setModalVisible, productI
               </View>
             </View>
             <View style={styles.modalActionsContainer}>
-              <View style={styles.ratesContainer}>
-                <Text style={{position: 'absolute', top: 0, left: 0, color: theme.text, fontSize: 14, fontWeight: 'bold'}}>Oranlar:</Text>
-                <View>
-                  <View>
-                    <Text style={{color: theme.text}}>Oran 1</Text>
-                  </View>
-                  <View>
-                    <Text style={{color: theme.text}}>Oran 2</Text>
-                  </View>
-                </View>
-                <View>
-                  <View>
-                    <Text style={{color: theme.text}}>Oran 3</Text>
-                  </View>
-                  <View>
-                    <Text style={{color: theme.text}}>Oran 4</Text>
-                  </View>
-                </View>
-              </View>
               <KeyboardAvoidingView style={styles.modalButtonsContainer}>
                 <TouchableOpacity style={{ padding: 2 }} onPress={() => handleQuantityInputChange(0)}>
                   <FontAwesome name="trash-o" size={26} color={theme.textAlt} />
@@ -198,43 +179,46 @@ const getStyles = (theme) => StyleSheet.create({
   },
   modalBody: {
     flex: 4,
-    flexDirection: 'row',
   },
   stockInfoContainer: {
-    flex: 1.5,
-    justifyContent: 'space-evenly',
+    justifyContent: 'flex-start',
+    flex: 1,
   },
   stockInfoTextWrapper: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    borderBottomWidth: 1,
+    borderBottomColor: theme.separator,
+    padding: 5,
   },
   stockInfoTitle: {
     color: theme.text,
-    fontSize: 15,
+    fontSize: 16,
     fontWeight: 'bold',
   },
   stockInfoValue: {
     color: theme.text,
-    fontSize: 13,
+    fontSize: 14,
     marginLeft: 4,
   },
   stockPriceInput: {
-    height: 16,
-    width: 100,
-    borderColor: theme.textAlt,
-    borderBottomWidth: 1,
+    width: 85,
+    textAlign: 'right',
+    height: 28,
     padding: 0,
-    backgroundColor: theme.background,
+    marginRight: -5,
+    paddingRight: 5,
+    borderWidth: 1,
+    borderColor: theme.textAlt,
+    borderRadius: 5,
+    backgroundColor: theme.backgroundAlt,
     color: theme.text,
-    fontSize: 13,
-    marginLeft: 4,
+    fontSize: 14,
   },
   modalActionsContainer: {
-    flex: 3,
-  },
-  ratesContainer: {
-    flex: 2.5,
     flexDirection: 'row',
     justifyContent: 'flex-end',
-    alignItems: 'center',
   },
   modalButtonsContainer: {
     height: 50,

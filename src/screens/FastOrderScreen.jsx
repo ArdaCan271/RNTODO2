@@ -60,7 +60,7 @@ const FastOrderScreen = ({ navigation, route }) => {
         user_token: userToken,
         pageNumber: pageNumber,
         pageSize: 15,
-        stockName: searchFilter,
+        stockCode: searchFilter,
       });
       if (response.data && response.data.length > 0 && response.data[2] && response.data[2].length > 0) {
         setProductList(prevProducts => [...prevProducts, ...response.data[2]]);
@@ -93,6 +93,7 @@ const FastOrderScreen = ({ navigation, route }) => {
   const MemoizedProductCard = React.memo(({ product, index, theme }) => (
     <FastOrderProductCard
       setSelectedProduct={setSelectedProduct}
+      setSelectedEditProduct={setSelectedEditProduct}
       setEditModalVisible={setEditModalVisible}
       handleOpenBottomSheet={handleOpenBottomSheet}
       productInfo={product}
@@ -124,6 +125,9 @@ const FastOrderScreen = ({ navigation, route }) => {
   }, [searchFilter]);
 
   const [editModalVisible, setEditModalVisible] = useState(false);
+  const [selectedEditProduct, setSelectedEditProduct] = useState(null);
+
+  const cartProductsList = useSelector((state) => state.fastOrderCart.productList);
 
 
   return (
@@ -132,11 +136,11 @@ const FastOrderScreen = ({ navigation, route }) => {
         title={route.params.title} 
         navigation={navigation}
       />
-      {editModalVisible && selectedProduct &&
+      {editModalVisible && selectedEditProduct &&
         <FastOrderProductEditCartModal
           modalVisible={editModalVisible}
           setModalVisible={setEditModalVisible}
-          productInfo={selectedProduct}
+          productInfo={selectedEditProduct}
         />
       }
       <View style={styles.searchInputWrapper}>
@@ -178,8 +182,8 @@ const FastOrderScreen = ({ navigation, route }) => {
           <Text style={styles.text}>Sonuç bulunamadı.</Text>
         </View>
       }
-      <View >
-
+      <View style={{height: 100, width: '100%', backgroundColor: 'lightgreen'}}>
+        <Text style={{color: theme.text}}>{JSON.stringify(cartProductsList)}</Text>
       </View>
       {selectedProduct &&
         <CustomBottomSheet
