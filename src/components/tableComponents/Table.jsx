@@ -44,6 +44,7 @@ const Table = ({ fieldWidths, detailFieldWidths, customHeaderComponent, customDa
 
   const fetchTableData = async (requestPageNumber = 1, requestPageSize = 10) => {
     const apiUrl = `${baseRequestURL}/${requestUrl}`;
+    
     try {
       setIsLoading(true);
       const response = await axios.post(apiUrl, {

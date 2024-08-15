@@ -1,7 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit';
 
 const initialState = {
-  productList: [],
+  userList: [],
 };
 
 export const fastOrderCartSlice = createSlice({
@@ -9,43 +9,81 @@ export const fastOrderCartSlice = createSlice({
   initialState,
   reducers: {
     addOneOfProduct: (state, action) => {
-      const product = state.productList.find((product) => product.stockCode === action.payload.stockCode);
+      const { userEmail, stockCode, stockPrice } = action.payload;
+      let user = state.userList.find((user) => user.userEmail === userEmail);
+
+      if (!user) {
+        user = { userEmail, productsList: [] };
+        state.userList.push(user);
+      }
+
+      const product = user.productsList.find((product) => product.stockCode === stockCode);
+
       if (product) {
         product.quantity += 1;
       } else {
-        state.productList.push({ ...action.payload, quantity: 1 });
+        user.productsList.push({ stockCode, stockPrice, quantity: 1 });
       }
     },
     removeOneOfProduct: (state, action) => {
-      const product = state.productList.find((product) => product.stockCode === action.payload.stockCode);
-      if (product) {
-        product.quantity -= 1;
-        if (product.quantity === 0) {
-          // filter the list so that only the products with the codes that are different from the one being deleted are left on the list
-          state.productList = state.productList.filter((product) => product.stockCode !== action.payload.stockCode);
+      const { userEmail, stockCode } = action.payload;
+      const user = state.userList.find((user) => user.userEmail === userEmail);
+
+      if (user) {
+        const product = user.productsList.find((product) => product.stockCode === stockCode);
+
+        if (product) {
+          product.quantity -= 1;
+
+          if (product.quantity === 0) {
+            user.productsList = user.productsList.filter((product) => product.stockCode !== stockCode);
+          }
+
+          if (user.productsList.length === 0) {
+            state.userList = state.userList.filter((u) => u.userEmail !== userEmail);
+          }
         }
       }
     },
     setAmountOfProduct: (state, action) => {
-      const product = state.productList.find((product) => product.stockCode === action.payload.stockCode);
+      const { userEmail, stockCode, quantity } = action.payload;
+      let user = state.userList.find((user) => user.userEmail === userEmail);
+
+      if (!user) {
+        user = { userEmail, productsList: [] };
+        state.userList.push(user);
+      }
+
+      const product = user.productsList.find((product) => product.stockCode === stockCode);
+
       if (product) {
-        product.quantity = action.payload.quantity;
-        if (product.quantity === 0) {
-          state.productList = state.productList.filter((product) => product.stockCode !== action.payload.stockCode);
+        product.quantity = quantity;
+
+        if (quantity === 0) {
+          user.productsList = user.productsList.filter((product) => product.stockCode !== stockCode);
+        }
+
+        if (user.productsList.length === 0) {
+          state.userList = state.userList.filter((u) => u.userEmail !== userEmail);
         }
       } else {
-        // CHECK HERE BEFORE IMPLEMENTING SET AMOUNT OF PRODUCT ON THE PRODUCTCARD!!!!!!!!
-        state.productList.push({ ...action.payload });
+        user.productsList.push({ ...action.payload });
       }
     },
     setPriceOfProduct: (state, action) => {
-      const product = state.productList.find((product) => product.stockCode === action.payload.stockCode);
-      if (product) {
-        product.stockPrice = action.payload.stockPrice;
+      const { userEmail, stockCode, stockPrice } = action.payload;
+      const user = state.userList.find((user) => user.userEmail === userEmail);
+
+      if (user) {
+        const product = user.productsList.find((product) => product.stockCode === stockCode);
+
+        if (product) {
+          product.stockPrice = stockPrice;
+        }
       }
     },
     clearCart: (state) => {
-      state.productList = [];
+      state.userList = [];
     },
   },
 });

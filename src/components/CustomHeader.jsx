@@ -4,7 +4,7 @@ import { useTheme } from '../constants/colors';
 
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
-const CustomHeader = ({ navigation, title, hasDrawer, rightButtonOnPress, rightButtonIcon }) => {
+const CustomHeader = ({ navigation, title, hasDrawer, customRightComponent }) => {
   const theme = useTheme();
   const styles = useMemo(() => getStyles(theme), [theme]);
 
@@ -18,15 +18,18 @@ const CustomHeader = ({ navigation, title, hasDrawer, rightButtonOnPress, rightB
 
   return (
     <View style={styles.container}>
-      <TouchableOpacity style={styles.button} onPress={handleButtonPress}>
-        <Ionicons name={hasDrawer ? 'menu' : 'caret-back'} size={30} color={theme.primary} />
-      </TouchableOpacity>
-      <Text style={styles.title}>{title}</Text>
-      {rightButtonOnPress &&
-        <TouchableOpacity style={styles.rightButtonContainer} onPress={rightButtonOnPress}>
-          <Ionicons name={rightButtonIcon} size={30} color={theme.primary} />
+      <View
+        style={{
+          flexDirection: 'row',
+          alignItems: 'center',
+        }}
+      >
+        <TouchableOpacity style={styles.button} onPress={handleButtonPress}>
+          <Ionicons name={hasDrawer ? 'menu' : 'caret-back'} size={30} color={theme.primary} />
         </TouchableOpacity>
-      }
+        <Text style={styles.title}>{title}</Text>
+      </View>
+      {customRightComponent}
     </View>
   );
 };
@@ -35,6 +38,7 @@ const getStyles = (theme) => StyleSheet.create({
   container: {
     flexDirection: 'row',
     alignItems: 'center',
+    justifyContent: 'space-between',
     paddingHorizontal: 12,
     backgroundColor: theme.backgroundAlt,
     position: 'absolute',
@@ -47,20 +51,10 @@ const getStyles = (theme) => StyleSheet.create({
     fontSize: 18,
     fontWeight: 'bold',
     color: theme.primary,
-    paddingLeft: 10,
-    width: '80%',
+    marginLeft: 10,
   },
   button: {
     padding: 3,
-  },
-  rightButtonContainer: {
-    padding: 3,
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderRadius: 5,
-    borderWidth: 1,
-    borderColor: theme.primary,
-    backgroundColor: theme.background,
   },
 });
 

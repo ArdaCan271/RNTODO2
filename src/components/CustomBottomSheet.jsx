@@ -109,7 +109,7 @@ const CustomBottomSheet = forwardRef((props, ref) => {
       handleIndicatorStyle={{ backgroundColor: theme.textAlt }}
       enablePanDownToClose
     >
-      <View style={{ paddingBottom: 10, flexDirection: 'row', justifyContent: 'center', alignItems: 'center', borderBottomWidth: 1, borderColor: theme.separator }}>
+      <View style={{ paddingBottom: 15, flexDirection: 'row', justifyContent: 'center', alignItems: 'center', borderBottomWidth: 1, borderColor: theme.separator }}>
         <Text style={styles.title}>{props.stockName}</Text>
         <TouchableOpacity style={{padding: 2, position: 'absolute', right: 20, top: 0}} onPress={() => ref.current?.close()}>
           <FontAwesome name="times" size={26} color={theme.textAlt} style={{ textAlign: 'right' }} />

@@ -62,9 +62,10 @@ const getStyles = (theme) => StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: theme.backgroundAlt,
-    alignItems: 'center',
   },
   contentContainer: {
+    width: '100%',
+    flex: 1,
   },
   drawerHeader: {
     padding: 20,

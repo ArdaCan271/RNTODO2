@@ -126,7 +126,7 @@ const CurrentScreen = ({ navigation, route }) => {
       <FlashList
         data={loading ? Array(10).fill({}) : filteredCustomerList}
         renderItem={loading ? renderSkeletonItem : renderItem}
-        keyExtractor={(item, index) => (loading ? index.toString() : item.CariKod)}
+        keyExtractor={(item, index) => (loading ? index : item.CariKod)}
         estimatedItemSize={100}
         keyboardShouldPersistTaps='handled'
       />

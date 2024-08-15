@@ -8,6 +8,9 @@ import { useTheme } from '../constants/colors';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
 const formatCurrency = (value) => {
+  if (value === null) {
+    return { lira: '0', kurus: '00' };
+  }
   const parts = value.toFixed(2).split('.');
   const lira = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, '.');
   const kurus = parts[1];
@@ -41,8 +44,6 @@ const CustomerCard = ({ cariKod, isim, alacak, il, onPress, dynamicColors }) => 
       onPress={onPress}
       android_ripple={{ color: theme.primary }}
       unstable_pressDelay={20}
-      // underlayColor={theme.gray}
-      // activeOpacity={0.7}
     >
       <View style={styles.cardPressable}>
         <View style={styles.topLeft}>

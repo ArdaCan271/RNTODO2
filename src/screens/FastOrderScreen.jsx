@@ -9,12 +9,15 @@ import { FlashList } from '@shopify/flash-list';
 
 import CustomBottomSheet from '../components/CustomBottomSheet';
 import FastOrderProductEditCartModal from '../components/FastOrderProductEditCartModal';
+import FastOrderCartSummary from '../components/FastOrderCartSummary';
 
 const FastOrderScreen = ({ navigation, route }) => {
   const theme = useTheme();
   const styles = useMemo(() => getStyles(theme), [theme]);
 
-  const userToken = useSelector((state) => state.userData.data.token);
+  const userData = useSelector((state) => state.userData.data);
+
+  const userToken = userData.token;
   const baseRequestURL = useSelector((state) => state.baseRequestURL.value);
 
   const [productList, setProductList] = useState([]);
@@ -43,6 +46,9 @@ const FastOrderScreen = ({ navigation, route }) => {
     );
 
     return () => backHandler.remove();
+    //I added productList to the dependencies array to make the filtering search work
+    //I forgot why I needed to do this but it definitely needs to be changed
+    //it causes the app to send the post request twice
   }, [productList]);
 
   useEffect(() => {
@@ -54,14 +60,22 @@ const FastOrderScreen = ({ navigation, route }) => {
   const getProductList = async () => {
     setIsLoading(true);
     const apiUrl = `${baseRequestURL}/DuyuII/Stock/GetList`;
+
     try {
       const response = await axios.post(apiUrl, {
         token: 'RasyoIoToken2021',
         user_token: userToken,
         pageNumber: pageNumber,
         pageSize: 15,
-        stockCode: searchFilter,
-      });
+        stockName: searchFilter,
+      },
+      {
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+        },
+      }
+      );
       if (response.data && response.data.length > 0 && response.data[2] && response.data[2].length > 0) {
         setProductList(prevProducts => [...prevProducts, ...response.data[2]]);
         setPageNumber(prevPageNumber => prevPageNumber + 1);
@@ -127,7 +141,9 @@ const FastOrderScreen = ({ navigation, route }) => {
   const [editModalVisible, setEditModalVisible] = useState(false);
   const [selectedEditProduct, setSelectedEditProduct] = useState(null);
 
-  const cartProductsList = useSelector((state) => state.fastOrderCart.productList);
+  const cartUserList = useSelector((state) => state.fastOrderCart.userList);
+  const user = cartUserList.find((user) => user.userEmail === userData.email);
+  const cartProductsList = user ? user.productsList : [];
 
 
   return (
@@ -182,9 +198,9 @@ const FastOrderScreen = ({ navigation, route }) => {
           <Text style={styles.text}>Sonuç bulunamadı.</Text>
         </View>
       }
-      <View style={{height: 100, width: '100%', backgroundColor: 'lightgreen'}}>
-        <Text style={{color: theme.text}}>{JSON.stringify(cartProductsList)}</Text>
-      </View>
+      <FastOrderCartSummary
+        cartProductsList={cartProductsList}
+      />
       {selectedProduct &&
         <CustomBottomSheet
           ref={bottomSheetRef}

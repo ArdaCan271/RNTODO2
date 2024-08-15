@@ -76,10 +76,10 @@ export const lightTheme = {
 
 export const darkTheme = {
   ...baseTheme,
-  primary: "#1571b2",
+  primary: "#009fe3",
   primary_100: "#00adf7",
   primary_200: "#0cb6ff",
-  primaryAlt: "#009fe3",
+  primaryAlt: "#1571b2",
   primaryAlt_100: "#177cc4",
   primaryAlt_200: "#1987d5",
   background: '#171925',

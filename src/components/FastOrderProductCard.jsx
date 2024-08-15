@@ -14,7 +14,11 @@ const FastOrderProductCard = ({ setEditModalVisible, setSelectedEditProduct, han
   const theme = useTheme();
   const styles = useMemo(() => getStyles(theme), [theme]);
 
-  const productList = useSelector((state) => state.fastOrderCart.productList);
+  const userData = useSelector((state) => state.userData.data);
+
+  const userList = useSelector((state) => state.fastOrderCart.userList);
+  const user = userList.find((user) => user.userEmail === userData.email);
+  const productList = user ? user.productsList : [];
   const product = productList.find((product) => product.stockCode === productInfo.StockCode);
   const productCartQuantity = product ? product.quantity : 0;
 

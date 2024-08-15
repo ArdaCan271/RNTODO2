@@ -1,4 +1,4 @@
-import { StyleSheet, View, FlatList, BackHandler, useWindowDimensions } from 'react-native';
+import { StyleSheet, View, FlatList, BackHandler, useWindowDimensions, TouchableOpacity } from 'react-native';
 import React, { useEffect, useState, useMemo } from 'react';
 import { useSelector } from 'react-redux';
 
@@ -10,14 +10,11 @@ import CustomBottomTab from '../components/CustomBottomTab';
 
 import { useIsFocused } from '@react-navigation/native';
 
+import FontAwesome from 'react-native-vector-icons/FontAwesome';
+
 const MenuScreen = ({ navigation, route }) => {
   const theme = useTheme();
   const styles = useMemo(() => getStyles(theme), [theme]);
-
-  const windowWidth = useWindowDimensions().width;
-  const windowHeight = useWindowDimensions().height;
-
-  const isFocused = useIsFocused();
 
   useEffect(() => {
     const backAction = () => {
@@ -60,6 +57,14 @@ const MenuScreen = ({ navigation, route }) => {
         title={'Menü'}
         navigation={navigation}
         hasDrawer
+        customRightComponent={
+          <TouchableOpacity
+            style={{height: 35, width: 35, justifyContent: 'center', alignItems: 'center', backgroundColor: theme.background, borderRadius: 5, borderWidth: 1, borderColor: theme.primary}}
+            onPress={() => navigation.navigate('FastOrderCart')}
+          >
+            <FontAwesome name={'shopping-cart'} size={24} color={theme.primary} />
+          </TouchableOpacity>
+        }
       />
       <CustomBottomTab 
         navigation={navigation} 
