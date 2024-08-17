@@ -174,50 +174,10 @@ const getStyles = (theme) => StyleSheet.create({
     height: 50,
     justifyContent: 'center',
     alignItems: 'center',
-    borderRadius: 10,
+    borderRadius: 5,
     borderWidth: 1,
     borderColor: theme.primary,
   },
-  // amountTextTitle: {
-  //   color: theme.textAlt,
-  //   fontSize: 12,
-  //   flex: 2,
-  // },
-  // amountTextInput: {
-  //   padding: 0,
-  //   flex: 3,
-  //   color: theme.text,
-  //   fontSize: 14,
-  // },
-  // productButtonsContainer: {
-  //   flex: 2,
-  //   flexDirection: 'row',
-  //   justifyContent: 'space-between'
-  // },
-  // removeProductButton: {
-  //   flex: 1,
-  //   justifyContent: 'center',
-  //   alignItems: 'center',
-  //   backgroundColor: theme.primary,
-  // },
-  // addProductButton: {
-  //   flex: 1,
-  //   justifyContent: 'center',
-  //   alignItems: 'center',
-  //   borderLeftWidth: 1,
-  //   borderColor: theme.separator,
-  //   backgroundColor: theme.primary
-  // },
-  // productTotalCartPriceContainer: {
-  //   flex: 1,
-  //   justifyContent: 'center',
-  //   alignItems: 'center',
-  // },
-  // productTotalCartPriceText: {
-  //   color: theme.text,
-  //   fontSize: 14,
-  //   textAlign: 'center'
-  // }
 });
 
 export default FastOrderProductCard;

@@ -10,6 +10,8 @@ import FontAwesome from 'react-native-vector-icons/FontAwesome';
 
 import { formattedCurrency } from '../utils/formatData';
 
+import { useKeyboardVisible } from '../utils/useKeyboardCustomHook';
+
 const FastOrderProductEditCartModal = ({ modalVisible, setModalVisible, productInfo }) => {
   const theme = useTheme();
   const styles = useMemo(() => getStyles(theme), [theme]);
@@ -83,7 +85,10 @@ const FastOrderProductEditCartModal = ({ modalVisible, setModalVisible, productI
     dispatch(addOneOfProduct({ userEmail: userData.email, stockCode: productInfo.StockCode, stockPrice: parseFloat(stockPriceState) }));
   };
 
+  const isKeyboardVisible = useKeyboardVisible();
 
+  console.log(isKeyboardVisible);
+  
 
   return (
     <Modal
@@ -95,9 +100,9 @@ const FastOrderProductEditCartModal = ({ modalVisible, setModalVisible, productI
         setStockPriceInputFocused(false);
       }}
     >
-      <Pressable style={styles.overlay} onPress={() => { setModalVisible(!modalVisible); Keyboard.dismiss(); setStockPriceInputFocused(false); }}>
+      <Pressable style={[styles.overlay, {justifyContent: isKeyboardVisible ? 'flex-end' : 'center'}]} onPress={() => { setModalVisible(!modalVisible); Keyboard.dismiss(); setStockPriceInputFocused(false); }}>
         <Pressable
-          style={[styles.modalContainer, { width: isLandscape ? windowWidth * 0.7 : windowWidth * 0.9, height: isLandscape ? windowHeight * 0.6 : windowHeight * 0.5 }]}
+          style={[styles.modalContainer, { width: isLandscape ? windowWidth * 0.7 : windowWidth * 0.9, height: isLandscape ? windowHeight * 0.65 : windowHeight * 0.55 }]}
           android_disableSound
           onPress={() => Keyboard.dismiss()}
         >
@@ -147,6 +152,7 @@ const FastOrderProductEditCartModal = ({ modalVisible, setModalVisible, productI
                         style={styles.discountInput}
                         value={discountInfo.discount.toString()}
                         onChangeText={(value) => handleDiscountChange(value, index)}
+                        selectTextOnFocus
                         keyboardType='numeric'
                         autoCapitalize='none'
                         disableFullscreenUI
@@ -159,13 +165,14 @@ const FastOrderProductEditCartModal = ({ modalVisible, setModalVisible, productI
               }
               <View style={styles.modalActionsContainer}>
                 {isLandscape &&
-                  <View style={{ height: 60, width: '100%', flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }} >
+                  <View style={{ height: 60, width: '100%', flexDirection: 'row', alignItems: 'center', justifyContent: 'center', paddingLeft: 14}} >
                     {discountsInfo.map((discountInfo, index) => (
                       <View key={index} style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
                         <TextInput
                           style={styles.discountInput}
                           value={discountInfo.discount.toString()}
                           onChangeText={(value) => handleDiscountChange(value, index)}
+                          selectTextOnFocus
                           keyboardType='numeric'
                           autoCapitalize='none'
                           disableFullscreenUI
@@ -250,18 +257,18 @@ const getStyles = (theme) => StyleSheet.create({
   },
   stockInfoTitle: {
     color: theme.text,
-    fontSize: 16,
+    fontSize: 18,
     fontWeight: 'bold',
   },
   stockInfoValue: {
     color: theme.text,
-    fontSize: 14,
+    fontSize: 16,
     marginLeft: 4,
   },
   stockPriceInput: {
-    width: 110,
+    width: 130,
     textAlign: 'right',
-    height: 28,
+    height: 36,
     padding: 0,
     marginRight: -5,
     paddingRight: 5,
@@ -270,15 +277,15 @@ const getStyles = (theme) => StyleSheet.create({
     borderRadius: 5,
     backgroundColor: theme.backgroundAlt,
     color: theme.text,
-    fontSize: 14,
+    fontSize: 16,
   },
   discountInput: {
-    width: 40,
-    height: 40,
+    width: 50,
+    height: 50,
     marginHorizontal: 5,
     textAlign: 'center',
     color: theme.text,
-    fontSize: 16,
+    fontSize: 18,
     padding: 0,
     backgroundColor: theme.backgroundAlt,
     borderWidth: 1,
@@ -308,7 +315,7 @@ const getStyles = (theme) => StyleSheet.create({
     alignItems: 'center',
     borderWidth: 1,
     borderColor: theme.text,
-    borderRadius: 10,
+    borderRadius: 5,
     overflow: 'hidden',
   },
   cartModifyButton: {

@@ -47,7 +47,7 @@ const FastOrderScreen = ({ navigation, route }) => {
 
     return () => backHandler.remove();
     //I added productList to the dependencies array to make the filtering search work
-    //I forgot why I needed to do this but it definitely needs to be changed
+    //I forgot why I needed to do this but it needs to be changed
     //it causes the app to send the post request twice
   }, [productList]);
 
@@ -200,6 +200,7 @@ const FastOrderScreen = ({ navigation, route }) => {
       }
       <FastOrderCartSummary
         cartProductsList={cartProductsList}
+        navigation={navigation}
       />
       {selectedProduct &&
         <CustomBottomSheet
