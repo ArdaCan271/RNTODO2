@@ -87,9 +87,6 @@ const FastOrderProductEditCartModal = ({ modalVisible, setModalVisible, productI
 
   const isKeyboardVisible = useKeyboardVisible();
 
-  console.log(isKeyboardVisible);
-  
-
   return (
     <Modal
       animationType="fade"
@@ -98,6 +95,7 @@ const FastOrderProductEditCartModal = ({ modalVisible, setModalVisible, productI
       onRequestClose={() => {
         setModalVisible(!modalVisible);
         setStockPriceInputFocused(false);
+        Keyboard.dismiss();
       }}
     >
       <Pressable style={[styles.overlay, {justifyContent: isKeyboardVisible ? 'flex-end' : 'center'}]} onPress={() => { setModalVisible(!modalVisible); Keyboard.dismiss(); setStockPriceInputFocused(false); }}>
@@ -133,6 +131,8 @@ const FastOrderProductEditCartModal = ({ modalVisible, setModalVisible, productI
                     onFocus={() => setStockPriceInputFocused(true)}
                     onBlur={() => { setStockPriceInputFocused(false); handleStockPriceBlur(); }}
                     onEndEditing={() => setStockPriceInputFocused(false)}
+                    selectTextOnFocus
+                    selectionColor={theme.textSelection}
                     onChangeText={handleStockPriceInputChange}
                     keyboardType='numeric'
                     autoCapitalize='none'
@@ -153,6 +153,7 @@ const FastOrderProductEditCartModal = ({ modalVisible, setModalVisible, productI
                         value={discountInfo.discount.toString()}
                         onChangeText={(value) => handleDiscountChange(value, index)}
                         selectTextOnFocus
+                        selectionColor={theme.textSelection}
                         keyboardType='numeric'
                         autoCapitalize='none'
                         disableFullscreenUI
@@ -173,6 +174,7 @@ const FastOrderProductEditCartModal = ({ modalVisible, setModalVisible, productI
                           value={discountInfo.discount.toString()}
                           onChangeText={(value) => handleDiscountChange(value, index)}
                           selectTextOnFocus
+                          selectionColor={theme.textSelection}
                           keyboardType='numeric'
                           autoCapitalize='none'
                           disableFullscreenUI
@@ -195,6 +197,8 @@ const FastOrderProductEditCartModal = ({ modalVisible, setModalVisible, productI
                       style={styles.cartTextInput}
                       onChangeText={handleQuantityInputChange}
                       value={productCartQuantity.toString()}
+                      selectTextOnFocus
+                      selectionColor={theme.textSelection}
                       keyboardType="numeric"
                       autoCapitalize='none'
                       disableFullscreenUI

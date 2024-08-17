@@ -9,7 +9,7 @@ const DownloadDataScreen = ({ navigation }) => {
 
   useEffect(() => {
     const backAction = () => {
-      navigation.goBack();
+      navigation.navigate('Home');
       return true;
     };
 

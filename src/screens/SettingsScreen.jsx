@@ -9,7 +9,7 @@ const SettingsScreen = ({ navigation }) => {
 
   useEffect(() => {
     const backAction = () => {
-      navigation.goBack();
+      navigation.navigate('Home');
       return true;
     };
 

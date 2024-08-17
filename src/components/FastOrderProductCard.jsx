@@ -29,7 +29,7 @@ const FastOrderProductCard = ({ setEditModalVisible, setSelectedEditProduct, han
 
   return (
     <View style={[styles.container, {borderColor: dynamicColors.accent, backgroundColor: dynamicColors.backgroundColor}]}>
-      <View style={[styles.productInfoSection, {borderColor: dynamicColors.accent}]}>
+      <View style={styles.productInfoSection}>
         <View style={styles.productCodeInfoContainer}>
           <View style={styles.productBarcodeContainer}>
             <FontAwesome name="barcode" size={15} color={theme.textAlt} style={{ marginLeft: 8 }} />
@@ -69,8 +69,8 @@ const FastOrderProductCard = ({ setEditModalVisible, setSelectedEditProduct, han
           <FontAwesome name="shopping-cart" size={15} color={productCartQuantity > 0 ? dynamicColors.accent : theme.textAlt} />
           <Text style={{color: productCartQuantity > 0 ? theme.text : theme.textAlt, textAlign: 'center'}}>{productCartQuantity}</Text>
         </View>
-        <TouchableOpacity style={[styles.cartEditButton, {borderColor: dynamicColors.accent}]} onPress={handleCartEditPress}>
-          <FontAwesome name="cart-plus" size={24} color={dynamicColors.accent} />
+        <TouchableOpacity style={styles.cartEditButton} onPress={handleCartEditPress}>
+          <FontAwesome name="cart-plus" size={24} color={theme.primary} />
         </TouchableOpacity>
       </View>
     </View>
@@ -86,7 +86,7 @@ const getStyles = (theme) => StyleSheet.create({
   productInfoSection: {
     flex: 5,
     borderRightWidth: 1,
-    borderRightColor: theme.primary,
+    borderColor: theme.primary,
     paddingVertical: 4,
   },
   productCodeInfoContainer: {

@@ -1,5 +1,5 @@
 import { StyleSheet, View, FlatList, BackHandler, useWindowDimensions, TouchableOpacity } from 'react-native';
-import React, { useEffect, useState, useMemo } from 'react';
+import React, { useEffect, useState, useMemo, useCallback } from 'react';
 import { useSelector } from 'react-redux';
 
 import MenuItem from '../components/MenuItem';
@@ -8,7 +8,7 @@ import { useTheme } from '../constants/colors';
 import CustomHeader from '../components/CustomHeader';
 import CustomBottomTab from '../components/CustomBottomTab';
 
-import { useIsFocused } from '@react-navigation/native';
+import { useFocusEffect } from '@react-navigation/native';
 
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 
@@ -16,19 +16,21 @@ const MenuScreen = ({ navigation, route }) => {
   const theme = useTheme();
   const styles = useMemo(() => getStyles(theme), [theme]);
 
-  useEffect(() => {
-    const backAction = () => {
-      BackHandler.exitApp();
-      return true;
-    };
+  // write a backhandler for this screen using useFocusEffect and useCallBack and backHandler
 
-    const backHandler = BackHandler.addEventListener(
-      'hardwareBackPress',
-      backAction
-    );
+  useFocusEffect(
+    useCallback(() => {
+      const onBackPress = () => {
+        BackHandler.exitApp();
+        return true;
+      };
 
-    return () => backHandler.remove();
-  }, []);
+      BackHandler.addEventListener('hardwareBackPress', onBackPress);
+
+      return () =>
+        BackHandler.removeEventListener('hardwareBackPress', onBackPress);
+    }, [])
+  );
 
   const menuBJSON = useSelector((state) => state.userMenuBJSON.menuBJSON);
 

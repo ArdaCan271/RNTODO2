@@ -40,7 +40,7 @@ const getStyles = (theme) => StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
     paddingHorizontal: 12,
-    backgroundColor: theme.backgroundAlt,
+    backgroundColor: theme.background,
     position: 'absolute',
     top: 0,
     width: '100%',

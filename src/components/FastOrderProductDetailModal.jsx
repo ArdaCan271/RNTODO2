@@ -107,9 +107,6 @@ const getStyles = (theme) => StyleSheet.create({
     height: '80%',
     elevation: 5,
     shadowColor: theme.text,
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
   },
   itemContainer: {
     flexDirection: 'row',

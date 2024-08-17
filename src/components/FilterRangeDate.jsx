@@ -96,6 +96,7 @@ const FilterRangeDate = ({ field, fieldFilters, setFieldFilters, filterModalInfo
             maximumDate={showEndDate ? endDate : null}
             theme={theme.type === 'light' ? 'light' : 'dark'}
             onDateChange={setStartDate}
+            locale='tr'
           />
         </View>
         <View style={styles.endDateContainer}>
@@ -106,7 +107,7 @@ const FilterRangeDate = ({ field, fieldFilters, setFieldFilters, filterModalInfo
             minimumDate={showStartDate ? startDate : null}
             theme={theme.type === 'light' ? 'light' : 'dark'}
             onDateChange={setEndDate}
-            
+            locale='tr'
           />
           {/* <TouchableOpacity style={styles.dateButton} onPress={() => setOpenEnd(true)}>
             <Text style={styles.dateButtonText}>Bitiş {filterModalInfo.title} Seç</Text>

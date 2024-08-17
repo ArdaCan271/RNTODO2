@@ -61,7 +61,7 @@ const CustomDrawerContent = (props) => {
 const getStyles = (theme) => StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: theme.backgroundAlt,
+    backgroundColor: theme.background,
   },
   contentContainer: {
     width: '100%',
