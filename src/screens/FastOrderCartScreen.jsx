@@ -1,12 +1,16 @@
-import { StyleSheet, Text, View, BackHandler, Pressable, TouchableOpacity } from 'react-native';
-import React, {useEffect, useMemo} from 'react';
+import { StyleSheet, Text, View, BackHandler, TextInput, ScrollView } from 'react-native';
+import React, { useEffect, useMemo, useState } from 'react';
 
 import { useSelector, useDispatch } from 'react-redux';
 import { useTheme } from '../constants/colors';
 
 import CustomHeader from '../components/CustomHeader';
 
-import FontAwesome from 'react-native-vector-icons/FontAwesome';
+import CariSelection from '../components/cartComponents/CariSelection';
+import CariDescription from '../components/cartComponents/CariDescription';
+import VadeSelection from '../components/cartComponents/VadeSelection';
+import DeliveryDateSelection from '../components/cartComponents/DeliveryDateSelection';
+import CartDiscounts from '../components/cartComponents/CartDiscounts';
 
 const FastOrderCartScreen = ({ navigation, route }) => {
   const theme = useTheme();
@@ -26,94 +30,30 @@ const FastOrderCartScreen = ({ navigation, route }) => {
     return () => backHandler.remove();
   }, [navigation]);
 
+  const [description, setDescription] = useState('');
+
   return (
     <View style={styles.container}>
       <CustomHeader navigation={navigation} title='Hızlı Sipariş Sepet' />
-      <View style={styles.cariSection}>
-        <View style={styles.cariSelectSection}>
-          <View style={styles.cariPreviewSection}>
-            <Text style={styles.cariPreviewTitle}>Cari İsmi:</Text>
-            <View style={styles.cariPreviewValueContainer}>
-              <Text numberOfLines={2} style={styles.cariPreviewValue}>MÜŞTERİ 005</Text>
-            </View>
-          </View>
-          <TouchableOpacity style={styles.cariGoToListButton}>
-            <FontAwesome name='play-circle-o' size={24} color={theme.background} />
-            <Text style={styles.cariGoToListButtonText}>Seç</Text>
-          </TouchableOpacity>
-        </View>
-      </View>
+      <ScrollView
+        showsVerticalScrollIndicator={false}
+      >
+        <CariSelection navigation={navigation} />
+        <CariDescription description={description} setDescription={setDescription} />
+        <VadeSelection />
+        <DeliveryDateSelection />
+        <CartDiscounts />
+        <View style={{width: '100%', height: 900}}/>
+      </ScrollView>
     </View>
   );
 }
 
 const getStyles = (theme) => StyleSheet.create({
-  container : {
+  container: {
     flex: 1,
     backgroundColor: theme.background,
     paddingTop: theme.padding.header,
-  },
-  cariSection: {
-    height: 150,
-    width: '100%',
-    padding: 20,
-  },
-  cariSelectSection: {
-    alignSelf: 'center',
-    marginTop: 20,
-    height: 50,
-    backgroundColor: theme.backgroundAlt,
-    borderRadius: 10,
-    borderWidth: 1,
-    borderColor: theme.primary,
-    width: '100%',
-    flexDirection: 'row',
-    overflow: 'hidden',
-  },
-  cariPreviewSection: {
-    flex: 1,
-    flexDirection: 'row',
-    justifyContent: 'flex-start',
-    alignItems: 'center',
-  },
-  cariPreviewTitle: {
-    color: theme.primary,
-    fontSize: 16,
-    marginLeft: 10,
-    fontWeight: 'bold',
-  },
-  cariPreviewValueContainer: {
-    flex: 1,
-    justifyContent: 'center',
-  },
-  cariPreviewValue: {
-    color: theme.text,
-    fontSize: 16,
-    marginLeft: 10,
-    lineHeight: 22,
-  },
-  cariGoToListButton: {
-    paddingHorizontal: 8,
-    borderLeftColor: theme.primary,
-    borderLeftWidth: 1,
-    backgroundColor: theme.primary,
-    justifyContent: 'center',
-    alignItems: 'center',
-    flexDirection: 'row',
-    columnGap: 4,
-  },
-  cariGoToListButtonCircle: {
-    width: 24,
-    height: 24,
-    borderRadius: 24,
-    backgroundColor: theme.background,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  cariGoToListButtonText: {
-    color: theme.background,
-    fontSize: 14,
-    fontWeight: 'bold',
   },
 });
 
