@@ -16,8 +16,6 @@ const CartStocks = ({ navigation, productList }) => {
 
   const userData = useSelector((state) => state.userData.data);
 
-  console.log(productList);
-
   return (
     <View style={styles.cartStocksSection}>
       <View style={styles.cartStocksContainer}>
