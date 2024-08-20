@@ -50,6 +50,8 @@ const CurrentScreen = ({ navigation, route }) => {
   }, [navigation]);
 
   const getCustomerList = async () => {
+    console.log('Getting customer list');
+    
     const apiUrl = `${baseRequestURL}/getCustomerList`;
     try {
       const response = await axios.post(apiUrl, {

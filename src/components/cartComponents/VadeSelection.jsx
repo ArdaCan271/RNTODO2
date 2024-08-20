@@ -55,7 +55,7 @@ const VadeSelection = () => {
             <TextInput
               style={styles.vadeDayTextInput}
               placeholder='Gün'
-              placeholderTextColor={theme.separator}
+              placeholderTextColor={theme.textAlt}
               keyboardType='number-pad'
               selectTextOnFocus
               value={days}
@@ -108,6 +108,7 @@ const getStyles = (theme) => StyleSheet.create({
     borderColor: theme.primary,
     borderRadius: 5,
     height: 50,
+    overflow: 'hidden',
   },
   vadeLabelContainer: {
     justifyContent: 'center',

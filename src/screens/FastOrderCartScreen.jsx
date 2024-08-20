@@ -11,10 +11,16 @@ import CariDescription from '../components/cartComponents/CariDescription';
 import VadeSelection from '../components/cartComponents/VadeSelection';
 import DeliveryDateSelection from '../components/cartComponents/DeliveryDateSelection';
 import CartDiscounts from '../components/cartComponents/CartDiscounts';
+import CartStocks from '../components/cartComponents/CartStocks';
 
 const FastOrderCartScreen = ({ navigation, route }) => {
   const theme = useTheme();
   const styles = useMemo(() => getStyles(theme), [theme]);
+
+  const userData = useSelector((state) => state.userData.data);
+  const userList = useSelector((state) => state.fastOrderCart.userList);
+  const user = userList.find((user) => user.userEmail === userData.email);
+  const productList = user ? user.productsList : [];
 
   useEffect(() => {
     const backAction = () => {
@@ -43,7 +49,8 @@ const FastOrderCartScreen = ({ navigation, route }) => {
         <VadeSelection />
         <DeliveryDateSelection />
         <CartDiscounts />
-        <View style={{width: '100%', height: 900}}/>
+        <CartStocks navigation={navigation} productList={productList}/>
+        <View style={{width: '100%', height: 500}}/>
       </ScrollView>
     </View>
   );

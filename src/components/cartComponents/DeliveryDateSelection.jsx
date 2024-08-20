@@ -30,7 +30,7 @@ const DeliveryDateSelection = () => {
         <View style={styles.deliveryDateSelector}>
           <TouchableOpacity
             onPress={() => setDatePickerModalVisible(true)}
-            style={{width: '100%', height: '100%', justifyContent: 'center', alignItems: 'center'}}
+            style={{width: '100%', height: '100%', justifyContent: 'space-between', alignItems: 'center', flexDirection: 'row'}}
           >
             <View style={styles.deliveryDatePreviewTextContainer}>
               <Text style={styles.deliveryDatePreviewText}>{selectedDate.toLocaleDateString('tr-TR')}</Text>
@@ -61,7 +61,6 @@ const DeliveryDateSelection = () => {
 
 const getStyles = (theme) => StyleSheet.create({
   deliveryDateSection: {
-    flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
     width: '100%',
@@ -77,6 +76,7 @@ const getStyles = (theme) => StyleSheet.create({
     borderColor: theme.primary,
     borderRadius: 5,
     height: 50,
+    overflow: 'hidden',
   },
   deliveryDateLabelContainer: {
     justifyContent: 'center',
@@ -95,8 +95,6 @@ const getStyles = (theme) => StyleSheet.create({
   },
   deliveryDateSelector: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
   },
   deliveryDatePreviewTextContainer: {
     justifyContent: 'center',

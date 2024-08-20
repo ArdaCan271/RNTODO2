@@ -4,7 +4,7 @@ import React, { useState, useMemo } from 'react';
 import { useTheme } from '../constants/colors';
 
 import { useSelector, useDispatch } from 'react-redux';
-import { setAmountOfProduct, addOneOfProduct, removeOneOfProduct, setPriceOfProduct, clearCart } from '../features/fastOrderCart/fastOrderCartSlice';
+import { setAmountOfProduct, addOneOfProduct, removeOneOfProduct, setPriceOfProduct, setDiscountsOfProduct } from '../features/fastOrderCart/fastOrderCartSlice';
 
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 
@@ -28,14 +28,10 @@ const FastOrderProductEditCartModal = ({ modalVisible, setModalVisible, productI
     { discount: discount4, setDiscount: setDiscount4 },
   ];
 
-  const handleDiscountChange = (value, index) => {
-    if (value === '') {
-      value = 0;
-    };
-    discountsInfo[index].setDiscount(parseFloat(value));
-  };
-
   const dispatch = useDispatch();
+
+  const { StockName, StockCode, StockPrice, ActualStock, StockUnit } = productInfo;
+  
 
   const windowWidth = useWindowDimensions().width;
   const windowHeight = useWindowDimensions().height;
@@ -47,21 +43,16 @@ const FastOrderProductEditCartModal = ({ modalVisible, setModalVisible, productI
   const userList = useSelector((state) => state.fastOrderCart.userList);
   const user = userList.find((user) => user.userEmail === userData.email);
   const productList = user ? user.productsList : [];
-  const product = productList.find((product) => product.stockCode === productInfo.StockCode);
+  const product = productList.find((product) => product.stockCode === StockCode);
   const productCartQuantity = product ? product.quantity : 0;
+
   
 
-  const productCartPrice = product ? product.stockPrice : productInfo.StockPrice;
-
+  const productCartPrice = product ? product.stockPrice : StockPrice;
+  
   const [stockPriceState, setStockPriceState] = useState(productCartPrice);
-
+  
   const [stockPriceInputFocused, setStockPriceInputFocused] = useState(false);
-
-  const handleStockPriceInputChange = (value) => {
-    // Update the state as a string to preserve the decimal point
-    setStockPriceState(value);
-    dispatch(setPriceOfProduct({ userEmail: userData.email, stockCode: productInfo.StockCode, stockPrice: parseFloat(value) }));
-  };
 
   const handleStockPriceBlur = () => {
     // Convert the value to a float when the input loses focus
@@ -69,20 +60,70 @@ const FastOrderProductEditCartModal = ({ modalVisible, setModalVisible, productI
     setStockPriceState(isNaN(floatValue) ? '' : floatValue.toString());
   };
 
+  const handleStockPriceInputChange = (value) => {
+    // Update the state as a string to preserve the decimal point
+    setStockPriceState(value);
+    dispatch(setPriceOfProduct({ 
+      userEmail: userData.email,
+      stockCode: StockCode,
+      stockPrice: StockPrice,
+      unitPrice: parseFloat(value),
+      unitType: StockUnit,
+      discounts: discountsInfo.map((discountInfo) => discountInfo.discount),
+    }));
+  };
 
   const handleQuantityInputChange = (value) => {
     if (value === '') {
       value = 0;
     };
-    dispatch(setAmountOfProduct({ userEmail: userData.email, stockCode: productInfo.StockCode, stockPrice: parseFloat(stockPriceState), quantity: parseInt(value) }));
+    dispatch(setAmountOfProduct({ 
+      userEmail: userData.email,
+      stockName: StockName,
+      stockCode: StockCode, 
+      stockPrice: StockPrice,
+      unitPrice: parseFloat(stockPriceState), 
+      unitType: StockUnit,
+      quantity: parseInt(value),
+      discounts: discountsInfo.map((discountInfo) => discountInfo.discount),
+    }));
   };
 
   const handleRemoveProduct = () => {
-    dispatch(removeOneOfProduct({ userEmail: userData.email, stockCode: productInfo.StockCode, stockPrice: parseFloat(stockPriceState) }));
+    dispatch(removeOneOfProduct({ 
+      userEmail: userData.email, 
+      stockCode: StockCode,
+    }));
   };
 
   const handleAddProduct = () => {
-    dispatch(addOneOfProduct({ userEmail: userData.email, stockCode: productInfo.StockCode, stockPrice: parseFloat(stockPriceState) }));
+    dispatch(addOneOfProduct({ 
+      userEmail: userData.email,
+      stockName: StockName, 
+      stockCode: StockCode, 
+      stockPrice: StockPrice,
+      unitPrice: parseFloat(stockPriceState),
+      unitType: StockUnit,
+      discounts: discountsInfo.map((discountInfo) => discountInfo.discount),
+    }));
+  };
+
+  const handleDiscountChange = (value, index) => {
+    if (value === '') {
+      value = 0;
+    };
+    discountsInfo[index].setDiscount(parseFloat(value));
+    // dispatch(setPriceOfProduct({
+    //   userEmail: userData.email,
+    //   stockCode: StockCode,
+    //   stockPrice: parseFloat(stockPriceState),
+    //   discounts: discountsInfo.map((discountInfo) => discountInfo.discount),
+    // }));
+    dispatch(setDiscountsOfProduct({
+      userEmail: userData.email,
+      stockCode: StockCode,
+      discounts: discountsInfo.map((discountInfo) => discountInfo.discount),
+    }));
   };
 
   const isKeyboardVisible = useKeyboardVisible();
@@ -105,7 +146,7 @@ const FastOrderProductEditCartModal = ({ modalVisible, setModalVisible, productI
           onPress={() => Keyboard.dismiss()}
         >
             <View style={styles.modalHeader}>
-              <Text style={styles.productName}>{productInfo.StockName}</Text>
+              <Text style={styles.productName}>{StockName}</Text>
               <TouchableOpacity style={styles.closeButton} onPress={() => { setModalVisible(!modalVisible); Keyboard.dismiss(); setStockPriceInputFocused(false); }}>
                 <FontAwesome name="times" size={24} color={theme.textAlt} />
               </TouchableOpacity>
@@ -115,13 +156,13 @@ const FastOrderProductEditCartModal = ({ modalVisible, setModalVisible, productI
                 <View style={styles.stockInfoTextWrapper}>
                   <Text style={styles.stockInfoTitle}>Aktüel Stok</Text>
                   <View style={{ flexDirection: 'row' }}>
-                    <Text style={styles.stockInfoValue}>{productInfo.ActualStock}</Text>
-                    <Text style={styles.stockInfoValue}>{productInfo.StockUnit}</Text>
+                    <Text style={styles.stockInfoValue}>{ActualStock}</Text>
+                    <Text style={styles.stockInfoValue}>{StockUnit}</Text>
                   </View>
                 </View>
                 <View style={styles.stockInfoTextWrapper}>
                   <Text style={styles.stockInfoTitle}>Stok Birim Fiyat</Text>
-                  <Text style={styles.stockInfoValue}>₺{formattedCurrency(productInfo.StockPrice)}</Text>
+                  <Text style={styles.stockInfoValue}>₺{formattedCurrency(StockPrice)}</Text>
                 </View>
                 <View style={[styles.stockInfoTextWrapper, { paddingVertical: 2, paddingHorizontal: 5 }]}>
                   <Text style={styles.stockInfoTitle}>Birim Fiyat</Text>

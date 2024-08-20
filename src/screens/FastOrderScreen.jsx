@@ -149,7 +149,7 @@ const FastOrderScreen = ({ navigation, route }) => {
   return (
     <View style={styles.container}>
       <CustomHeader 
-        title={route.params.title} 
+        title={'Hızlı Sipariş'} 
         navigation={navigation}
       />
       {editModalVisible && selectedEditProduct &&

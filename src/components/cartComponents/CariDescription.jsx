@@ -21,7 +21,7 @@ const CariDescription = ({ description, setDescription }) => {
         <TextInput
           style={[styles.descriptionInput, { height: Math.min(150, textHeight) }]}
           placeholder='Açıklama Giriniz...'
-          placeholderTextColor={theme.separator}
+          placeholderTextColor={theme.textAlt}
           multiline={true}
           numberOfLines={4}
           value={description}
