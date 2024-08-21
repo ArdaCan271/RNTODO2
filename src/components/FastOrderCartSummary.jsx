@@ -6,7 +6,7 @@ import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import Animated, { useAnimatedStyle, withTiming } from 'react-native-reanimated';
 
 const getTotalPrice = (products) => {
-  return products.reduce((total, product) => total + (product.stockPrice * product.quantity), 0);
+  return products.reduce((total, product) => total + (product.discountedPrice * product.quantity), 0);
 };
 
 const getTotalQuantity = (products) => {
