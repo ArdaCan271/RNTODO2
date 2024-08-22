@@ -11,15 +11,21 @@ import { formattedCurrency } from '../../utils/formatData';
 
 import { setAmountOfProduct } from '../../features/fastOrderCart/fastOrderCartSlice';
 
-const CartStockCard = ({ productInfo }) => {
+const CartStockCard = ({ productInfo, setEditModalVisible, setSelectedEditProduct }) => {
   const theme = useTheme();
   const styles = useMemo(() => getStyles(theme), [theme]);
   const dispatch = useDispatch();
 
   const userData = useSelector((state) => state.userData.data);
-    
+
+  const handleCartEditPress = () => {
+    setSelectedEditProduct(productInfo);
+    setEditModalVisible(true);
+  };
+  
+
   return (
-    <TouchableOpacity onPress={() => console.log('hellooo')} style={styles.cartStockCard}>
+    <TouchableOpacity onPress={handleCartEditPress} style={styles.cartStockCard}>
       <View style={styles.cardHeader}>
         <View style={styles.stockNameContainer}>
           <Text numberOfLines={2} style={styles.stockNameText}>{productInfo.stockName}</Text>
@@ -40,7 +46,7 @@ const CartStockCard = ({ productInfo }) => {
           </View>
           <View style={styles.discountPriceContainer}>
             <Text style={styles.discountPriceTitle}>İskonto Fiyat:</Text>
-            <Text style={styles.discountPriceValue}>₺{formattedCurrency(productInfo.unitPrice)}</Text>
+            <Text style={styles.discountPriceValue}>₺{formattedCurrency(productInfo.discountedPrice)}</Text>
           </View>
         </View>
         <View style={styles.stockCartInfoContainer}>
@@ -50,7 +56,7 @@ const CartStockCard = ({ productInfo }) => {
             <Text style={styles.cartQuantityUnit}>{productInfo.unitType}</Text>
           </View>
           <View style={styles.stockCartTotalPriceContainer}>
-            <Text style={styles.stockCartTotalPrice}>₺{formattedCurrency(productInfo.unitPrice * productInfo.quantity)}</Text>
+            <Text style={styles.stockCartTotalPrice}>₺{formattedCurrency(productInfo.discountedPrice * productInfo.quantity)}</Text>
           </View>
         </View>
       </View>

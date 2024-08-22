@@ -3,40 +3,51 @@ import React, { useMemo, useState } from 'react';
 
 import { useTheme } from '../../constants/colors';
 
-const CartDiscounts = () => {
+const CartDiscounts = ({ cartDiscountsInfo }) => {
   const theme = useTheme();
   const styles = useMemo(() => getStyles(theme), [theme]);
 
-
-  const [discount1, setDiscount1] = useState(1);
-  const [discount2, setDiscount2] = useState(1);
-  const [discount3, setDiscount3] = useState(1);
-  const [discount4, setDiscount4] = useState(1);
-
-  const discountsInfo = [
-    { discount: discount1, setDiscount: setDiscount1 },
-    { discount: discount2, setDiscount: setDiscount2 },
-    { discount: discount3, setDiscount: setDiscount3 },
-    { discount: discount4, setDiscount: setDiscount4 },
-  ];
-
-  const handleDiscountChange = (value, index) => {
-    if (value === '') {
-      value = 0;
-    };
-    discountsInfo[index].setDiscount(parseFloat(value));
+  const handleDiscountChange = (value, index, ratioInPercent) => {
+    if ((value.endsWith('.') && value.length > 1)) {
+      cartDiscountsInfo[index].setCartDiscount(value);
+      return;
+    }
+    
+    let numericValue = parseFloat(value);
+    if (isNaN(numericValue)) {
+      numericValue = ratioInPercent ? 0 : 1;
+    }
+    
+    if (ratioInPercent) {
+      // Clamp value between 0 and 1
+      if (numericValue < 0) {
+        numericValue = 0;
+      } else if (numericValue > 1) {
+        numericValue = 1;
+      }
+    } else {
+      // Clamp value between 1 and 2
+      if (numericValue < 1) {
+        numericValue = 1;
+      } else if (numericValue > 2) {
+        numericValue = 2;
+      }
+    }
+  
+    cartDiscountsInfo[index].setCartDiscount(numericValue);
   };
+  
 
   return (
     <View style={styles.discountSection}>
       <View style={styles.discountsContainer}>
         <Text style={styles.discountSectionTitle}>Oranlar:</Text>
         <View style={styles.discountInputsContainer}>
-          {discountsInfo.map((discountInfo, index) => (
+          {cartDiscountsInfo.map((discountInfo, index) => (
             <View key={index} style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
               <TextInput
                 style={styles.discountInput}
-                value={discountInfo.discount.toString()}
+                value={discountInfo.cartDiscount.toString()}
                 onChangeText={(value) => handleDiscountChange(value, index)}
                 selectTextOnFocus
                 selectionColor={theme.textSelection}
@@ -44,7 +55,7 @@ const CartDiscounts = () => {
                 autoCapitalize='none'
                 disableFullscreenUI
               />
-              {index !== discountsInfo.length - 1 && <Text style={{ color: theme.text, fontSize: 35, fontWeight: '200' }}>/</Text>}
+              {index !== cartDiscountsInfo.length - 1 && <Text style={{ color: theme.text, fontSize: 35, fontWeight: '200' }}>/</Text>}
             </View>
           ))
           }

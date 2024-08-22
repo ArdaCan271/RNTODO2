@@ -1,26 +1,27 @@
 import { StyleSheet, Text, View, Modal, Pressable, useWindowDimensions, Keyboard, TouchableOpacity, TextInput, KeyboardAvoidingView } from 'react-native';
-import React, { useState, useMemo, act } from 'react';
+import React, { useState, useMemo } from 'react';
 
-import { useTheme } from '../constants/colors';
+import { useTheme } from '../../constants/colors';
 
 import { useSelector, useDispatch } from 'react-redux';
-import { setAmountOfProduct, addOneOfProduct, removeOneOfProduct, setPriceOfProduct, setDiscountOfProduct } from '../features/fastOrderCart/fastOrderCartSlice';
+
+import { setAmountOfProduct, addOneOfProduct, removeOneOfProduct, setDiscountOfProduct, setPriceOfProduct } from '../../features/fastOrderCart/fastOrderCartSlice';
 
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 
-import { formattedCurrency } from '../utils/formatData';
+import { formattedCurrency } from '../../utils/formatData';
 
-import { useKeyboardVisible } from '../utils/useKeyboardCustomHook';
+import { useKeyboardVisible } from '../../utils/useKeyboardCustomHook';
 
-import { calculateDiscountedUnitPrice } from '../utils/calculateDiscounts';
+import { calculateDiscountedUnitPrice } from '../../utils/calculateDiscounts';
 
-const FastOrderProductEditCartModal = ({ modalVisible, setModalVisible, productInfo }) => {
+const CartEditProductModal = ({ modalVisible, setModalVisible, productInfo }) => {
   const theme = useTheme();
   const styles = useMemo(() => getStyles(theme), [theme]);
 
   const dispatch = useDispatch();
 
-  const { StockName, StockCode, StockPrice, ActualStock, StockUnit } = productInfo;
+  //  const { stockName, stockCode, stockPrice, actualStock, unitType, quantity, discountedPrice, discounts, unitPrice } = productInfo;
 
   const windowWidth = useWindowDimensions().width;
   const windowHeight = useWindowDimensions().height;
@@ -28,23 +29,20 @@ const FastOrderProductEditCartModal = ({ modalVisible, setModalVisible, productI
   const isLandscape = windowWidth > windowHeight;
 
   const userData = useSelector((state) => state.userData.data);
-  
+
   const userList = useSelector((state) => state.fastOrderCart.userList);
   const user = userList.find((user) => user.userEmail === userData.email);
-  const productList = user ? user.productsList : [];
-  const product = productList.find((product) => product.stockCode === StockCode);
-  const productCartQuantity = product ? product.quantity : 0;
-  const productDiscounts = product ? product.discounts : [1, 1, 1, 1];
-  const productCartPrice = product ? product.unitPrice : StockPrice;
-  const productCartDiscountedPrice = product ? product.discountedPrice : StockPrice;
+  const productList = user.productsList;
+  const product = productList.find((product) => product.stockCode === productInfo.stockCode);
+
+  const { stockName, stockCode, stockPrice, actualStock, unitType, quantity, discountedPrice, discounts, unitPrice } = product;
   
-  
-  const discountsInfo = productDiscounts.map((discount) => {
+  const discountsInfo = discounts.map((discount) => {
     const [discountValue, setDiscountValue] = useState(discount);
     return { discount: discountValue, setDiscount: setDiscountValue };
   });
   
-  const [unitPriceState, setUnitPriceState] = useState(productCartPrice);
+  const [unitPriceState, setUnitPriceState] = useState(unitPrice);
   const [stockPriceInputFocused, setStockPriceInputFocused] = useState(false);
 
   const handleStockPriceBlur = () => {
@@ -62,34 +60,46 @@ const FastOrderProductEditCartModal = ({ modalVisible, setModalVisible, productI
     dispatch(setPriceOfProduct({
       userEmail: userData.email,
       ratioInPercent: userData['ratio-in-percent'],
-      stockCode: StockCode,
+      stockCode: stockCode,
       unitPrice: parseFloat(value),
       discounts: discountsInfo.map((discountInfo) => discountInfo.discount),
     }));
   };
 
   const handleQuantityInputChange = (value) => {
-    if (value === '') {
-      value = 0;
+    if (value === '' || value === 0 || value === '0') {
+      setModalVisible(!modalVisible);
+      setStockPriceInputFocused(false);
+      return dispatch(removeOneOfProduct({
+        userEmail: userData.email,
+        stockCode: stockCode,
+      }));
     };
     dispatch(setAmountOfProduct({
       userEmail: userData.email,
       ratioInPercent: userData['ratio-in-percent'],
-      stockName: StockName,
-      stockCode: StockCode,
-      stockPrice: StockPrice,
+      stockName: stockName,
+      stockCode: stockCode,
+      stockPrice: stockPrice,
       unitPrice: parseFloat(unitPriceState),
-      unitType: StockUnit,
-      actualStock: ActualStock,
+      unitType: unitType,
       quantity: parseInt(value),
       discounts: discountsInfo.map((discountInfo) => discountInfo.discount),
     }));
   };
 
   const handleRemoveProduct = () => {
+    if (quantity === 1) {
+      setModalVisible(!modalVisible);
+      setStockPriceInputFocused(false);
+      return dispatch(removeOneOfProduct({
+        userEmail: userData.email,
+        stockCode: stockCode,
+      }));
+    }
     dispatch(removeOneOfProduct({
       userEmail: userData.email,
-      stockCode: StockCode,
+      stockCode: stockCode,
     }));
   };
 
@@ -97,69 +107,68 @@ const FastOrderProductEditCartModal = ({ modalVisible, setModalVisible, productI
     dispatch(addOneOfProduct({
       userEmail: userData.email,
       ratioInPercent: userData['ratio-in-percent'],
-      stockName: StockName,
-      stockCode: StockCode,
-      stockPrice: StockPrice,
+      stockName: stockName,
+      stockCode: stockCode,
+      stockPrice: stockPrice,
       unitPrice: parseFloat(unitPriceState),
-      unitType: StockUnit,
-      actualStock: ActualStock,
+      unitType: unitType,
       discounts: discountsInfo.map((discountInfo) => parseFloat(discountInfo.discount)),
+    }));
+  };
+
+  const handleClearProduct = () => {
+    setModalVisible(!modalVisible);
+    setStockPriceInputFocused(false);
+    dispatch(setAmountOfProduct({
+      userEmail: userData.email,
+      ratioInPercent: userData['ratio-in-percent'],
+      stockName: stockName,
+      stockCode: stockCode,
+      stockPrice: stockPrice,
+      unitPrice: parseFloat(unitPriceState),
+      unitType: unitType,
+      quantity: 0,
+      discounts: discountsInfo.map((discountInfo) => discountInfo.discount),
     }));
   };
   
 
-  const handleDiscountChange = (value, index, ratioInPercent) => {
+  const handleDiscountChange = (value, index) => {
     if ((value.endsWith('.') && value.length > 1)) {
       discountsInfo[index].setDiscount(value);
       return;
     }
-    
     let numericValue = parseFloat(value);
     if (isNaN(numericValue)) {
-      numericValue = ratioInPercent ? 0 : 1;
+      numericValue = 1;
     }
-    
-    if (ratioInPercent) {
-      // Clamp value between 0 and 1
-      if (numericValue < 0) {
-        numericValue = 0;
-      } else if (numericValue > 1) {
-        numericValue = 1;
-      }
-    } else {
-      // Clamp value between 1 and 2
-      if (numericValue < 1) {
-        numericValue = 1;
-      } else if (numericValue > 2) {
-        numericValue = 2;
-      }
+    if (numericValue < 1) {
+      numericValue = 1;
+    } else if (numericValue > 2) {
+      numericValue = 2;
     }
-  
     discountsInfo[index].setDiscount(numericValue);
     dispatch(setDiscountOfProduct({
       userEmail: userData.email,
       ratioInPercent: userData['ratio-in-percent'],
-      stockCode: StockCode,
+      stockCode: stockCode,
       discount: { discountIndex: index, discountValue: numericValue },
     }));
   };
-  
 
   handleDiscountBlur = (value, index) => {
     if (typeof value === 'string' && value.endsWith('.')) {
       let numericValue = parseFloat(value);
-
       if (numericValue < 1) {
         numericValue = 1;
       } else if (numericValue > 2) {
         numericValue = 2;
       }
-
       discountsInfo[index].setDiscount(numericValue);
       dispatch(setDiscountOfProduct({
         userEmail: userData.email,
         ratioInPercent: userData['ratio-in-percent'],
-        stockCode: StockCode,
+        stockCode: stockCode,
         discount: { discountIndex: index, discountValue: numericValue },
       }));
     }
@@ -170,10 +179,8 @@ const FastOrderProductEditCartModal = ({ modalVisible, setModalVisible, productI
     dispatch(setPriceOfProduct({
       userEmail: userData.email,
       ratioInPercent: userData['ratio-in-percent'],
-      stockCode: StockCode,
-      stockPrice: StockPrice,
-      unitPrice: StockPrice,
-      unitType: StockUnit,
+      stockCode: stockCode,
+      unitPrice: stockPrice,
       discounts: discountsInfo.map((discountInfo) => discountInfo.discount),
     }));
   };
@@ -184,7 +191,7 @@ const FastOrderProductEditCartModal = ({ modalVisible, setModalVisible, productI
       dispatch(setDiscountOfProduct({
         userEmail: userData.email,
         ratioInPercent: userData['ratio-in-percent'],
-        stockCode: StockCode,
+        stockCode: stockCode,
         discount: { discountIndex: index, discountValue: 1 },
       }));
     });
@@ -210,7 +217,7 @@ const FastOrderProductEditCartModal = ({ modalVisible, setModalVisible, productI
           onPress={() => Keyboard.dismiss()}
         >
           <View style={styles.modalHeader}>
-            <Text style={styles.productName}>{StockName}</Text>
+            <Text style={styles.productName}>{stockName}</Text>
             <TouchableOpacity style={styles.closeButton} onPress={() => { setModalVisible(!modalVisible); Keyboard.dismiss(); setStockPriceInputFocused(false); }}>
               <FontAwesome name="times" size={24} color={theme.textAlt} />
             </TouchableOpacity>
@@ -221,13 +228,13 @@ const FastOrderProductEditCartModal = ({ modalVisible, setModalVisible, productI
                 <View style={styles.stockInfoTextWrapper}>
                   <Text style={styles.stockInfoTitle}>Aktüel Stok</Text>
                   <View style={{ flexDirection: 'row' }}>
-                    <Text style={styles.stockInfoValue}>{ActualStock}</Text>
-                    <Text style={styles.stockInfoValue}>{StockUnit}</Text>
+                    <Text style={styles.stockInfoValue}>{actualStock}</Text>
+                    <Text style={styles.stockInfoValue}>{unitType}</Text>
                   </View>
                 </View>
                 <View style={styles.stockInfoTextWrapper}>
                   <Text style={styles.stockInfoTitle}>Stok Br. Fiyat</Text>
-                  <Text style={styles.stockInfoValue}>₺{formattedCurrency(StockPrice)}</Text>
+                  <Text style={styles.stockInfoValue}>₺{formattedCurrency(stockPrice)}</Text>
                 </View>
                 <View style={[styles.stockInfoTextWrapper, { paddingVertical: 2, paddingHorizontal: 5 }]}>
                   <Text style={styles.stockInfoTitle}>Birim Fiyat</Text>
@@ -256,7 +263,7 @@ const FastOrderProductEditCartModal = ({ modalVisible, setModalVisible, productI
                 </View>
                 <View style={styles.stockInfoTextWrapper}>
                   <Text style={styles.stockInfoTitle}>Toplam Fiyat</Text>
-                  <Text style={styles.stockInfoValue}>₺{formattedCurrency(productCartDiscountedPrice * productCartQuantity)}</Text>
+                  <Text style={styles.stockInfoValue}>₺{formattedCurrency(discountedPrice * quantity)}</Text>
                 </View>
               </View>
               :
@@ -264,12 +271,12 @@ const FastOrderProductEditCartModal = ({ modalVisible, setModalVisible, productI
                 <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
                   <View style={{width: '48%', height: 38, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
                     <Text style={styles.stockInfoTitle}>Aktüel Stok</Text>
-                    <Text style={styles.stockInfoValue}>{ActualStock}</Text>
+                    <Text style={styles.stockInfoValue}>{actualStock} {unitType}</Text>
                   </View>
                   <View style={{width: 1, height: 35, backgroundColor: theme.textAlt}}/>
                   <View style={{width: '48%', height: 38, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
                     <Text style={styles.stockInfoTitle}>Stok Br. Fiyat</Text>
-                    <Text style={styles.stockInfoValue}>₺{formattedCurrency(StockPrice)}</Text>
+                    <Text style={styles.stockInfoValue}>₺{formattedCurrency(stockPrice)}</Text>
                   </View>
                 </View>
                 <View style={{width: '100%', height: 1, backgroundColor: theme.textAlt, marginTop: 4, marginBottom: 4}}/>
@@ -305,7 +312,7 @@ const FastOrderProductEditCartModal = ({ modalVisible, setModalVisible, productI
                 <View style={{ flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center' }}>
                   <View style={{ width: '48%', height: 38, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
                     <Text style={styles.stockInfoTitle}>Toplam Fiyat</Text>
-                    <Text style={styles.stockInfoValue}>₺{formattedCurrency(productCartDiscountedPrice * productCartQuantity)}</Text>
+                    <Text style={styles.stockInfoValue}>₺{formattedCurrency(discountedPrice * quantity)}</Text>
                   </View>
                   <View style={{width: 1, height: 35, backgroundColor: theme.textAlt, marginLeft: '2%'}}/>
                 </View>
@@ -321,7 +328,7 @@ const FastOrderProductEditCartModal = ({ modalVisible, setModalVisible, productI
                     <TextInput
                       style={styles.discountInput}
                       value={discountInfo.discount.toString()}
-                      onChangeText={(value) => handleDiscountChange(value, index, userData['ratio-in-percent'])}
+                      onChangeText={(value) => handleDiscountChange(value, index)}
                       onBlur={() => handleDiscountBlur(discountsInfo[index].discount, index)}
                       selectTextOnFocus
                       selectionColor={theme.textSelection}
@@ -345,7 +352,7 @@ const FastOrderProductEditCartModal = ({ modalVisible, setModalVisible, productI
                       <TextInput
                         style={styles.discountInput}
                         value={discountInfo.discount.toString()}
-                        onChangeText={(value) => handleDiscountChange(value, index, userData['ratio-in-percent'])}
+                        onChangeText={(value) => handleDiscountChange(value, index)}
                         onBlur={() => handleDiscountBlur(discountsInfo[index].discount, index)}
                         selectTextOnFocus
                         selectionColor={theme.textSelection}
@@ -360,7 +367,7 @@ const FastOrderProductEditCartModal = ({ modalVisible, setModalVisible, productI
                 </View>
               }
               <View style={styles.modalButtonsContainer}>
-                <TouchableOpacity style={{ padding: 2 }} onPress={() => handleQuantityInputChange(0)}>
+                <TouchableOpacity style={{ padding: 2 }} onPress={handleClearProduct}>
                   <FontAwesome name="trash-o" size={26} color={theme.textAlt} />
                 </TouchableOpacity>
                 <View style={styles.cartModifyComponentContainer}>
@@ -370,7 +377,7 @@ const FastOrderProductEditCartModal = ({ modalVisible, setModalVisible, productI
                   <TextInput
                     style={styles.cartTextInput}
                     onChangeText={handleQuantityInputChange}
-                    value={productCartQuantity.toString()}
+                    value={quantity.toString()}
                     selectTextOnFocus
                     selectionColor={theme.textSelection}
                     keyboardType="numeric"
@@ -514,4 +521,4 @@ const getStyles = (theme) => StyleSheet.create({
   }
 });
 
-export default FastOrderProductEditCartModal;
+export default CartEditProductModal;

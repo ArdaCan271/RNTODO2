@@ -1,5 +1,5 @@
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import React, { useMemo } from 'react';
+import React, { useMemo, useState } from 'react';
 
 import { useTheme } from '../../constants/colors';
 
@@ -7,7 +7,9 @@ import FontAwesome from 'react-native-vector-icons/FontAwesome';
 
 import { useSelector, useDispatch } from 'react-redux';
 import { clearCart } from '../../features/fastOrderCart/fastOrderCartSlice';
+
 import CartStockCard from './CartStockCard';
+import CartEditProductModal from './CartEditProductModal';
 
 const CartStocks = ({ navigation, productList }) => {
   const theme = useTheme();
@@ -16,15 +18,23 @@ const CartStocks = ({ navigation, productList }) => {
 
   const userData = useSelector((state) => state.userData.data);
 
-  console.log(productList);
+  const [editModalVisible, setEditModalVisible] = useState(false);
+  const [selectedEditProduct, setSelectedEditProduct] = useState(null);
 
   return (
     <View style={styles.cartStocksSection}>
+      {editModalVisible && selectedEditProduct &&
+        <CartEditProductModal
+          modalVisible={editModalVisible}
+          setModalVisible={setEditModalVisible}
+          productInfo={selectedEditProduct}
+        />
+      }
       <View style={styles.cartStocksContainer}>
         <View style={styles.cartButtonsContainer}>
           <TouchableOpacity
             style={styles.addStockButton}
-            onPress={() => navigation.navigate('FastOrder')}
+            onPress={() => navigation.replace('FastOrder')}
           >
             <FontAwesome name="plus" size={20} color={theme.background} />
             <Text style={styles.addStockButtonText}>Stok Ekle</Text>
@@ -38,7 +48,7 @@ const CartStocks = ({ navigation, productList }) => {
           </TouchableOpacity>
         </View>
         {productList.map((productInfo, index) => (
-          <CartStockCard key={index} productInfo={productInfo} />
+          <CartStockCard key={index} productInfo={productInfo} setEditModalVisible={setEditModalVisible} setSelectedEditProduct={setSelectedEditProduct}/>
         ))}
       </View>
     </View>

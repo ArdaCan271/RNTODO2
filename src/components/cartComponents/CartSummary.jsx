@@ -1,7 +1,7 @@
 import React, { useMemo, useState } from 'react';
 import { View, Text, StyleSheet, Pressable } from 'react-native';
-import { useTheme } from '../constants/colors';
-import { formattedCurrency } from '../utils/formatData';
+import { useTheme } from '../../constants/colors';
+import { formattedCurrency } from '../../utils/formatData';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import Animated, { useAnimatedStyle, withTiming } from 'react-native-reanimated';
 
@@ -17,7 +17,7 @@ const getTotalDifferentProducts = (products) => {
   return products.length;
 };
 
-const FastOrderCartSummary = ({ cartProductsList, navigation }) => {
+const CartSummary = ({ cartProductsList }) => {
   const theme = useTheme();
   const styles = useMemo(() => getStyles(theme), [theme]);
 
@@ -62,8 +62,8 @@ const FastOrderCartSummary = ({ cartProductsList, navigation }) => {
             <Text style={styles.summaryValue}>₺{formattedCurrency(totalPrice)}</Text>
           </View>
         </View>
-        <Pressable style={styles.goToCartButton} onPress={() => navigation.replace('FastOrderCart')}>
-          <Text style={styles.goToCartTitle}>Sepete Git</Text>
+        <Pressable style={styles.goToCartButton}>
+          <Text style={styles.goToCartTitle}>Sepeti Kaydet</Text>
         </Pressable>
       </Pressable>
     </View>
@@ -110,7 +110,7 @@ const getStyles = (theme) => StyleSheet.create({
   },
   goToCartButton: {
     height: 50,
-    width: 120,
+    paddingHorizontal: 10,
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: theme.primary,
@@ -145,4 +145,4 @@ const getStyles = (theme) => StyleSheet.create({
   },
 });
 
-export default FastOrderCartSummary;
+export default CartSummary;

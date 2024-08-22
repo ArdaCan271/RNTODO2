@@ -10,7 +10,7 @@ export const fastOrderCartSlice = createSlice({
   initialState,
   reducers: {
     addOneOfProduct: (state, action) => {
-      const { userEmail, ratioInPercent, stockName, stockCode, stockPrice, unitPrice, unitType, discounts } = action.payload;
+      const { userEmail, ratioInPercent, stockName, stockCode, stockPrice, unitPrice, unitType, actualStock, discounts } = action.payload;
       let user = state.userList.find((user) => user.userEmail === userEmail);
 
       if (!user) {
@@ -23,7 +23,7 @@ export const fastOrderCartSlice = createSlice({
       if (product) {
         product.quantity += 1;
       } else {
-        user.productsList.push({ stockName, stockCode, stockPrice, unitPrice, discountedPrice: calculateDiscountedUnitPrice(unitPrice, discounts, ratioInPercent), unitType, discounts, quantity: 1 });
+        user.productsList.push({ stockName, stockCode, stockPrice, unitPrice, discountedPrice: calculateDiscountedUnitPrice(unitPrice, discounts, ratioInPercent), unitType, actualStock, discounts, quantity: 1 });
       }
     },
     removeOneOfProduct: (state, action) => {
@@ -47,7 +47,7 @@ export const fastOrderCartSlice = createSlice({
       }
     },
     setAmountOfProduct: (state, action) => {
-      const { userEmail, ratioInPercent, stockName, stockCode, quantity, stockPrice, unitPrice, unitType, discounts } = action.payload;
+      const { userEmail, ratioInPercent, stockName, stockCode, quantity, stockPrice, unitPrice, unitType, actualStock, discounts } = action.payload;
       let user = state.userList.find((user) => user.userEmail === userEmail);
 
       if (!user) {
@@ -68,7 +68,7 @@ export const fastOrderCartSlice = createSlice({
           state.userList = state.userList.filter((u) => u.userEmail !== userEmail);
         }
       } else {
-        user.productsList.push({ stockName, stockCode, stockPrice, unitPrice, discountedPrice: calculateDiscountedUnitPrice(unitPrice, discounts, ratioInPercent), unitType, discounts, quantity });
+        user.productsList.push({ stockName, stockCode, stockPrice, unitPrice, discountedPrice: calculateDiscountedUnitPrice(unitPrice, discounts, ratioInPercent), unitType, actualStock, discounts, quantity });
       }
     },
     setPriceOfProduct: (state, action) => {

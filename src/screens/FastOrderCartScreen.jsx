@@ -12,6 +12,7 @@ import VadeSelection from '../components/cartComponents/VadeSelection';
 import DeliveryDateSelection from '../components/cartComponents/DeliveryDateSelection';
 import CartDiscounts from '../components/cartComponents/CartDiscounts';
 import CartStocks from '../components/cartComponents/CartStocks';
+import CartSummary from '../components/cartComponents/CartSummary';
 
 const FastOrderCartScreen = ({ navigation, route }) => {
   const theme = useTheme();
@@ -38,20 +39,28 @@ const FastOrderCartScreen = ({ navigation, route }) => {
 
   const [description, setDescription] = useState('');
 
+  const cartDiscounts = [1, 1, 1, 1];
+
+  const cartDiscountsInfo = cartDiscounts.map((discount) => {
+    const [discountValue, setDiscountValue] = useState(discount);
+    return { cartDiscount: discountValue, setCartDiscount: setDiscountValue };
+  });
+
   return (
     <View style={styles.container}>
       <CustomHeader navigation={navigation} title='Hızlı Sipariş Sepet' />
       <ScrollView
         showsVerticalScrollIndicator={false}
+        contentContainerStyle={{ paddingBottom: 50 }}
       >
         <CariSelection navigation={navigation} />
         <CariDescription description={description} setDescription={setDescription} />
         <VadeSelection />
         <DeliveryDateSelection />
-        <CartDiscounts />
+        <CartDiscounts cartDiscountsInfo={cartDiscountsInfo} />
         <CartStocks navigation={navigation} productList={productList}/>
-        <View style={{width: '100%', height: 500}}/>
       </ScrollView>
+      <CartSummary cartProductsList={productList} />
     </View>
   );
 }
