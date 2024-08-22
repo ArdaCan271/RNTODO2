@@ -51,7 +51,7 @@ const CartStockCard = ({ productInfo, setEditModalVisible, setSelectedEditProduc
         </View>
         <View style={styles.stockCartInfoContainer}>
           <View style={styles.stockCartQuantityContainer}>
-            <FontAwesome name="shopping-cart" size={20} color={theme.primary} style={{marginLeft: 5}}/>
+            <FontAwesome name="shopping-cart" size={18} color={theme.primary} style={{marginLeft: 5}}/>
             <Text style={styles.cartQuantity}>{productInfo.quantity}</Text>
             <Text style={styles.cartQuantityUnit}>{productInfo.unitType}</Text>
           </View>

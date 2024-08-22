@@ -4,33 +4,32 @@ import { useTheme } from '../../constants/colors';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import DatePicker from 'react-native-date-picker';
 
-const VadeSelection = () => {
+const VadeSelection = ({vadeDate, setVadeDate}) => {
   const theme = useTheme();
   const styles = useMemo(() => getStyles(theme), [theme]);
 
 
   const [days, setDays] = useState('');
-  const [selectedDate, setSelectedDate] = useState(new Date());
   const [datePickerModalVisible, setDatePickerModalVisible] = useState(false);
 
  const handleDaysChange = (text) => {
     if (text === '0') {
       setDays('');
-      setSelectedDate(new Date());
+      setVadeDate(new Date());
       return;
     }
     setDays(text);
     if (!isNaN(text) && text !== '') {
       const newDate = new Date();
       newDate.setDate(newDate.getDate() + parseInt(text, 10));
-      setSelectedDate(newDate);
+      setVadeDate(newDate);
     } else {
-      setSelectedDate(new Date());
+      setVadeDate(new Date());
     }
   };
 
   const handleDatePickerConfirm = (date) => {
-    setSelectedDate(date);
+    setVadeDate(date);
     // calculate days between selected date and now
     const today = new Date();
     today.setHours(0, 0, 0, 0); // Clear the time part for accurate date comparison
@@ -64,7 +63,7 @@ const VadeSelection = () => {
           </View>
           <TouchableOpacity style={styles.vadeDatePreview} onPress={() => setDatePickerModalVisible(true)}>
             <View style={styles.vadeDatePreviewTextContainer}>
-              <Text style={styles.vadeDatePreviewText}>{selectedDate.toLocaleDateString('tr-TR')}</Text>
+              <Text style={styles.vadeDatePreviewText}>{vadeDate.toLocaleDateString('tr-TR')}</Text>
             </View>
             <View style={styles.vadeDateChooseButton}>
               <FontAwesome name='calendar' size={20} color={theme.background} />
@@ -74,7 +73,7 @@ const VadeSelection = () => {
       </View>
       <DatePicker
         open={datePickerModalVisible}
-        date={selectedDate}
+        date={vadeDate}
         mode='date'
         onConfirm={handleDatePickerConfirm}
         onCancel={handleDatePickerCancel}

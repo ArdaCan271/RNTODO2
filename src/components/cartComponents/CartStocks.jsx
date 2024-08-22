@@ -69,7 +69,7 @@ const getStyles = (theme) => StyleSheet.create({
     width: '100%',
     alignItems: 'center',
     paddingVertical: 10,
-    rowGap: 10,
+    rowGap: 14,
   },
   cartButtonsContainer: {
     width: '100%',

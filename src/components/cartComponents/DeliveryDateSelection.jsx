@@ -5,15 +5,14 @@ import DatePicker from 'react-native-date-picker';
 
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 
-const DeliveryDateSelection = () => {
+const DeliveryDateSelection = ({deliveryDate, setDeliveryDate}) => {
   const theme = useTheme();
   const styles = useMemo(() => getStyles(theme), [theme]);
 
-  const [selectedDate, setSelectedDate] = useState(new Date());
   const [datePickerModalVisible, setDatePickerModalVisible] = useState(false);
 
   const handleDatePickerConfirm = (date) => {
-    setSelectedDate(date);
+    setDeliveryDate(date);
     setDatePickerModalVisible(false);
   };
 
@@ -33,7 +32,7 @@ const DeliveryDateSelection = () => {
             style={{width: '100%', height: '100%', justifyContent: 'space-between', alignItems: 'center', flexDirection: 'row'}}
           >
             <View style={styles.deliveryDatePreviewTextContainer}>
-              <Text style={styles.deliveryDatePreviewText}>{selectedDate.toLocaleDateString('tr-TR')}</Text>
+              <Text style={styles.deliveryDatePreviewText}>{deliveryDate.toLocaleDateString('tr-TR')}</Text>
             </View>
             <View style={styles.deliveryDateChooseButton}>
               <FontAwesome name='calendar' size={20} color={theme.background} />
@@ -43,7 +42,7 @@ const DeliveryDateSelection = () => {
       </View>
       <DatePicker
         open={datePickerModalVisible}
-        date={selectedDate}
+        date={deliveryDate}
         mode='date'
         onConfirm={handleDatePickerConfirm}
         onCancel={handleDatePickerCancel}

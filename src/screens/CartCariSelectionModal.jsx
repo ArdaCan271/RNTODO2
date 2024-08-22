@@ -1,6 +1,5 @@
-// CurrentScreen.js
 import React, { useState, useEffect, useRef, useMemo } from 'react';
-import { StyleSheet, Text, View, BackHandler, FlatList, Dimensions, TextInput, useWindowDimensions } from 'react-native';
+import { StyleSheet, Text, View, BackHandler, TextInput, Modal, Pressable } from 'react-native';
 import axios from 'axios';
 import { useSelector } from 'react-redux';
 import { useTheme } from '../constants/colors';
@@ -10,9 +9,7 @@ import CustomerCard from '../components/CustomerCard';
 import CustomerCardSkeleton from '../components/CustomerCardSkeleton';
 import { FlashList } from '@shopify/flash-list';
 
-const CurrentScreen = ({ navigation, route }) => {
-  const { childrenOfMenuItem } = route.params;
-
+const CartCariSelectionModal = ({ modalVisible, setModalVisible, setSelectedCari }) => {
   const userToken = useSelector((state) => state.userData.data.token);
   const baseRequestURL = useSelector((state) => state.baseRequestURL.value);
 
@@ -27,31 +24,15 @@ const CurrentScreen = ({ navigation, route }) => {
   const searchTimeout = useRef(null);
   const searchInputRef = useRef(null);
 
-  const windowWidth = useWindowDimensions().width;
-
   useEffect(() => {
-    getCustomerList();
-
-    const backAction = () => {
-      navigation.goBack();
-      return true;
-    };
-
-    const backHandler = BackHandler.addEventListener(
-      'hardwareBackPress',
-      backAction
-    );
-
-    return () => backHandler.remove();
-  }, []);
-
-  useEffect(() => {
-    searchInputRef.current?.focus();
-  }, [navigation]);
+    if (modalVisible) {
+      getCustomerList();
+      setSearchQuery('');
+    }
+  }, [modalVisible]);
 
   const getCustomerList = async () => {
-    console.log('Getting customer list');
-    
+    setLoading(true);
     const apiUrl = `${baseRequestURL}/getCustomerList`;
     try {
       const response = await axios.post(apiUrl, {
@@ -67,13 +48,16 @@ const CurrentScreen = ({ navigation, route }) => {
     }
   };
 
-  const handleOnCustomerPress = (customer) => () => {
-    navigation.navigate('CustomerDetail', { customer, childrenOfMenuItem });
-  }
+  const handleCariSelection = (cari) => {
+    setSelectedCari(cari);
+  };
 
   const renderItem = ({ item, index }) => (
     <CustomerCard
-      onPress={handleOnCustomerPress(item)}
+      onPress={() => {
+        handleCariSelection(item);
+        setModalVisible(false);
+      }}
       cariKod={item.CariKod}
       isim={item.Isim}
       alacak={item.Alacak}
@@ -111,35 +95,55 @@ const CurrentScreen = ({ navigation, route }) => {
   };
 
   return (
-    <View style={[styles.container, {width: windowWidth}]}>
-      <CustomHeader navigation={navigation} title={route.params.title} />
-      <View style={styles.searchInputWrapper}>
-        <TextInput
-          style={styles.searchInput}
-          placeholder="Cari Ara"
-          placeholderTextColor={theme.textAlt}
-          value={searchQuery}
-          onChangeText={handleSearch}
-          onSubmitEditing={handleInputSubmit}
-          ref={searchInputRef}
-          autoCapitalize='none'
-        />
-      </View>
-      <FlashList
-        data={loading ? Array(10).fill({}) : filteredCustomerList}
-        renderItem={loading ? renderSkeletonItem : renderItem}
-        estimatedItemSize={100}
-        keyboardShouldPersistTaps='handled'
-      />
-    </View>
+    <Modal
+      animationType='fade'
+      transparent
+      visible={modalVisible}
+      onRequestClose={() => setModalVisible(false)}
+    >
+      <Pressable 
+        style={styles.overlay}
+        onPress={() => setModalVisible(false)}
+      >
+        <Pressable style={styles.container}>
+          <View style={styles.searchInputWrapper}>
+            <TextInput
+              style={styles.searchInput}
+              placeholder="Cari Ara"
+              placeholderTextColor={theme.textAlt}
+              value={searchQuery}
+              onChangeText={handleSearch}
+              onSubmitEditing={handleInputSubmit}
+              ref={searchInputRef}
+              autoCapitalize='none'
+            />
+          </View>
+          <FlashList
+            data={loading ? Array(10).fill({}) : filteredCustomerList}
+            renderItem={loading ? renderSkeletonItem : renderItem}
+            estimatedItemSize={100}
+            keyboardShouldPersistTaps='handled'
+          />
+        </Pressable>
+      </Pressable>
+    </Modal>
   );
 };
 
 const getStyles = (theme) => StyleSheet.create({
-  container: {
+  overlay: {
     flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.6)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  container: {
+    width: '90%',
+    height: '90%',
+    borderRadius: 10,
     backgroundColor: theme.background,
-    paddingTop: theme.padding.header,
+    elevation: 5,
+    overflow: 'hidden',
   },
   searchInputWrapper: {
     justifyContent: 'center',
@@ -161,4 +165,4 @@ const getStyles = (theme) => StyleSheet.create({
   },
 });
 
-export default CurrentScreen;
+export default CartCariSelectionModal;

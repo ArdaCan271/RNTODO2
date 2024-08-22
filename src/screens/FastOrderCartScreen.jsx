@@ -7,7 +7,7 @@ import { useTheme } from '../constants/colors';
 import CustomHeader from '../components/CustomHeader';
 
 import CariSelection from '../components/cartComponents/CariSelection';
-import CariDescription from '../components/cartComponents/CariDescription';
+import CartDescription from '../components/cartComponents/CartDescription';
 import VadeSelection from '../components/cartComponents/VadeSelection';
 import DeliveryDateSelection from '../components/cartComponents/DeliveryDateSelection';
 import CartDiscounts from '../components/cartComponents/CartDiscounts';
@@ -37,11 +37,14 @@ const FastOrderCartScreen = ({ navigation, route }) => {
     return () => backHandler.remove();
   }, [navigation]);
 
+  const [selectedCari, setSelectedCari] = useState(null);
   const [description, setDescription] = useState('');
+  const [vadeDate, setVadeDate] = useState(new Date());
+  const [deliveryDate, setDeliveryDate] = useState(new Date());
 
-  const cartDiscounts = [1, 1, 1, 1];
+  const cartDiscounts = Array(4).fill(userData['ratio-in-percent'] ? 0 : 1);
 
-  const cartDiscountsInfo = cartDiscounts.map((discount) => {
+  const cartDiscountStates = cartDiscounts.map((discount) => {
     const [discountValue, setDiscountValue] = useState(discount);
     return { cartDiscount: discountValue, setCartDiscount: setDiscountValue };
   });
@@ -52,15 +55,21 @@ const FastOrderCartScreen = ({ navigation, route }) => {
       <ScrollView
         showsVerticalScrollIndicator={false}
         contentContainerStyle={{ paddingBottom: 50 }}
+        keyboardShouldPersistTaps='handled'
       >
-        <CariSelection navigation={navigation} />
-        <CariDescription description={description} setDescription={setDescription} />
-        <VadeSelection />
-        <DeliveryDateSelection />
-        <CartDiscounts cartDiscountsInfo={cartDiscountsInfo} />
+        <CariSelection navigation={navigation} selectedCari={selectedCari} setSelectedCari={setSelectedCari} />
+        <CartDescription description={description} setDescription={setDescription} />
+        <VadeSelection vadeDate={vadeDate} setVadeDate={setVadeDate} />
+        <DeliveryDateSelection deliveryDate={deliveryDate} setDeliveryDate={setDeliveryDate} />
+        <CartDiscounts cartDiscounts={cartDiscounts} cartDiscountStates={cartDiscountStates} />
         <CartStocks navigation={navigation} productList={productList}/>
       </ScrollView>
-      <CartSummary cartProductsList={productList} />
+      <CartSummary cartProductsList={productList}
+        cartDiscounts={
+          cartDiscountStates.map((discountState) => discountState.cartDiscount)
+        }
+        userData={userData}
+      />
     </View>
   );
 }

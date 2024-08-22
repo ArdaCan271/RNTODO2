@@ -8,7 +8,7 @@ import { useTheme } from '../constants/colors';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
 const formatCurrency = (value) => {
-  if (value === null) {
+  if (value === null || value === undefined) {
     return { lira: '0', kurus: '00' };
   }
   const parts = value.toFixed(2).split('.');
@@ -18,6 +18,9 @@ const formatCurrency = (value) => {
 };
 
 const getInitials = (isim) => {
+  if (!isim) {
+    return '';
+  }
   const words = isim.split(' ');
   if (words.length === 1) {
     return words[0][0].toUpperCase();
@@ -40,7 +43,7 @@ const CustomerCard = ({ cariKod, isim, alacak, il, onPress, dynamicColors }) => 
 
   return (
     <Pressable
-      style={[styles.cardWrapper, { width: windowWidth, borderLeftColor: dynamicColors.borderMain, backgroundColor: dynamicColors.backgroundColor }]}
+      style={[styles.cardWrapper, { borderLeftColor: dynamicColors.borderMain, backgroundColor: dynamicColors.backgroundColor }]}
       onPress={onPress}
       android_ripple={{ color: theme.primary }}
       unstable_pressDelay={20}
@@ -82,6 +85,7 @@ const getStyles = (theme) => StyleSheet.create({
     backgroundColor: theme.background,
     height: 100,
     borderLeftWidth: 15,
+    width: '100%',
   },
   cardPressable: {
     width: '100%',

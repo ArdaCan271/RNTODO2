@@ -3,7 +3,7 @@ import React, { useMemo, useState } from 'react';
 
 import { useTheme } from '../../constants/colors';
 
-const CariDescription = ({ description, setDescription }) => {
+const CartDescription = ({ description, setDescription }) => {
   const theme = useTheme();
   const styles = useMemo(() => getStyles(theme), [theme]);
 
@@ -61,4 +61,4 @@ const getStyles = (theme) => StyleSheet.create({
   },
 });
 
-export default CariDescription;
+export default CartDescription;

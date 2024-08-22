@@ -68,12 +68,7 @@ const CartEditProductModal = ({ modalVisible, setModalVisible, productInfo }) =>
 
   const handleQuantityInputChange = (value) => {
     if (value === '' || value === 0 || value === '0') {
-      setModalVisible(!modalVisible);
-      setStockPriceInputFocused(false);
-      return dispatch(removeOneOfProduct({
-        userEmail: userData.email,
-        stockCode: stockCode,
-      }));
+      value = 1;
     };
     dispatch(setAmountOfProduct({
       userEmail: userData.email,

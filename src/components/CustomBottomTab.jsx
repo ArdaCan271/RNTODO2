@@ -63,6 +63,7 @@ const CustomBottomTab = ({ navigation }) => {
       <Pressable 
         style={[styles.menuButton, {left: windowWidth / 2 - 31}]}
         onPress={openDrawer}
+        android_ripple={{color: theme.separator}}
       >
         <Icon name="menu" size={50} color={theme.background} />
       </Pressable>

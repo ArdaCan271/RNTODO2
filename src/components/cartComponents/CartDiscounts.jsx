@@ -3,21 +3,26 @@ import React, { useMemo, useState } from 'react';
 
 import { useTheme } from '../../constants/colors';
 
-const CartDiscounts = ({ cartDiscountsInfo }) => {
+const CartDiscounts = ({ cartDiscounts, cartDiscountStates }) => {
   const theme = useTheme();
   const styles = useMemo(() => getStyles(theme), [theme]);
 
+  //example cartDiscountsInfo: [{"cartDiscount": 1, "setCartDiscount": [Function bound dispatchSetState]}, {"cartDiscount": 1, "setCartDiscount": [Function bound dispatchSetState]}, {"cartDiscount": 1, "setCartDiscount": [Function bound dispatchSetState]}, {"cartDiscount": 1, "setCartDiscount": [Function bound dispatchSetState]}]
+  const localDiscountStates = cartDiscounts.map((discount) => {
+    const [localDiscountValue, setLocalDiscountValue] = useState(discount);
+    return { localDiscount: localDiscountValue, setLocalDiscount: setLocalDiscountValue };
+  });
+  
+
   const handleDiscountChange = (value, index, ratioInPercent) => {
     if ((value.endsWith('.') && value.length > 1)) {
-      cartDiscountsInfo[index].setCartDiscount(value);
+      localDiscountStates[index].setLocalDiscount(value);
       return;
     }
-    
     let numericValue = parseFloat(value);
     if (isNaN(numericValue)) {
       numericValue = ratioInPercent ? 0 : 1;
     }
-    
     if (ratioInPercent) {
       // Clamp value between 0 and 1
       if (numericValue < 0) {
@@ -33,9 +38,14 @@ const CartDiscounts = ({ cartDiscountsInfo }) => {
         numericValue = 2;
       }
     }
-  
-    cartDiscountsInfo[index].setCartDiscount(numericValue);
+    localDiscountStates[index].setLocalDiscount(numericValue);
+    cartDiscountStates[index].setCartDiscount(parseFloat(numericValue));
   };
+
+  console.log('localDiscountStates:', localDiscountStates);
+  console.log('cartDiscountStates:', cartDiscountStates);
+  
+  
   
 
   return (
@@ -43,11 +53,11 @@ const CartDiscounts = ({ cartDiscountsInfo }) => {
       <View style={styles.discountsContainer}>
         <Text style={styles.discountSectionTitle}>Oranlar:</Text>
         <View style={styles.discountInputsContainer}>
-          {cartDiscountsInfo.map((discountInfo, index) => (
+          {localDiscountStates.map((discountInfo, index) => (
             <View key={index} style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
               <TextInput
                 style={styles.discountInput}
-                value={discountInfo.cartDiscount.toString()}
+                value={discountInfo.localDiscount.toString()}
                 onChangeText={(value) => handleDiscountChange(value, index)}
                 selectTextOnFocus
                 selectionColor={theme.textSelection}
@@ -55,7 +65,7 @@ const CartDiscounts = ({ cartDiscountsInfo }) => {
                 autoCapitalize='none'
                 disableFullscreenUI
               />
-              {index !== cartDiscountsInfo.length - 1 && <Text style={{ color: theme.text, fontSize: 35, fontWeight: '200' }}>/</Text>}
+              {index !== localDiscountStates.length - 1 && <Text style={{ color: theme.text, fontSize: 35, fontWeight: '200' }}>/</Text>}
             </View>
           ))
           }

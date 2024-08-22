@@ -4,14 +4,14 @@ const calculateDiscountedUnitPrice = (unitPrice, discounts, ratioInPercent) => {
   if (ratioInPercent) {
     // When discounts are in percentages
     discounts.forEach(( discount ) => {
-      discountedPrice *= (1 - parseFloat(discount)) / 100;
+      discountedPrice *= (1 - parseFloat(discount)) / 1;
     });
   } else {
     // When discounts are direct multipliers
     discounts.forEach(( discount ) => {
       discountedPrice /= parseFloat(discount);
     });
-  }  
+  }
 
   return discountedPrice.toFixed(2);
 };

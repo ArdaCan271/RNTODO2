@@ -77,6 +77,7 @@ const MenuScreen = ({ navigation, route }) => {
 
 const getStyles = (theme) => StyleSheet.create({
   container: {
+    flex: 1,
     backgroundColor: theme.background,
     paddingTop: theme.padding.header,
     paddingBottom: theme.padding.bottomBar,

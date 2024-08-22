@@ -4,6 +4,7 @@ import { useTheme } from '../../constants/colors';
 import { formattedCurrency } from '../../utils/formatData';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import Animated, { useAnimatedStyle, withTiming } from 'react-native-reanimated';
+import { calculateDiscountedUnitPrice } from '../../utils/calculateDiscounts';
 
 const getTotalPrice = (products) => {
   return products.reduce((total, product) => total + (product.discountedPrice * product.quantity), 0);
@@ -17,7 +18,7 @@ const getTotalDifferentProducts = (products) => {
   return products.length;
 };
 
-const CartSummary = ({ cartProductsList }) => {
+const CartSummary = ({ cartProductsList, cartDiscounts, userData }) => {
   const theme = useTheme();
   const styles = useMemo(() => getStyles(theme), [theme]);
 
@@ -39,7 +40,7 @@ const CartSummary = ({ cartProductsList }) => {
       <Animated.View style={[styles.summaryBody, animatedStyle, { borderBottomWidth: isExpanded ? 1 : 0 }]}>
         <View style={styles.cartInfoWrapper}>
           <Text style={styles.cartInfoTitle}>Sepet Toplam Fiyat</Text>
-          <Text style={styles.cartInfoValue}>₺{formattedCurrency(totalPrice)}</Text>
+          <Text style={styles.cartInfoValue}>₺{formattedCurrency(calculateDiscountedUnitPrice(totalPrice, cartDiscounts, userData['ratio-in-percent']))}</Text>
         </View>
         <View style={styles.separator} />
         <View style={styles.cartInfoWrapper}>
@@ -59,7 +60,7 @@ const CartSummary = ({ cartProductsList }) => {
           </View>
           <View>
             <Text style={styles.summaryTitle}>Sepet Son Toplam</Text>
-            <Text style={styles.summaryValue}>₺{formattedCurrency(totalPrice)}</Text>
+            <Text style={styles.summaryValue}>₺{formattedCurrency(calculateDiscountedUnitPrice(totalPrice, cartDiscounts, userData['ratio-in-percent']))}</Text>
           </View>
         </View>
         <Pressable style={styles.goToCartButton}>

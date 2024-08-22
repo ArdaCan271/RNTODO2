@@ -1,29 +1,35 @@
 import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
-import React, {useMemo} from 'react';
+import React, {useMemo, useState} from 'react';
 
 import { useTheme } from '../../constants/colors';
 
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
+import CartCariSelectionModal from '../../screens/CartCariSelectionModal';
 
-const CariSelection = ({navigation}) => {
+const CariSelection = ({navigation, selectedCari, setSelectedCari}) => {
   const theme = useTheme();
   const styles = useMemo(() => getStyles(theme), [theme]);
 
+  const [modalVisible, setModalVisible] = useState(false);
+
+  const selectedCariName = selectedCari ? selectedCari.Isim : 'Cari Seçiniz...';
+
   return (
-    <View style={styles.cariSection}>
+    <TouchableOpacity style={styles.cariSection} onPress={() => setModalVisible(true)}>
+    <CartCariSelectionModal modalVisible={modalVisible} setModalVisible={setModalVisible} setSelectedCari={setSelectedCari} />
       <View style={styles.cariSelectSection}>
         <View style={styles.cariPreviewSection}>
           <Text style={styles.cariPreviewTitle}>Cari İsmi:</Text>
           <View style={styles.cariPreviewValueContainer}>
-            <Text numberOfLines={2} style={styles.cariPreviewValue}>MÜŞTERİ 005</Text>
+            <Text numberOfLines={2} style={styles.cariPreviewValue}>{selectedCariName}</Text>
           </View>
         </View>
-        <TouchableOpacity style={styles.cariGoToListButton}>
+        <View style={styles.cariGoToListButton}>
           <FontAwesome name='play-circle-o' size={24} color={theme.background} />
           <Text style={styles.cariGoToListButtonText}>Seç</Text>
-        </TouchableOpacity>
+        </View>
       </View>
-    </View>
+    </TouchableOpacity>
   );
 }
 

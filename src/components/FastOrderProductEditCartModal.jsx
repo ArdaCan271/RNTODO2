@@ -33,11 +33,11 @@ const FastOrderProductEditCartModal = ({ modalVisible, setModalVisible, productI
   const user = userList.find((user) => user.userEmail === userData.email);
   const productList = user ? user.productsList : [];
   const product = productList.find((product) => product.stockCode === StockCode);
+  
   const productCartQuantity = product ? product.quantity : 0;
-  const productDiscounts = product ? product.discounts : [1, 1, 1, 1];
+  const productDiscounts = product ? product.discounts : (userData['ratio-per-stock'] ? Array(userData.parameters['line-discount']).fill(userData['ratio-in-percent'] ? 0 : 1) : Array(userData.parameters['line-discount']).fill(userData['ratio-in-percent'] ? 0 : 1));
   const productCartPrice = product ? product.unitPrice : StockPrice;
   const productCartDiscountedPrice = product ? product.discountedPrice : StockPrice;
-  
   
   const discountsInfo = productDiscounts.map((discount) => {
     const [discountValue, setDiscountValue] = useState(discount);
@@ -195,7 +195,7 @@ const FastOrderProductEditCartModal = ({ modalVisible, setModalVisible, productI
   return (
     <Modal
       animationType="fade"
-      transparent={true}
+      transparent
       visible={modalVisible}
       onRequestClose={() => {
         setModalVisible(!modalVisible);
@@ -311,7 +311,7 @@ const FastOrderProductEditCartModal = ({ modalVisible, setModalVisible, productI
                 </View>
               </View>
             }
-            {!isLandscape &&
+            {!isLandscape && productDiscounts.length > 0 &&
               <View style={{ height: 60, width: '100%', flexDirection: 'row', alignItems: 'center', justifyContent: 'center', marginTop: 20, }} >
                 <TouchableOpacity style={{ padding: 1, marginRight: 6 }} onPress={handleResetDiscounts}>
                   <FontAwesome name="undo" size={24} color={theme.textAlt} />
@@ -335,7 +335,7 @@ const FastOrderProductEditCartModal = ({ modalVisible, setModalVisible, productI
               </View>
             }
             <View style={styles.modalActionsContainer}>
-              {isLandscape &&
+              {isLandscape && productDiscounts.length > 0 &&
                 <View style={{ height: 60, width: '100%', flexDirection: 'row', alignItems: 'center', justifyContent: 'center', paddingLeft: 14 }} >
                   <TouchableOpacity style={{ padding: 1, marginRight: 6 }} onPress={handleResetDiscounts}>
                     <FontAwesome name="undo" size={24} color={theme.textAlt} />
