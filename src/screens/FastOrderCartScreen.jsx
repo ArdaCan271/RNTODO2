@@ -61,8 +61,8 @@ const FastOrderCartScreen = ({ navigation, route }) => {
         <CartDescription description={description} setDescription={setDescription} />
         <VadeSelection vadeDate={vadeDate} setVadeDate={setVadeDate} />
         <DeliveryDateSelection deliveryDate={deliveryDate} setDeliveryDate={setDeliveryDate} />
-        <CartDiscounts cartDiscounts={cartDiscounts} cartDiscountStates={cartDiscountStates} />
-        <CartStocks navigation={navigation} productList={productList}/>
+        <CartDiscounts cartDiscounts={cartDiscounts} cartDiscountStates={cartDiscountStates} ratioInPercent={userData['ratio-in-percent']} />
+        <CartStocks navigation={navigation} productList={productList} cartDiscountStates={cartDiscountStates}/>
       </ScrollView>
       <CartSummary cartProductsList={productList}
         cartDiscounts={

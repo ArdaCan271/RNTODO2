@@ -59,10 +59,6 @@ const ExtractReportScreen = ({ navigation, route }) => {
 
   return (
     <View style={styles.container}>
-      <CustomHeader
-        title={route.params.title}
-        navigation={navigation}
-      />
       <Table
         fieldWidths={fieldWidths}
         detailFieldWidths={detailTableFieldWidths}
@@ -72,6 +68,10 @@ const ExtractReportScreen = ({ navigation, route }) => {
         itemsPerPage={10}
         fieldFilters={fieldFilters}
         setFieldFilters={setFieldFilters}
+        navigation={navigation}
+      />
+      <CustomHeader
+        title={route.params.title}
         navigation={navigation}
       />
     </View>

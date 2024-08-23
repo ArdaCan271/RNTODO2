@@ -50,6 +50,8 @@ const DataRow = ({ item, headerList, customDataComponent, fieldWidths, backgroun
 const getStyles = (theme) => StyleSheet.create({
   rowContainer: {
     flexDirection: 'row',
+    borderBottomWidth: 1,
+    borderBottomColor: theme.primary,
   },
 });
 

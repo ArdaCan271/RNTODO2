@@ -89,7 +89,7 @@ export const darkTheme = {
   textSelection: 'rgba(0, 159, 227, 0.5)',
   textAlt: '#7b85a3',
   textPrimary: '#009fe3',
-  separator: '#303650',
+  separator: '#434b70',
   redSupport: "rgba(255, 3, 8, 0.15)",
   tableHighlight: '#805500',
   paleRed: '#b3403e',

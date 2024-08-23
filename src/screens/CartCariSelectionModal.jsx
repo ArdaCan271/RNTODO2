@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef, useMemo } from 'react';
-import { StyleSheet, Text, View, BackHandler, TextInput, Modal, Pressable } from 'react-native';
+import { StyleSheet, View, TextInput, Modal, Pressable } from 'react-native';
 import axios from 'axios';
 import { useSelector } from 'react-redux';
 import { useTheme } from '../constants/colors';
@@ -40,7 +40,7 @@ const CartCariSelectionModal = ({ modalVisible, setModalVisible, setSelectedCari
         user_token: userToken,
       });
       setCustomerList(response.data);
-      setFilteredCustomerList(response.data); // Initialize the filtered list
+      setFilteredCustomerList(response.data);
     } catch (error) {
       console.log(error);
     } finally {
@@ -58,19 +58,24 @@ const CartCariSelectionModal = ({ modalVisible, setModalVisible, setSelectedCari
         handleCariSelection(item);
         setModalVisible(false);
       }}
-      cariKod={item.CariKod}
-      isim={item.Isim}
-      alacak={item.Alacak}
-      il={item.Il}
+      cariCode={item.CariKod}
+      name={item.Isim}
+      due={item.Alacak}
+      city={item.Il}
       dynamicColors={{
         backgroundColor: index % 2 === 0 ? theme.background : theme.backgroundAlt,
-        borderMain: index % 2 === 0 ? theme.primary : theme.primaryAlt,
-        initialsWrapper: index % 2 === 0 ? theme.primary : theme.primaryAlt,
+        accent: index % 2 === 0 ? theme.primaryAlt : theme.primary,
       }}
     />
   );
 
-  const renderSkeletonItem = ({ index }) => <CustomerCardSkeleton backgroundColor={index % 2 === 0 ? theme.backgroundAlt : theme.background} />;
+  const renderSkeletonItem = ({ index }) => 
+    <CustomerCardSkeleton 
+      dynamicColors={{
+        backgroundColor: index % 2 === 0 ? theme.background : theme.backgroundAlt,
+        accent: index % 2 === 0 ? theme.primaryAlt : theme.primary,
+      }}
+    />;
 
   const handleSearch = (query) => {
     setSearchQuery(query);
@@ -96,54 +101,40 @@ const CartCariSelectionModal = ({ modalVisible, setModalVisible, setSelectedCari
 
   return (
     <Modal
-      animationType='fade'
-      transparent
+      animationType='none'
       visible={modalVisible}
       onRequestClose={() => setModalVisible(false)}
     >
-      <Pressable 
-        style={styles.overlay}
-        onPress={() => setModalVisible(false)}
-      >
-        <Pressable style={styles.container}>
-          <View style={styles.searchInputWrapper}>
-            <TextInput
-              style={styles.searchInput}
-              placeholder="Cari Ara"
-              placeholderTextColor={theme.textAlt}
-              value={searchQuery}
-              onChangeText={handleSearch}
-              onSubmitEditing={handleInputSubmit}
-              ref={searchInputRef}
-              autoCapitalize='none'
-            />
-          </View>
-          <FlashList
-            data={loading ? Array(10).fill({}) : filteredCustomerList}
-            renderItem={loading ? renderSkeletonItem : renderItem}
-            estimatedItemSize={100}
-            keyboardShouldPersistTaps='handled'
+      <View style={styles.container}>
+        <CustomHeader title='Cari Seç' hasDrawer={false} leftButtonFunction={() => setModalVisible(false)} />
+        <View style={styles.searchInputWrapper}>
+          <TextInput
+            style={styles.searchInput}
+            placeholder="Cari Ara"
+            placeholderTextColor={theme.textAlt}
+            value={searchQuery}
+            onChangeText={handleSearch}
+            onSubmitEditing={handleInputSubmit}
+            ref={searchInputRef}
+            autoCapitalize='none'
           />
-        </Pressable>
-      </Pressable>
+        </View>
+        <FlashList
+          data={loading ? Array(10).fill({}) : filteredCustomerList}
+          renderItem={loading ? renderSkeletonItem : renderItem}
+          estimatedItemSize={100}
+          keyboardShouldPersistTaps='handled'
+        />
+      </View>
     </Modal>
   );
 };
 
 const getStyles = (theme) => StyleSheet.create({
-  overlay: {
-    flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.6)',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
   container: {
-    width: '90%',
-    height: '90%',
-    borderRadius: 10,
+    flex: 1,
+    paddingTop: theme.padding.header,
     backgroundColor: theme.background,
-    elevation: 5,
-    overflow: 'hidden',
   },
   searchInputWrapper: {
     justifyContent: 'center',

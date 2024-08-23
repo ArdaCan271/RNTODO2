@@ -74,19 +74,24 @@ const CurrentScreen = ({ navigation, route }) => {
   const renderItem = ({ item, index }) => (
     <CustomerCard
       onPress={handleOnCustomerPress(item)}
-      cariKod={item.CariKod}
-      isim={item.Isim}
-      alacak={item.Alacak}
-      il={item.Il}
+      cariCode={item.CariKod}
+      name={item.Isim}
+      due={item.Alacak}
+      city={item.Il}
       dynamicColors={{
         backgroundColor: index % 2 === 0 ? theme.background : theme.backgroundAlt,
-        borderMain: index % 2 === 0 ? theme.primary : theme.primaryAlt,
-        initialsWrapper: index % 2 === 0 ? theme.primary : theme.primaryAlt,
+        accent: index % 2 === 0 ? theme.primaryAlt : theme.primary,
       }}
     />
   );
 
-  const renderSkeletonItem = ({ index }) => <CustomerCardSkeleton backgroundColor={index % 2 === 0 ? theme.backgroundAlt : theme.background} />;
+  const renderSkeletonItem = ({ index }) => 
+  <CustomerCardSkeleton 
+    dynamicColors={{
+      backgroundColor: index % 2 === 0 ? theme.background : theme.backgroundAlt,
+      accent: index % 2 === 0 ? theme.primaryAlt : theme.primary,
+    }}
+  />;
 
   const handleSearch = (query) => {
     setSearchQuery(query);

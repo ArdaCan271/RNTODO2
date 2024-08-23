@@ -116,8 +116,6 @@ const getStyles = (theme) => StyleSheet.create({
     alignItems: 'center',
     backgroundColor: theme.primary,
     borderRadius: 5,
-    borderWidth: 1,
-    borderColor: theme.text,
   },
   goToCartTitle: {
     fontSize: 18,

@@ -15,7 +15,7 @@ import { useKeyboardVisible } from '../../utils/useKeyboardCustomHook';
 
 import { calculateDiscountedUnitPrice } from '../../utils/calculateDiscounts';
 
-const CartEditProductModal = ({ modalVisible, setModalVisible, productInfo }) => {
+const CartEditProductModal = ({ modalVisible, setModalVisible, productInfo, cartDiscountsArray }) => {
   const theme = useTheme();
   const styles = useMemo(() => getStyles(theme), [theme]);
 
@@ -128,20 +128,52 @@ const CartEditProductModal = ({ modalVisible, setModalVisible, productInfo }) =>
   };
   
 
-  const handleDiscountChange = (value, index) => {
+  const handleDiscountChange = (value, index, ratioInPercent) => {
     if ((value.endsWith('.') && value.length > 1)) {
+      discountsInfo[index].setDiscount(value);
+      dispatch(setDiscountOfProduct({
+        userEmail: userData.email,
+        ratioInPercent: userData['ratio-in-percent'],
+        stockCode: stockCode,
+        discount: { discountIndex: index, discountValue: parseFloat(value) },
+      }));
+      return;
+    }
+
+    if (value === '') {
       discountsInfo[index].setDiscount(value);
       return;
     }
+
     let numericValue = parseFloat(value);
+
     if (isNaN(numericValue)) {
-      numericValue = 1;
+      discountsInfo[index].setDiscount(discounts[index]);
+      dispatch(setDiscountOfProduct({
+        userEmail: userData.email,
+        ratioInPercent: userData['ratio-in-percent'],
+        stockCode: stockCode,
+        discount: { discountIndex: index, discountValue: discounts[index] },
+      }));
+      return;
     }
-    if (numericValue < 1) {
-      numericValue = 1;
-    } else if (numericValue > 2) {
-      numericValue = 2;
+
+    if (ratioInPercent) {
+      // Clamp value between 0 and 1
+      if (numericValue < 0) {
+        numericValue = 0;
+      } else if (numericValue > 1) {
+        numericValue = 1;
+      }
+    } else {
+      // Clamp value between 1 and 2
+      if (numericValue < 1) {
+        numericValue = 1;
+      } else if (numericValue > 2) {
+        numericValue = 2;
+      }
     }
+
     discountsInfo[index].setDiscount(numericValue);
     dispatch(setDiscountOfProduct({
       userEmail: userData.email,
@@ -151,14 +183,35 @@ const CartEditProductModal = ({ modalVisible, setModalVisible, productInfo }) =>
     }));
   };
 
-  handleDiscountBlur = (value, index) => {
+  handleDiscountBlur = (value, index, ratioInPercent) => {
+    if (value === '') {
+      discountsInfo[index].setDiscount(discounts[index]);
+      dispatch(setDiscountOfProduct({
+        userEmail: userData.email,
+        ratioInPercent: userData['ratio-in-percent'],
+        stockCode: stockCode,
+        discount: { discountIndex: index, discountValue: discounts[index] },
+      }));
+      return;
+    }
+
     if (typeof value === 'string' && value.endsWith('.')) {
       let numericValue = parseFloat(value);
-      if (numericValue < 1) {
-        numericValue = 1;
-      } else if (numericValue > 2) {
-        numericValue = 2;
+      
+      if (ratioInPercent) {
+        if (numericValue < 0) {
+          numericValue = 0;
+        } else if (numericValue > 1) {
+          numericValue = 1;
+        }
+      } else {
+        if (numericValue < 1) {
+          numericValue = 1;
+        } else if (numericValue > 2) {
+          numericValue = 2;
+        }
       }
+
       discountsInfo[index].setDiscount(numericValue);
       dispatch(setDiscountOfProduct({
         userEmail: userData.email,
@@ -170,7 +223,7 @@ const CartEditProductModal = ({ modalVisible, setModalVisible, productInfo }) =>
   };
 
   const handleResetUnitPrice = () => {
-    setUnitPriceState(StockPrice);
+    setUnitPriceState(stockPrice);
     dispatch(setPriceOfProduct({
       userEmail: userData.email,
       ratioInPercent: userData['ratio-in-percent'],
@@ -193,6 +246,9 @@ const CartEditProductModal = ({ modalVisible, setModalVisible, productInfo }) =>
   };
 
   const isKeyboardVisible = useKeyboardVisible();
+
+  const lineDiscountedUnitPrice = calculateDiscountedUnitPrice(parseFloat(unitPriceState), discountsInfo.map(info => info.discount), userData['ratio-in-percent']);
+  const finalDiscountedUnitPrice = calculateDiscountedUnitPrice(lineDiscountedUnitPrice, cartDiscountsArray, userData['ratio-in-percent']);
 
   return (
     <Modal
@@ -238,7 +294,7 @@ const CartEditProductModal = ({ modalVisible, setModalVisible, productInfo }) =>
                       <FontAwesome name="undo" size={20} color={theme.textAlt} />
                     </TouchableOpacity>
                     <TextInput
-                      style={styles.stockPriceInput}
+                      style={[styles.stockPriceInput, {color: unitPriceState == stockPrice ? theme.text : 'teal'}]}
                       value={stockPriceInputFocused ? unitPriceState.toString() : `₺${formattedCurrency(unitPriceState)}`}
                       onFocus={() => setStockPriceInputFocused(true)}
                       onBlur={() => { setStockPriceInputFocused(false); handleStockPriceBlur(); }}
@@ -254,11 +310,11 @@ const CartEditProductModal = ({ modalVisible, setModalVisible, productInfo }) =>
                 </View>
                 <View style={styles.stockInfoTextWrapper}>
                   <Text style={styles.stockInfoTitle}>İsk. Br. Fiyat</Text>
-                  <Text style={styles.stockInfoValue}>₺{formattedCurrency(calculateDiscountedUnitPrice(parseFloat(unitPriceState), discountsInfo.map(info => info.discount), userData['ratio-in-percent']))}</Text>
+                  <Text style={[styles.stockInfoValue, {color: finalDiscountedUnitPrice == parseFloat(unitPriceState) ? theme.text : 'darkorange'}]}>₺{formattedCurrency(finalDiscountedUnitPrice)}</Text>
                 </View>
                 <View style={styles.stockInfoTextWrapper}>
                   <Text style={styles.stockInfoTitle}>Toplam Fiyat</Text>
-                  <Text style={styles.stockInfoValue}>₺{formattedCurrency(discountedPrice * quantity)}</Text>
+                  <Text style={styles.stockInfoValue}>₺{formattedCurrency(finalDiscountedUnitPrice * quantity)}</Text>
                 </View>
               </View>
               :
@@ -300,47 +356,47 @@ const CartEditProductModal = ({ modalVisible, setModalVisible, productInfo }) =>
                   <View style={{width: 1, height: 35, backgroundColor: theme.textAlt}}/>
                   <View style={{width: '48%', height: 38, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
                     <Text style={styles.stockInfoTitle}>İsk. Br. Fiyat</Text>
-                    <Text style={styles.stockInfoValue}>₺{formattedCurrency(calculateDiscountedUnitPrice(parseFloat(unitPriceState), discountsInfo.map(info => info.discount), userData['ratio-in-percent']))}</Text>
+                    <Text style={[styles.stockInfoValue, {color: finalDiscountedUnitPrice == parseFloat(unitPriceState) ? theme.text : 'darkorange'}]}>₺{formattedCurrency(finalDiscountedUnitPrice)}</Text>
                   </View>
                 </View>
                 <View style={{width: '100%', height: 1, backgroundColor: theme.textAlt, marginTop: 4, marginBottom: 4}}/>
                 <View style={{ flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center' }}>
                   <View style={{ width: '48%', height: 38, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
                     <Text style={styles.stockInfoTitle}>Toplam Fiyat</Text>
-                    <Text style={styles.stockInfoValue}>₺{formattedCurrency(discountedPrice * quantity)}</Text>
+                    <Text style={styles.stockInfoValue}>₺{formattedCurrency(finalDiscountedUnitPrice * quantity)}</Text>
                   </View>
                   <View style={{width: 1, height: 35, backgroundColor: theme.textAlt, marginLeft: '2%'}}/>
                 </View>
               </View>
             }
-            {!isLandscape &&
-              <View style={{ height: 60, width: '100%', flexDirection: 'row', alignItems: 'center', justifyContent: 'center', marginTop: 20, }} >
-                <TouchableOpacity style={{ padding: 1, marginRight: 6 }} onPress={handleResetDiscounts}>
-                  <FontAwesome name="undo" size={24} color={theme.textAlt} />
-                </TouchableOpacity>
-                {discountsInfo.map((discountInfo, index) => (
-                  <View key={index} style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
-                    <TextInput
-                      style={styles.discountInput}
-                      value={discountInfo.discount.toString()}
-                      onChangeText={(value) => handleDiscountChange(value, index)}
-                      onBlur={() => handleDiscountBlur(discountsInfo[index].discount, index)}
-                      selectTextOnFocus
-                      selectionColor={theme.textSelection}
-                      keyboardType='numeric'
-                      autoCapitalize='none'
-                      disableFullscreenUI
-                    />
-                    {index !== discountsInfo.length - 1 && <Text style={{ color: theme.text, fontSize: 35, fontWeight: '200' }}>/</Text>}
-                  </View>
-                ))}
-              </View>
-            }
             <View style={styles.modalActionsContainer}>
-              {isLandscape &&
-                <View style={{ height: 60, width: '100%', flexDirection: 'row', alignItems: 'center', justifyContent: 'center', paddingLeft: 14 }} >
-                  <TouchableOpacity style={{ padding: 1, marginRight: 6 }} onPress={handleResetDiscounts}>
-                    <FontAwesome name="undo" size={24} color={theme.textAlt} />
+              {
+                <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', backgroundColor: 'red' }} >
+                  <TouchableOpacity style={{ padding: 6, marginRight: 2 }} onPress={handleResetDiscounts}>
+                    <FontAwesome name="undo" size={22} color={theme.textAlt} />
+                  </TouchableOpacity>
+                  {discountsInfo.map((discountInfo, index) => (
+                    <View key={index} style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
+                      <TextInput
+                        style={styles.discountInput}
+                        value={discountInfo.discount.toString()}
+                        onChangeText={(value) => handleDiscountChange(value, index)}
+                        onBlur={() => handleDiscountBlur(discountsInfo[index].discount, index)}
+                        selectTextOnFocus
+                        selectionColor={theme.textSelection}
+                        keyboardType='numeric'
+                        autoCapitalize='none'
+                        disableFullscreenUI
+                      />
+                      {index !== discountsInfo.length - 1 && <Text style={{ color: theme.text, fontSize: 35, fontWeight: '200' }}>/</Text>}
+                    </View>
+                  ))}
+                </View>
+              }
+              {/* {isLandscape &&
+                <View style={{ height: 60, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', paddingLeft: 14, backgroundColor: 'red' }} >
+                  <TouchableOpacity style={{ padding: 6, marginRight: 2 }} onPress={handleResetDiscounts}>
+                    <FontAwesome name="undo" size={22} color={theme.textAlt} />
                   </TouchableOpacity>
                   {discountsInfo.map((discountInfo, index) => (
                     <View key={index} style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
@@ -360,9 +416,9 @@ const CartEditProductModal = ({ modalVisible, setModalVisible, productInfo }) =>
                   ))
                   }
                 </View>
-              }
+              } */}
               <View style={styles.modalButtonsContainer}>
-                <TouchableOpacity style={{ padding: 2 }} onPress={handleClearProduct}>
+                <TouchableOpacity style={{ padding: 4 }} onPress={handleClearProduct}>
                   <FontAwesome name="trash-o" size={26} color={theme.textAlt} />
                 </TouchableOpacity>
                 <View style={styles.cartModifyComponentContainer}>
@@ -419,10 +475,11 @@ const getStyles = (theme) => StyleSheet.create({
   },
   closeButton: {
     borderRadius: 5,
-    padding: 1,
+    padding: 3,
   },
   modalBody: {
     flex: 4,
+    justifyContent: 'space-between'
   },
   stockInfoContainer: {
     justifyContent: 'flex-start',
@@ -455,32 +512,30 @@ const getStyles = (theme) => StyleSheet.create({
     borderWidth: 1,
     borderColor: theme.textAlt,
     borderRadius: 5,
-    backgroundColor: theme.backgroundAlt,
+    backgroundColor: theme.background,
     color: theme.text,
     fontSize: 16,
   },
   discountInput: {
-    width: 50,
-    height: 50,
+    width: 44,
+    height: 44,
     marginHorizontal: 5,
     textAlign: 'center',
     color: theme.text,
     fontSize: 18,
     padding: 0,
-    backgroundColor: theme.backgroundAlt,
+    backgroundColor: theme.background,
     borderWidth: 1,
     borderColor: theme.text,
     borderRadius: 5,
   },
   modalActionsContainer: {
     flex: 1,
-    justifyContent: 'flex-end',
+    justifyContent: 'space-between',
     alignItems: 'center',
-    flexDirection: 'row',
-    paddingLeft: 20,
+    backgroundColor: 'blue'
   },
   modalButtonsContainer: {
-    height: 50,
     flexDirection: 'row',
     justifyContent: 'flex-end',
     alignItems: 'center',
@@ -512,7 +567,7 @@ const getStyles = (theme) => StyleSheet.create({
     color: theme.text,
     fontSize: 16,
     padding: 0,
-    backgroundColor: theme.backgroundAlt,
+    backgroundColor: theme.background,
   }
 });
 

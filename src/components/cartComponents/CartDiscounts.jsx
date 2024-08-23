@@ -3,26 +3,34 @@ import React, { useMemo, useState } from 'react';
 
 import { useTheme } from '../../constants/colors';
 
-const CartDiscounts = ({ cartDiscounts, cartDiscountStates }) => {
+const CartDiscounts = ({ cartDiscounts, cartDiscountStates, ratioInPercent }) => {
   const theme = useTheme();
   const styles = useMemo(() => getStyles(theme), [theme]);
 
-  //example cartDiscountsInfo: [{"cartDiscount": 1, "setCartDiscount": [Function bound dispatchSetState]}, {"cartDiscount": 1, "setCartDiscount": [Function bound dispatchSetState]}, {"cartDiscount": 1, "setCartDiscount": [Function bound dispatchSetState]}, {"cartDiscount": 1, "setCartDiscount": [Function bound dispatchSetState]}]
   const localDiscountStates = cartDiscounts.map((discount) => {
     const [localDiscountValue, setLocalDiscountValue] = useState(discount);
     return { localDiscount: localDiscountValue, setLocalDiscount: setLocalDiscountValue };
   });
   
-
   const handleDiscountChange = (value, index, ratioInPercent) => {
     if ((value.endsWith('.') && value.length > 1)) {
       localDiscountStates[index].setLocalDiscount(value);
+      cartDiscountStates[index].setCartDiscount(parseFloat(value));
       return;
     }
-    let numericValue = parseFloat(value);
-    if (isNaN(numericValue)) {
-      numericValue = ratioInPercent ? 0 : 1;
+    if (value === '') {
+      localDiscountStates[index].setLocalDiscount(value);
+      return;
     }
+
+    let numericValue = parseFloat(value);
+
+    if (isNaN(numericValue)) {
+      localDiscountStates[index].setLocalDiscount(cartDiscounts[index]);
+      cartDiscountStates[index].setCartDiscount(cartDiscounts[index]);
+      return;
+    }
+    
     if (ratioInPercent) {
       // Clamp value between 0 and 1
       if (numericValue < 0) {
@@ -42,11 +50,32 @@ const CartDiscounts = ({ cartDiscounts, cartDiscountStates }) => {
     cartDiscountStates[index].setCartDiscount(parseFloat(numericValue));
   };
 
-  console.log('localDiscountStates:', localDiscountStates);
-  console.log('cartDiscountStates:', cartDiscountStates);
-  
-  
-  
+  const handleDiscountBlur = (value, index, ratioInPercent) => {
+    if (value === '') {
+      localDiscountStates[index].setLocalDiscount(cartDiscounts[index]);
+      cartDiscountStates[index].setCartDiscount(cartDiscounts[index]);
+      return;
+    }
+    if (typeof value === 'string' && value.endsWith('.')) {
+      let numericValue = parseFloat(value);
+
+      if (ratioInPercent) {
+        if (numericValue < 0) {
+          numericValue = 0;
+        } else if (numericValue > 1) {
+          numericValue = 1;
+        }
+      } else {
+        if (numericValue < 1) {
+          numericValue = 1;
+        } else if (numericValue > 2) {
+          numericValue = 2;
+        }
+      }
+      localDiscountStates[index].setLocalDiscount(numericValue);
+      cartDiscountStates[index].setCartDiscount(parseFloat(numericValue));
+    }
+  };
 
   return (
     <View style={styles.discountSection}>
@@ -58,7 +87,8 @@ const CartDiscounts = ({ cartDiscounts, cartDiscountStates }) => {
               <TextInput
                 style={styles.discountInput}
                 value={discountInfo.localDiscount.toString()}
-                onChangeText={(value) => handleDiscountChange(value, index)}
+                onChangeText={(value) => handleDiscountChange(value, index, false)}
+                onBlur={() => handleDiscountBlur(localDiscountStates[index].localDiscount, index, ratioInPercent)}
                 selectTextOnFocus
                 selectionColor={theme.textSelection}
                 keyboardType='numeric'
@@ -104,14 +134,14 @@ const getStyles = (theme) => StyleSheet.create({
     alignItems: 'center',
   },
   discountInput: {
-    width: 50,
-    height: 50,
+    width: 44,
+    height: 44,
     marginHorizontal: 5,
     textAlign: 'center',
     color: theme.text,
     fontSize: 18,
     padding: 0,
-    backgroundColor: theme.backgroundAlt,
+    backgroundColor: theme.background,
     borderWidth: 1,
     borderColor: theme.text,
     borderRadius: 5,

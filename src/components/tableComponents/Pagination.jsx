@@ -53,38 +53,42 @@ const Pagination = ({currentPage, totalPages, handleNextPage, handlePreviousPage
       <TouchableOpacity onPress={() => setIsModalVisible(true)} style={styles.rowsPerPageButton}>
         <Text style={styles.rowsPerPageButtonText}>{`Satır: ${rowsPerPage}`}</Text>
       </TouchableOpacity>
-      <TextInput
-        style={styles.goToPageInput}
-        placeholder="Sayfa"
-        keyboardType="numeric"
-        value={goToInput}
-        onChangeText={handleInputChange}
-        placeholderTextColor={theme.textAlt}
-        numberOfLines={2}
-        onSubmitEditing={() => handleGoToPage(parseInt(goToInput, 10))}
-      />
-      <TouchableOpacity
-        onPress={() => {
-          handleGoToPage(parseInt(goToInput, 10));
-          Keyboard.dismiss();
-        }}
-        style={styles.goToPageButton}
-      >
-        <FontAwesome name="external-link-square" size={20} color={theme.white} />
-      </TouchableOpacity>
-      <TouchableOpacity
-        onPress={handlePreviousPage}
-        style={styles.changePageButton}
-      > 
-        <FontAwesome name="chevron-left" size={20} color={theme.white} />
-      </TouchableOpacity>
-      <Text style={styles.pageIndicatorText}>{`${currentPage} / ${totalPages}`}</Text>
-      <TouchableOpacity
-        onPress={handleNextPage}
-        style={styles.changePageButton}
-      >
-        <FontAwesome name="chevron-right" size={20} color={theme.white} />
-      </TouchableOpacity>
+      <View style={{flexDirection: 'row'}}>
+        <TextInput
+          style={styles.goToPageInput}
+          placeholder="Sayfa"
+          keyboardType="numeric"
+          value={goToInput}
+          onChangeText={handleInputChange}
+          placeholderTextColor={theme.textAlt}
+          numberOfLines={2}
+          onSubmitEditing={() => handleGoToPage(parseInt(goToInput, 10))}
+        />
+        <TouchableOpacity
+          onPress={() => {
+            handleGoToPage(parseInt(goToInput, 10));
+            Keyboard.dismiss();
+          }}
+          style={styles.goToPageButton}
+        >
+          <FontAwesome name="external-link-square" size={20} color={theme.white} />
+        </TouchableOpacity>
+      </View>
+      <View style={{flexDirection: 'row', alignItems: 'center'}}>
+        <TouchableOpacity
+          onPress={handlePreviousPage}
+          style={styles.changePageButton}
+        >
+          <FontAwesome name="chevron-left" size={20} color={theme.white} />
+        </TouchableOpacity>
+        <Text style={styles.pageIndicatorText}>{`${currentPage} / ${totalPages}`}</Text>
+        <TouchableOpacity
+          onPress={handleNextPage}
+          style={styles.changePageButton}
+        >
+          <FontAwesome name="chevron-right" size={20} color={theme.white} />
+        </TouchableOpacity>
+      </View>
     </Pressable>
   );
 }
@@ -92,35 +96,30 @@ const Pagination = ({currentPage, totalPages, handleNextPage, handlePreviousPage
 const getStyles = (theme) => StyleSheet.create({
   container: {
     flexDirection: 'row',
-    justifyContent: 'flex-end',
+    justifyContent: 'space-evenly',
     alignItems: 'center',
     width: '100%',
-    height: 24,
+    height: 34,
+    backgroundColor: theme.backgroundAlt,
   },
   removeFiltersButton: {
     height: 26,
-    paddingHorizontal: 4,
+    paddingHorizontal: 6,
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: theme.primaryAlt,
     borderRadius: 5,
-    borderWidth: 1,
-    borderColor: theme.text,
-    marginRight: 10,
   },
   removeFiltersButtonText: {
     color: theme.white,
   },
   rowsPerPageButton: {
     height: 26,
-    paddingHorizontal: 4,
+    paddingHorizontal: 6,
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: theme.primaryAlt,
     borderRadius: 5,
-    borderWidth: 1,
-    borderColor: theme.text,
-    marginRight: 10,
   },
   rowsPerPageButtonText: {
     color: theme.white,
@@ -151,7 +150,7 @@ const getStyles = (theme) => StyleSheet.create({
     marginRight: 10,
     borderWidth: 1,
     borderLeftWidth: 0,
-    borderColor: theme.text,
+    borderColor: theme.primaryAlt,
   },
   pageIndicatorText: {
     color: theme.text,
@@ -161,11 +160,9 @@ const getStyles = (theme) => StyleSheet.create({
     height: 26,
     justifyContent: 'center',
     alignItems: 'center',
-    paddingHorizontal: 4,
+    paddingHorizontal: 6,
     backgroundColor: theme.primaryAlt,
     borderRadius: 5,
-    borderWidth: 1,
-    borderColor: theme.text,
   },
 });
 

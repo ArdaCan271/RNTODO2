@@ -11,7 +11,9 @@ import { formattedCurrency } from '../../utils/formatData';
 
 import { setAmountOfProduct } from '../../features/fastOrderCart/fastOrderCartSlice';
 
-const CartStockCard = ({ productInfo, setEditModalVisible, setSelectedEditProduct }) => {
+import { calculateDiscountedUnitPrice } from '../../utils/calculateDiscounts';
+
+const CartStockCard = ({ productInfo, setEditModalVisible, setSelectedEditProduct, cartDiscountsArray }) => {
   const theme = useTheme();
   const styles = useMemo(() => getStyles(theme), [theme]);
   const dispatch = useDispatch();
@@ -23,6 +25,7 @@ const CartStockCard = ({ productInfo, setEditModalVisible, setSelectedEditProduc
     setEditModalVisible(true);
   };
   
+  const lastDiscountedPrice = calculateDiscountedUnitPrice(productInfo.discountedPrice, cartDiscountsArray, userData['ratio-in-percentage']);
 
   return (
     <TouchableOpacity onPress={handleCartEditPress} style={styles.cartStockCard}>
@@ -40,13 +43,13 @@ const CartStockCard = ({ productInfo, setEditModalVisible, setSelectedEditProduc
             <Text style={styles.stockPriceTitle}>Stok Birim Fiyat:</Text>
             <Text style={styles.stockPriceValue}>₺{formattedCurrency(productInfo.stockPrice)}</Text>
           </View>
-          <View style={styles.unitPriceContainer}>
-            <Text style={styles.unitPriceTitle}>Birim Fiyat:</Text>
-            <Text style={styles.unitPriceValue}>₺{formattedCurrency(productInfo.unitPrice)}</Text>
+          <View style={[styles.unitPriceContainer, {backgroundColor: productInfo.unitPrice == productInfo.stockPrice ? theme.background : 'teal'}]}>
+            <Text style={[styles.unitPriceTitle, {color: productInfo.unitPrice == productInfo.stockPrice ? theme.text : theme.background}]}>Birim Fiyat:</Text>
+            <Text style={[styles.unitPriceValue, {color: productInfo.unitPrice == productInfo.stockPrice ? theme.text : theme.background}]}>₺{formattedCurrency(productInfo.unitPrice)}</Text>
           </View>
-          <View style={styles.discountPriceContainer}>
-            <Text style={styles.discountPriceTitle}>İskonto Fiyat:</Text>
-            <Text style={styles.discountPriceValue}>₺{formattedCurrency(productInfo.discountedPrice)}</Text>
+          <View style={[styles.discountPriceContainer, {backgroundColor: lastDiscountedPrice == productInfo.unitPrice ? theme.background : 'darkorange'}]}>
+            <Text style={[styles.discountPriceTitle, {color: lastDiscountedPrice == productInfo.unitPrice ? theme.text : theme.background}]}>İskonto Fiyat:</Text>
+            <Text style={[styles.discountPriceValue, {color: lastDiscountedPrice == productInfo.unitPrice ? theme.text : theme.background}]}>₺{formattedCurrency(lastDiscountedPrice)}</Text>
           </View>
         </View>
         <View style={styles.stockCartInfoContainer}>
@@ -56,7 +59,7 @@ const CartStockCard = ({ productInfo, setEditModalVisible, setSelectedEditProduc
             <Text style={styles.cartQuantityUnit}>{productInfo.unitType}</Text>
           </View>
           <View style={styles.stockCartTotalPriceContainer}>
-            <Text style={styles.stockCartTotalPrice}>₺{formattedCurrency(productInfo.discountedPrice * productInfo.quantity)}</Text>
+            <Text style={styles.stockCartTotalPrice}>₺{formattedCurrency(lastDiscountedPrice * productInfo.quantity)}</Text>
           </View>
         </View>
       </View>
@@ -99,10 +102,14 @@ const getStyles = (theme) => StyleSheet.create({
   cardBody: {
     flex: 1,
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    justifyContent: 'space-evenly',
+    paddingVertical: 2,
+    paddingLeft: 2,
+    columnGap: 10,
   },
   stockProductInfoContainer: {
     flex: 1,
+    rowGap: 5,
   },
   stockPriceContainer: {
     flex: 1,
@@ -125,6 +132,7 @@ const getStyles = (theme) => StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     paddingLeft: 4,
+    borderRadius: 5,
   },
   unitPriceTitle: {
     fontSize: 14,
@@ -141,6 +149,7 @@ const getStyles = (theme) => StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     paddingLeft: 4,
+    borderRadius: 5,
   },
   discountPriceTitle: {
     fontSize: 14,

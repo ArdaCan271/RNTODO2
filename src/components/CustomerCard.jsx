@@ -1,7 +1,5 @@
-// CustomerCard.js
 import React, { useMemo } from 'react';
-import { View, Text, StyleSheet, Dimensions, Pressable, TouchableOpacity, TouchableHighlight, useWindowDimensions } from 'react-native';
-import colors from '../constants/colors';
+import { View, Text, StyleSheet, Pressable } from 'react-native';
 
 import { useTheme } from '../constants/colors';
 
@@ -17,11 +15,11 @@ const formatCurrency = (value) => {
   return { lira, kurus };
 };
 
-const getInitials = (isim) => {
-  if (!isim) {
+const getInitials = (name) => {
+  if (!name) {
     return '';
   }
-  const words = isim.split(' ');
+  const words = name.split(' ');
   if (words.length === 1) {
     return words[0][0].toUpperCase();
   }
@@ -30,137 +28,146 @@ const getInitials = (isim) => {
   return firstInitial + lastInitial;
 };
 
-const CustomerCard = ({ cariKod, isim, alacak, il, onPress, dynamicColors }) => {
-
-  const windowWidth = useWindowDimensions().width;
-
+const CustomerCard = ({ cariCode, name, due, city, onPress, dynamicColors }) => {
   const theme = useTheme();
   const styles = useMemo(() => getStyles(theme), [theme]);
 
-  const { lira, kurus } = formatCurrency(alacak);
+  const { lira, kurus } = formatCurrency(due);
 
-  const initials = getInitials(isim);
+  const initials = getInitials(name);
 
   return (
-    <Pressable
-      style={[styles.cardWrapper, { borderLeftColor: dynamicColors.borderMain, backgroundColor: dynamicColors.backgroundColor }]}
-      onPress={onPress}
-      android_ripple={{ color: theme.primary }}
-      unstable_pressDelay={20}
-    >
-      <View style={styles.cardPressable}>
-        <View style={styles.topLeft}>
-          <View style={[styles.initialsWrapper, { backgroundColor: dynamicColors.initialsWrapper }]}>
-            <Text style={styles.initials}>
-              {initials}
-            </Text>
-          </View>
-          <View style={styles.textWrapper}>
-            <Text style={styles.cariKod}>{cariKod}</Text>
-            <Text style={styles.isim}>{isim}</Text>
-          </View>
-        </View>
-        {il !== '' &&
-          <View style={styles.bottomLeft}>
-            <View style={styles.locationIconWrapper}>
-              <Ionicons name="location-outline" size={18} color={theme.primary} />
+    <View style={[styles.cardPressableWrapper, { borderLeftColor: dynamicColors.accent, backgroundColor: dynamicColors.backgroundColor }]}>
+      <Pressable
+        style={styles.container}
+        onPress={onPress}
+        android_ripple={{ color: theme.separator }}
+        unstable_pressDelay={20}
+      >
+        <View style={styles.body}>
+          <View style={styles.initialsContainer}>
+            <View style={[styles.initialsCircle, {backgroundColor: dynamicColors.accent}]}>
+              <Text style={styles.initialsText}>{initials}</Text>
             </View>
-            <Text style={styles.il}>{il}</Text>
           </View>
-        }
-        <View style={styles.bottomRight}>
-          <Text style={styles.alacakWhole}>
-            ₺{lira}
-            <Text style={styles.alacakDecimal}>,{kurus}</Text>
-          </Text>
+          <View style={styles.infoContainer}>
+            <View style={styles.cariCodeContainer}>
+              <Text style={styles.cariCodeText}>{cariCode}</Text>
+            </View>
+            <View style={styles.nameContainer}>
+              <Text numberOfLines={2} style={styles.nameText}>{name}</Text>
+            </View>
+          </View>
+          <View style={styles.chevronContainer}>
+            <Ionicons name="chevron-forward" size={26} color={dynamicColors.accent} style={{marginTop: 6}} />
+          </View>
         </View>
-        <Ionicons name="chevron-forward" size={24} color={theme.primary} style={styles.chevron} />
-      </View>
-    </Pressable>
+        <View style={styles.footer}>
+          {city !== '' &&
+            <View style={styles.locationContainer}>
+              <View style={[styles.locationIconCircle, { backgroundColor: dynamicColors.accent }]}>
+                <Ionicons name="location-outline" size={18} color={dynamicColors.backgroundColor} />
+              </View>
+              <Text numberOfLines={1} style={styles.locationText}>{city}</Text>
+            </View>
+          }
+          <View style={styles.dueContainer}>
+            <Text style={styles.dueWhole}>₺{lira},<Text style={styles.dueDecimal}>{kurus}</Text></Text>
+          </View>
+        </View>
+      </Pressable>
+    </View>
   );
 };
 
 const getStyles = (theme) => StyleSheet.create({
-  cardWrapper: {
-    backgroundColor: theme.background,
+  cardPressableWrapper: {
     height: 100,
     borderLeftWidth: 15,
     width: '100%',
   },
-  cardPressable: {
-    width: '100%',
-    height: '100%',
-    padding: 8,
-    paddingLeft: 10,
+  container: {
+    flex: 1,
   },
-  topLeft: {
-    alignItems: 'flex-start',
+  body: {
+    flex: 2,
     flexDirection: 'row',
   },
-  initialsWrapper: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
+  initialsContainer: {
+    paddingHorizontal: 6,
+    alignItems: 'center',
+  },
+  initialsCircle: {
+    marginTop: 6,
+    width: 42,
+    height: 42,
+    borderRadius: 25,
     justifyContent: 'center',
     alignItems: 'center',
   },
-  initials: {
+  initialsText: {
     fontSize: 18,
-    color: theme.white,
+    color: theme.background,
   },
-  textWrapper: {
+  infoContainer: {
+    flex: 1,
+  },
+  cariCodeContainer: {
+    flex: 1,
+    marginTop: 4,
+  },
+  cariCodeText: {
+    fontSize: 15,
+    color: theme.textAlt,
+  },
+  nameContainer: {
+    flex: 2.5,
+  },
+  nameText: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: theme.text,
+  },
+  chevronContainer: {
+    paddingHorizontal: 4,
+    alignItems: 'center',
+  },
+  footer: {
+    flex: 1,
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+  },
+  locationContainer: {
+    flex: 1,
+    alignItems: 'flex-start',
+    flexDirection: 'row',
+  },
+  locationIconCircle: {
+    marginLeft: 15,
+    width: 24,
+    height: 24,
+    borderRadius: 13,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  locationText: {
+    fontSize: 15,
+    color: theme.textAlt,
     marginLeft: 6,
   },
-  isim: {
-    fontSize: 17,
-    color: theme.text,
-    fontWeight: 'bold',
-    marginTop: 0,
-    marginLeft: 2,
+  dueContainer: {
+    justifyContent: 'center',
+    alignItems: 'flex-end',
+    paddingHorizontal: 10,
   },
-  alacakWhole: {
+  dueWhole: {
     fontSize: 18,
     fontWeight: 'bold',
     color: theme.primary,
   },
-  alacakDecimal: {
+  dueDecimal: {
     fontSize: 14,
-    fontWeight: 'bold',
   },
-  bottomLeft: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    position: 'absolute',
-    bottom: 8,
-    left: 25,
-  },
-  locationIconWrapper: {
-    width: 24,
-    height: 24,
-    borderRadius: 12,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  il: {
-    fontSize: 15,
-    color: theme.textAlt,
-    marginLeft: 0,
-  },
-  bottomRight: {
-    position: 'absolute',
-    bottom: 10,
-    right: 15,
-  },
-  cariKod: {
-    fontSize: 14,
-    fontWeight: 'bold',
-    color: theme.textAlt,
-  },
-  chevron: {
-    position: 'absolute',
-    top: 12,
-    right: 12,
-  }
 });
 
 export default CustomerCard;

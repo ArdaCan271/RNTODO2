@@ -103,11 +103,11 @@ const getStyles = (theme) => StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'flex-start',
     alignItems: 'center',
-    borderWidth: 1,
-    borderColor: theme.primary,
     borderRadius: 5,
     height: 50,
     overflow: 'hidden',
+    borderWidth: 1,
+    borderColor: theme.primary,
   },
   vadeLabelContainer: {
     justifyContent: 'center',

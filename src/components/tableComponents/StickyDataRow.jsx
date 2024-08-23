@@ -52,6 +52,8 @@ const StickyDataRow = ({ item, headerList, customDataComponent, fieldWidths, bac
 const getStyles = (theme) => StyleSheet.create({
   rowContainer: {
     flexDirection: 'row',
+    borderBottomWidth: 1,
+    borderBottomColor: theme.primary,
   },
 });
 

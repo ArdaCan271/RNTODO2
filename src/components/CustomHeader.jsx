@@ -4,11 +4,15 @@ import { useTheme } from '../constants/colors';
 
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
-const CustomHeader = ({ navigation, title, hasDrawer, customRightComponent }) => {
+const CustomHeader = ({ navigation, title, hasDrawer, customRightComponent, leftButtonFunction }) => {
   const theme = useTheme();
   const styles = useMemo(() => getStyles(theme), [theme]);
 
   const handleButtonPress = () => {
+    if (leftButtonFunction) {
+      leftButtonFunction();
+      return;
+    }
     if (hasDrawer) {
       navigation.openDrawer();
     } else {

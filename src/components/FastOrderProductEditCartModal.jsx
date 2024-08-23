@@ -1,5 +1,5 @@
-import { StyleSheet, Text, View, Modal, Pressable, useWindowDimensions, Keyboard, TouchableOpacity, TextInput, KeyboardAvoidingView } from 'react-native';
-import React, { useState, useMemo, act } from 'react';
+import { StyleSheet, Text, View, Modal, Pressable, useWindowDimensions, Keyboard, TouchableOpacity, TextInput } from 'react-native';
+import React, { useState, useMemo } from 'react';
 
 import { useTheme } from '../constants/colors';
 
@@ -111,14 +111,33 @@ const FastOrderProductEditCartModal = ({ modalVisible, setModalVisible, productI
   const handleDiscountChange = (value, index, ratioInPercent) => {
     if ((value.endsWith('.') && value.length > 1)) {
       discountsInfo[index].setDiscount(value);
+      dispatch(setDiscountOfProduct({
+        userEmail: userData.email,
+        ratioInPercent: userData['ratio-in-percent'],
+        stockCode: StockCode,
+        discount: { discountIndex: index, discountValue: parseFloat(value) },
+      }));
+      return;
+    }
+
+    if (value === '') {
+      discountsInfo[index].setDiscount(value);
       return;
     }
     
     let numericValue = parseFloat(value);
+
     if (isNaN(numericValue)) {
-      numericValue = ratioInPercent ? 0 : 1;
+      discountsInfo[index].setDiscount('');
+      dispatch(setDiscountOfProduct({
+        userEmail: userData.email,
+        ratioInPercent: userData['ratio-in-percent'],
+        stockCode: StockCode,
+        discount: { discountIndex: index, discountValue: 0 },
+      }));
+      return;
     }
-    
+
     if (ratioInPercent) {
       // Clamp value between 0 and 1
       if (numericValue < 0) {
@@ -145,14 +164,33 @@ const FastOrderProductEditCartModal = ({ modalVisible, setModalVisible, productI
   };
   
 
-  handleDiscountBlur = (value, index) => {
+  const handleDiscountBlur = (value, index, ratioInPercent) => {
+    if (value === '') {
+      discountsInfo[index].setDiscount(productDiscounts[index]);
+      dispatch(setDiscountOfProduct({
+        userEmail: userData.email,
+        ratioInPercent: userData['ratio-in-percent'],
+        stockCode: StockCode,
+        discount: { discountIndex: index, discountValue: productDiscounts[index] },
+      }));
+      return;
+    }
+    
     if (typeof value === 'string' && value.endsWith('.')) {
       let numericValue = parseFloat(value);
 
-      if (numericValue < 1) {
-        numericValue = 1;
-      } else if (numericValue > 2) {
-        numericValue = 2;
+      if (ratioInPercent) {
+        if (numericValue < 0) {
+          numericValue = 0;
+        } else if (numericValue > 1) {
+          numericValue = 1;
+        }
+      } else {
+        if (numericValue < 1) {
+          numericValue = 1;
+        } else if (numericValue > 2) {
+          numericValue = 2;
+        }
       }
 
       discountsInfo[index].setDiscount(numericValue);
@@ -190,6 +228,8 @@ const FastOrderProductEditCartModal = ({ modalVisible, setModalVisible, productI
     });
   };
 
+  const lineDiscountedUnitPrice = calculateDiscountedUnitPrice(parseFloat(unitPriceState), discountsInfo.map(info => info.discount), userData['ratio-in-percent']);
+
   const isKeyboardVisible = useKeyboardVisible();
 
   return (
@@ -221,8 +261,8 @@ const FastOrderProductEditCartModal = ({ modalVisible, setModalVisible, productI
                 <View style={styles.stockInfoTextWrapper}>
                   <Text style={styles.stockInfoTitle}>Aktüel Stok</Text>
                   <View style={{ flexDirection: 'row' }}>
-                    <Text style={styles.stockInfoValue}>{ActualStock}</Text>
-                    <Text style={styles.stockInfoValue}>{StockUnit}</Text>
+                    <Text style={[styles.stockInfoValue, {color: ActualStock > 0 ? theme.text : theme.paleRed}]}>{ActualStock}</Text>
+                    <Text style={[styles.stockInfoValue, {color: ActualStock > 0 ? theme.text : theme.paleRed}]}>{StockUnit}</Text>
                   </View>
                 </View>
                 <View style={styles.stockInfoTextWrapper}>
@@ -236,7 +276,7 @@ const FastOrderProductEditCartModal = ({ modalVisible, setModalVisible, productI
                       <FontAwesome name="undo" size={20} color={theme.textAlt} />
                     </TouchableOpacity>
                     <TextInput
-                      style={styles.stockPriceInput}
+                      style={[styles.stockPriceInput, { color: unitPriceState == StockPrice ? theme.text : 'teal' }] }
                       value={stockPriceInputFocused ? unitPriceState.toString() : `₺${formattedCurrency(unitPriceState)}`}
                       onFocus={() => setStockPriceInputFocused(true)}
                       onBlur={() => { setStockPriceInputFocused(false); handleStockPriceBlur(); }}
@@ -252,7 +292,7 @@ const FastOrderProductEditCartModal = ({ modalVisible, setModalVisible, productI
                 </View>
                 <View style={styles.stockInfoTextWrapper}>
                   <Text style={styles.stockInfoTitle}>İsk. Br. Fiyat</Text>
-                  <Text style={styles.stockInfoValue}>₺{formattedCurrency(calculateDiscountedUnitPrice(parseFloat(unitPriceState), discountsInfo.map(info => info.discount), userData['ratio-in-percent']))}</Text>
+                  <Text style={[styles.stockInfoValue, {color: lineDiscountedUnitPrice == unitPriceState ? theme.text : 'darkorange'}]}>₺{formattedCurrency(lineDiscountedUnitPrice)}</Text>
                 </View>
                 <View style={styles.stockInfoTextWrapper}>
                   <Text style={styles.stockInfoTitle}>Toplam Fiyat</Text>
@@ -281,7 +321,7 @@ const FastOrderProductEditCartModal = ({ modalVisible, setModalVisible, productI
                         <FontAwesome name="undo" size={20} color={theme.textAlt} />
                       </TouchableOpacity>
                       <TextInput
-                        style={[styles.stockPriceInput, { marginRight: 0 }]}
+                        style={[styles.stockPriceInput, { marginRight: 0, color: unitPriceState == StockPrice ? theme.text : 'teal' }] }
                         value={stockPriceInputFocused ? unitPriceState.toString() : `₺${formattedCurrency(unitPriceState)}`}
                         onFocus={() => setStockPriceInputFocused(true)}
                         onBlur={() => { setStockPriceInputFocused(false); handleStockPriceBlur(); }}
@@ -298,7 +338,7 @@ const FastOrderProductEditCartModal = ({ modalVisible, setModalVisible, productI
                   <View style={{width: 1, height: 35, backgroundColor: theme.textAlt}}/>
                   <View style={{width: '48%', height: 38, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
                     <Text style={styles.stockInfoTitle}>İsk. Br. Fiyat</Text>
-                    <Text style={styles.stockInfoValue}>₺{formattedCurrency(calculateDiscountedUnitPrice(parseFloat(unitPriceState), discountsInfo.map(info => info.discount), userData['ratio-in-percent']))}</Text>
+                    <Text style={[styles.stockInfoValue, {color: lineDiscountedUnitPrice == unitPriceState ? theme.text : 'darkorange'}]}>₺{formattedCurrency(lineDiscountedUnitPrice)}</Text>
                   </View>
                 </View>
                 <View style={{width: '100%', height: 1, backgroundColor: theme.textAlt, marginTop: 4, marginBottom: 4}}/>
@@ -313,8 +353,8 @@ const FastOrderProductEditCartModal = ({ modalVisible, setModalVisible, productI
             }
             {!isLandscape && productDiscounts.length > 0 &&
               <View style={{ height: 60, width: '100%', flexDirection: 'row', alignItems: 'center', justifyContent: 'center', marginTop: 20, }} >
-                <TouchableOpacity style={{ padding: 1, marginRight: 6 }} onPress={handleResetDiscounts}>
-                  <FontAwesome name="undo" size={24} color={theme.textAlt} />
+                <TouchableOpacity style={{ padding: 6, marginRight: 2 }} onPress={handleResetDiscounts}>
+                  <FontAwesome name="undo" size={22} color={theme.textAlt} />
                 </TouchableOpacity>
                 {discountsInfo.map((discountInfo, index) => (
                   <View key={index} style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
@@ -337,8 +377,8 @@ const FastOrderProductEditCartModal = ({ modalVisible, setModalVisible, productI
             <View style={styles.modalActionsContainer}>
               {isLandscape && productDiscounts.length > 0 &&
                 <View style={{ height: 60, width: '100%', flexDirection: 'row', alignItems: 'center', justifyContent: 'center', paddingLeft: 14 }} >
-                  <TouchableOpacity style={{ padding: 1, marginRight: 6 }} onPress={handleResetDiscounts}>
-                    <FontAwesome name="undo" size={24} color={theme.textAlt} />
+                  <TouchableOpacity style={{ padding: 6, marginRight: 6 }} onPress={handleResetDiscounts}>
+                    <FontAwesome name="undo" size={22} color={theme.textAlt} />
                   </TouchableOpacity>
                   {discountsInfo.map((discountInfo, index) => (
                     <View key={index} style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
@@ -452,20 +492,21 @@ const getStyles = (theme) => StyleSheet.create({
     paddingRight: 5,
     borderWidth: 1,
     borderColor: theme.textAlt,
+    textDecorationLine: 'underline',
     borderRadius: 5,
-    backgroundColor: theme.backgroundAlt,
+    backgroundColor: theme.background,
     color: theme.text,
     fontSize: 16,
   },
   discountInput: {
-    width: 50,
-    height: 50,
+    width: 44,
+    height: 44,
     marginHorizontal: 5,
     textAlign: 'center',
     color: theme.text,
     fontSize: 18,
     padding: 0,
-    backgroundColor: theme.backgroundAlt,
+    backgroundColor: theme.background,
     borderWidth: 1,
     borderColor: theme.text,
     borderRadius: 5,
@@ -510,7 +551,7 @@ const getStyles = (theme) => StyleSheet.create({
     color: theme.text,
     fontSize: 16,
     padding: 0,
-    backgroundColor: theme.backgroundAlt,
+    backgroundColor: theme.background,
   }
 });
 

@@ -11,7 +11,7 @@ import { clearCart } from '../../features/fastOrderCart/fastOrderCartSlice';
 import CartStockCard from './CartStockCard';
 import CartEditProductModal from './CartEditProductModal';
 
-const CartStocks = ({ navigation, productList }) => {
+const CartStocks = ({ navigation, productList, cartDiscountStates }) => {
   const theme = useTheme();
   const styles = useMemo(() => getStyles(theme), [theme]);
   const dispatch = useDispatch();
@@ -21,6 +21,8 @@ const CartStocks = ({ navigation, productList }) => {
   const [editModalVisible, setEditModalVisible] = useState(false);
   const [selectedEditProduct, setSelectedEditProduct] = useState(null);
 
+  const cartDiscountsArray = cartDiscountStates.map((discountState) => discountState.cartDiscount);
+
   return (
     <View style={styles.cartStocksSection}>
       {editModalVisible && selectedEditProduct &&
@@ -28,6 +30,7 @@ const CartStocks = ({ navigation, productList }) => {
           modalVisible={editModalVisible}
           setModalVisible={setEditModalVisible}
           productInfo={selectedEditProduct}
+          cartDiscountsArray={cartDiscountsArray}
         />
       }
       <View style={styles.cartStocksContainer}>
@@ -48,7 +51,7 @@ const CartStocks = ({ navigation, productList }) => {
           </TouchableOpacity>
         </View>
         {productList.map((productInfo, index) => (
-          <CartStockCard key={index} productInfo={productInfo} setEditModalVisible={setEditModalVisible} setSelectedEditProduct={setSelectedEditProduct}/>
+          <CartStockCard key={index} productInfo={productInfo} setEditModalVisible={setEditModalVisible} setSelectedEditProduct={setSelectedEditProduct} cartDiscountsArray={cartDiscountsArray}/>
         ))}
       </View>
     </View>
@@ -82,7 +85,7 @@ const getStyles = (theme) => StyleSheet.create({
     height: 40,
     backgroundColor: theme.primary,
     borderWidth: 1,
-    borderColor: theme.text,
+    borderColor: theme.primary,
     alignItems: 'center',
     justifyContent: 'center',
     borderRadius: 5,
