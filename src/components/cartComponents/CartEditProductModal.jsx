@@ -369,9 +369,10 @@ const CartEditProductModal = ({ modalVisible, setModalVisible, productInfo, cart
                 </View>
               </View>
             }
-            <View style={styles.modalActionsContainer}>
-              {
-                <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', backgroundColor: 'red' }} >
+            <View style={[styles.modalActionsContainer, { flexDirection: isLandscape ? 'row' : 'column' }]}>
+              <View style={{ flex: 1, padding: isLandscape ? 0 : 20, rowGap: 10, justifyContent: isLandscape ? 'flex-end' : 'flex-start', alignItems: isLandscape ? 'flex-start' : 'center' }}>
+                <Text style={{ color: theme.text, fontSize: 18, fontWeight: 'bold', textDecorationLine: 'underline', alignSelf: 'flex-start' }}>İskonto:</Text>
+                <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }} >
                   <TouchableOpacity style={{ padding: 6, marginRight: 2 }} onPress={handleResetDiscounts}>
                     <FontAwesome name="undo" size={22} color={theme.textAlt} />
                   </TouchableOpacity>
@@ -392,31 +393,7 @@ const CartEditProductModal = ({ modalVisible, setModalVisible, productInfo, cart
                     </View>
                   ))}
                 </View>
-              }
-              {/* {isLandscape &&
-                <View style={{ height: 60, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', paddingLeft: 14, backgroundColor: 'red' }} >
-                  <TouchableOpacity style={{ padding: 6, marginRight: 2 }} onPress={handleResetDiscounts}>
-                    <FontAwesome name="undo" size={22} color={theme.textAlt} />
-                  </TouchableOpacity>
-                  {discountsInfo.map((discountInfo, index) => (
-                    <View key={index} style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
-                      <TextInput
-                        style={styles.discountInput}
-                        value={discountInfo.discount.toString()}
-                        onChangeText={(value) => handleDiscountChange(value, index)}
-                        onBlur={() => handleDiscountBlur(discountsInfo[index].discount, index)}
-                        selectTextOnFocus
-                        selectionColor={theme.textSelection}
-                        keyboardType='numeric'
-                        autoCapitalize='none'
-                        disableFullscreenUI
-                      />
-                      {index !== discountsInfo.length - 1 && <Text style={{ color: theme.text, fontSize: 35, fontWeight: '200' }}>/</Text>}
-                    </View>
-                  ))
-                  }
-                </View>
-              } */}
+              </View>
               <View style={styles.modalButtonsContainer}>
                 <TouchableOpacity style={{ padding: 4 }} onPress={handleClearProduct}>
                   <FontAwesome name="trash-o" size={26} color={theme.textAlt} />
@@ -532,8 +509,6 @@ const getStyles = (theme) => StyleSheet.create({
   modalActionsContainer: {
     flex: 1,
     justifyContent: 'space-between',
-    alignItems: 'center',
-    backgroundColor: 'blue'
   },
   modalButtonsContainer: {
     flexDirection: 'row',

@@ -48,7 +48,7 @@ const FastOrderCartSummary = ({ cartProductsList, navigation }) => {
         </View>
         <View style={styles.separator} />
         <View style={styles.cartInfoWrapper}>
-          <Text style={styles.cartInfoTitle}>Farklı Ürün Miktarı</Text>
+          <Text style={styles.cartInfoTitle}>Ürün Çeşidi</Text>
           <Text style={styles.cartInfoValue}>{totalDifferentProducts}</Text>
         </View>
       </Animated.View>

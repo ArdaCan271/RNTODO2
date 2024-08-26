@@ -1,4 +1,8 @@
 const calculateDiscountedUnitPrice = (unitPrice, discounts, ratioInPercent) => {
+  if (!discounts || discounts.length === 0) {
+    return unitPrice;
+  }
+
   let discountedPrice = unitPrice;
 
   if (ratioInPercent) {
